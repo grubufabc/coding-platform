@@ -96,7 +96,7 @@ const IDE: React.FC<IDEProps> = () => {
                         options={languages.map(({ name }) => ({ label: name, value: name }))}
                         onChange={setLanguage}
                         value={language}
-                        label="linguagem"
+                        label="Linguagem"
                     />
                 </div>
                 <div className="col text-end">
