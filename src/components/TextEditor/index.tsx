@@ -21,16 +21,19 @@ const TextEditor: React.FC<TextEditorProps> = ({ value, language, onChange }) =>
     }
 
     return (
-        <div className="">
+        <div>
             <ControlledEditor 
                 onBeforeChange={(_, __, value) => handleChange(value)}
                 value={value}
                 className="code-mirror-wrapper code-wrapper"
                 options={{
+                    indentWithTabs: true,
+                    tabSize: 4,
                     lineWrapping: true,
                     mode: language,
                     theme: 'dracula',
                     lineNumbers: true,
+                    indentUnit: 4
                 }}
             />
         </div>

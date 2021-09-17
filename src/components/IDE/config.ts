@@ -1,4 +1,4 @@
-import Language from "../../models/language";
+import Language from "../../models/Language";
 
 
 export const languages: Language[] = [

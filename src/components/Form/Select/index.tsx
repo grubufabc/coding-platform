@@ -12,10 +12,11 @@ interface SelectProps {
     className?: string
     onChange: React.Dispatch<React.SetStateAction<string>>
     value: string
+    label: string
 }
 
 
-const Select: React.FC<SelectProps> = ({ options, className, onChange, value }) => {
+const Select: React.FC<SelectProps> = ({ options, className, onChange, value, label }) => {
 
     function handlChange({ value }: HTMLSelectElement) {
         onChange(value)
@@ -31,7 +32,7 @@ const Select: React.FC<SelectProps> = ({ options, className, onChange, value }) 
                     ))
                 } 
             </select>
-            <label htmlFor="floatingSelect">Works with selects</label>
+            <label>{label}</label>
         </div>
     )
 }
