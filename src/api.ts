@@ -1,4 +1,4 @@
-import { Submission } from './models/Submission'
+import { Submission } from './models/submission'
 const API_URL = 'https://ce.judge0.com'
 
 

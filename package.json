@@ -11,9 +11,12 @@
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.0",
     "codemirror": "^5.62.3",
+    "history": "^5.0.1",
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
+    "react-router": "^6.0.0-beta.4",
+    "react-router-dom": "^6.0.0-beta.4",
     "react-scripts": "4.0.3",
     "typescript": "^4.1.2",
     "web-vitals": "^1.0.1"

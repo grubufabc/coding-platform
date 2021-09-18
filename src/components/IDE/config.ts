@@ -1,5 +1,4 @@
-import Language from "../../models/Language";
-
+import { Language } from '../../models/language'
 
 export const languages: Language[] = [
     {
@@ -28,4 +27,3 @@ export const languages: Language[] = [
         mode: 'text/javascript'
     }
 ]
-

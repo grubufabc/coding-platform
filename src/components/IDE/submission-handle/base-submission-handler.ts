@@ -1,6 +1,6 @@
 import { StdoutState } from './stdout-state';
 import React from 'react'
-import { Submission } from '../../../models/Submission'
+import { Submission } from '../../../models/submission'
 
 
 export abstract class BaseSubmissionHandler {

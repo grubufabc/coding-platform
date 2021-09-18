@@ -1,4 +1,4 @@
-import { Submission } from "../../../models/Submission";
+import { Submission } from "../../../models/submission";
 import { BaseSubmissionHandler } from "./base-submission-handler";
 import { StdoutState } from "./stdout-state";
 

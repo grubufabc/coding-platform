@@ -2,6 +2,7 @@ import React from 'react'
 import './App.css'
 import IDE from './components/IDE'
 import { Routes, Route, BrowserRouter as Router } from 'react-router-dom'
+import MarkdownEditor from './components/MarkdownEditor'
 
 
 const App: React.FC = () => {
@@ -14,7 +15,11 @@ const App: React.FC = () => {
                             <IDE />
                         </div>
                     )} />
-                    <Route path="markdown-editor" element={<h1>ola</h1>} />
+                    <Route path="markdown-editor" element={(
+                        <div className="col-10">
+                            <MarkdownEditor />
+                        </div>
+                    )} />
                 </Routes>
             </Router>
         </div>
