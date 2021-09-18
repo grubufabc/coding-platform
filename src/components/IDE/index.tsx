@@ -7,15 +7,13 @@ import useFetch from '../../hooks/useFetch'
 import { utf8_to_b64 } from '../../utils'
 import { Submission } from '../../models/Submission'
 import { POST_SUBMISSION as API_POST_SUBMISSION } from '../../api'
-import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handlers'
-import { StdoutState } from './submission-handlers/stdout-state'
+import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handle'
+import { StdoutState } from './submission-handle/stdout-state'
 
 
 interface IDEProps {
 
 }
-
-
 
 
 const IDE: React.FC<IDEProps> = () => {
