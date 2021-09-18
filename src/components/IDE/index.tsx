@@ -4,20 +4,18 @@ import Select from '../Form/Select'
 import TextEditor from '../TextEditor'
 import { languages } from './config'
 import useFetch from '../../hooks/useFetch'
-import { b64_to_utf8, utf8_to_b64 } from '../../utils'
+import { utf8_to_b64 } from '../../utils'
 import { Submission } from '../../models/Submission'
-import { POST_SUBMISSION as API_POST_SUBMISSION} from '../../api'
-
-
-interface StdoutState {
-    message: string
-    error: boolean
-}
+import { POST_SUBMISSION as API_POST_SUBMISSION } from '../../api'
+import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handlers'
+import { StdoutState } from './submission-handlers/stdout-state'
 
 
 interface IDEProps {
 
 }
+
+
 
 
 const IDE: React.FC<IDEProps> = () => {
@@ -33,7 +31,7 @@ const IDE: React.FC<IDEProps> = () => {
         return result ? result.mode : ''
     }
 
-    const getIdLanguage = (): number =>  {
+    const getIdLanguage = (): number => {
         const result = languages.find(({ name }) => name === language)
         return result ? result.id : 0
     }
@@ -48,7 +46,7 @@ const IDE: React.FC<IDEProps> = () => {
         ].every(fn => fn())
 
         if (!isValid) return
-        setStdout({message: '', error: false})
+        setStdout({ message: '', error: false })
 
         const { url, options } = API_POST_SUBMISSION({
             language_id: getIdLanguage(),
@@ -58,33 +56,13 @@ const IDE: React.FC<IDEProps> = () => {
         const { json } = await request(url, options)
         const submission = json as Submission
 
-        if (submission.compile_output) {
-            setStdout({
-                message: `Error: ${b64_to_utf8(submission.compile_output)}`,
-                error: true
-            })
-        }
+        const compileOutputHandler = new CompileOutputHandler()
+        compileOutputHandler
+            .setNextHandler(new StderrHandler())
+            .setNextHandler(new StdoutHandler())
+            .setNextHandler(new TimeLimitExceededHandler())
 
-        if (submission.stderr) {
-            setStdout({
-                message: `Error: ${b64_to_utf8(submission.stderr)}`,
-                error: true
-            })
-        }
-
-        if (submission.stdout) {
-            setStdout({
-                message: b64_to_utf8(submission.stdout),
-                error: false
-            })
-        }
-        
-        if(submission.status!.description === 'Time Limit Exceeded'){
-            setStdout({
-                message: `Time Limit Exceeded`,
-                error: true
-            })
-        }
+        compileOutputHandler.handle(submission, setStdout)
     }
 
     return (
@@ -100,7 +78,7 @@ const IDE: React.FC<IDEProps> = () => {
                     />
                 </div>
                 <div className="col text-end">
-                    { loading ? (
+                    {loading ? (
                         <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg px-5 h-100">Processando...</button>
                     ) : (
                         <button onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg h-100 px-5">Executar</button>
@@ -115,20 +93,20 @@ const IDE: React.FC<IDEProps> = () => {
             />
             <div className="row mt-5">
                 <div className="col">
-                    <TextArea 
-                        rows={5} 
-                        className="mb-3" 
-                        label={{ text: 'stdin', id: 'stdin' }} 
-                        value={stdin} 
+                    <TextArea
+                        rows={5}
+                        className="mb-3"
+                        label={{ text: 'stdin', id: 'stdin' }}
+                        value={stdin}
                         onChange={setStdin}
                     />
                 </div>
                 <div className="col">
-                    <TextArea 
-                        disabled={true} 
-                        rows={5} 
-                        className={`mb-3 ${stdout.error ? 'text-danger': ''}`} 
-                        label={{ text: 'stdout', id: 'stdout' }} 
+                    <TextArea
+                        disabled={true}
+                        rows={5}
+                        className={`mb-3 ${stdout.error ? 'text-danger' : ''}`}
+                        label={{ text: 'stdout', id: 'stdout' }}
                         value={loading ? '⚙️  🛠  Processando . . .' : stdout.message}
                     />
                 </div>
