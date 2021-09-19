@@ -1,6 +1,6 @@
 import { Submission } from './models/submission'
 // const API_URL = 'https://ce.judge0.com'
-const API_URL = 'http://34.133.58.104/'
+const API_URL = 'http://34.133.58.104'
 
 
 export function POST_SUBMISSION(submission: Submission){
