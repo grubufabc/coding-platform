@@ -1,7 +1,6 @@
 import React from 'react'
 import TextArea from '../Form/TextArea'
-import Select from '../Form/Select'
-import TextEditor from '../TextEditor'
+import TextEditor, { TextEditorHandles } from '../TextEditor'
 import { languages } from './config'
 import useFetch from '../../hooks/useFetch'
 import { utf8_to_b64 } from '../../utils'
@@ -11,33 +10,21 @@ import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHa
 import { StdoutState } from './submission-handle/stdout-state'
 
 
-interface IDEProps {
-
-}
-
-
-const IDE: React.FC<IDEProps> = () => {
+const IDE: React.FC = () => {
     const { request, loading } = useFetch()
 
-    const [code, setCode] = React.useState<string>('')
-    const [language, setLanguage] = React.useState<string>('')
     const [stdin, setStdin] = React.useState<string>('')
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
-
-    const getModeLanguage = (): string => {
-        const result = languages.find(({ name }) => name === language)
-        return result ? result.mode : ''
-    }
-
-    const getIdLanguage = (): number => {
-        const result = languages.find(({ name }) => name === language)
-        return result ? result.id : 0
-    }
-
+    const textEditorRef = React.useRef<TextEditorHandles>(null)
 
     const handleRunCode = async () => {
-        const validateCode = () => code.length > 0
-        const validateLanguage = () => language.length > 0
+        if (!textEditorRef.current) return
+
+        const textEditor = textEditorRef.current
+
+        const validateCode = () => (textEditor.getText() || '').length > 0
+        const validateLanguage = () => textEditor.getLanguage() !== undefined
+
         const isValid = [
             validateCode,
             validateLanguage
@@ -47,8 +34,8 @@ const IDE: React.FC<IDEProps> = () => {
         setStdout({ message: '', error: false })
 
         const { url, options } = API_POST_SUBMISSION({
-            language_id: getIdLanguage(),
-            source_code: utf8_to_b64(code),
+            language_id: textEditor.getLanguage()!.id,
+            source_code: utf8_to_b64(textEditor.getText()),
             stdin: utf8_to_b64(stdin)
         })
         const { json } = await request(url, options)
@@ -66,30 +53,20 @@ const IDE: React.FC<IDEProps> = () => {
     return (
         <div>
             <h1>IDE</h1>
-            <div className="row mb-3">
-                <div className="col">
-                    <Select
-                        options={languages.map(({ name }) => ({ label: name, value: name }))}
-                        onChange={setLanguage}
-                        value={language}
-                        label="Linguagem"
-                    />
-                </div>
-                <div className="col text-end">
-                    {loading ? (
-                        <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg px-5 h-100">Processando...</button>
-                    ) : (
-                        <button onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg h-100 px-5">Executar</button>
-                    )}
-                </div>
+            <div className="row mb-4">
+                <TextEditor
+                    toolbar={[
+                        (loading ? (
+                            <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Processando...</button>
+                        ) : (
+                            <button onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Executar</button>
+                        ))
+                    ]}
+                    languages={languages}
+                    ref={textEditorRef}
+                />
             </div>
-
-            <TextEditor
-                language={getModeLanguage()}
-                onChange={setCode}
-                value={code}
-            />
-            <div className="row mt-5">
+            <div className="row">
                 <div className="col">
                     <TextArea
                         rows={5}
@@ -108,6 +85,9 @@ const IDE: React.FC<IDEProps> = () => {
                         value={loading ? '⚙️  🛠  Processando . . .' : stdout.message}
                     />
                 </div>
+            </div>
+            <div className="row mb-3">
+                
             </div>
         </div>
     )
