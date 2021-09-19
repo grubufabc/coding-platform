@@ -12,6 +12,15 @@ interface ProgressStepsProps {
 }
 
 
+export const ProgressStep: React.FC = ({ children }) => {
+    return (
+        <div>
+            { children }
+        </div>
+    )
+}
+
+
 const ProgressSteps: React.ForwardRefRenderFunction<ProgressStepsHandles, ProgressStepsProps> = ({ children }, ref) => {
     const [currentStep, setCurrentStep] = React.useState(0)
 
