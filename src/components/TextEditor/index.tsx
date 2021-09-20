@@ -40,7 +40,7 @@ const TextEditor: React.ForwardRefRenderFunction<TextEditorHandles, TextEditorPr
 
     return (
         <div>
-            <div className="d-grid d-md-flex justify-content-between mb-4" role="group">
+            <div className="d-grid d-flex justify-content-between mb-4" role="group">
                 <Select
                     options={languages.map(({ name }) => ({ label: name, value: name }))}
                     onChange={setLanguage}

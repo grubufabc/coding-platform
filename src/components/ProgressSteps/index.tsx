@@ -49,7 +49,7 @@ const ProgressSteps: React.ForwardRefRenderFunction<ProgressStepsHandles, Progre
     })
 
     return (
-        <div className="border">
+        <div>
             <div className="position-relative m-4">
                 <div className="progress" style={{ height: '3px' }}>
                     <div className="progress-bar" role="progressbar" style={{ width: `${getPositionRelative(currentStep)}%` }}></div>
@@ -69,7 +69,11 @@ const ProgressSteps: React.ForwardRefRenderFunction<ProgressStepsHandles, Progre
                 ))}
             </div>
             <div className="pt-4">
-                {children[currentStep]}
+                { children.map((child, index) => (
+                    <div key={index} className={`${index === currentStep ? 'd-block' : 'd-none'}`}>
+                        { child }
+                    </div>
+                ))}
             </div>
         </div>
     )

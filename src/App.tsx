@@ -8,7 +8,7 @@ import CreateProblem from './pages/CreateProblem'
 
 const App: React.FC = () => {
     return (
-        <div className="row d-flex justify-content-center mt-5">
+        <div className="row d-flex justify-content-center my-5 pb-5">
             <Router>
                 <nav className="mb-4">
                     <li className="nav-item">
