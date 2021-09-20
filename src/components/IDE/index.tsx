@@ -52,13 +52,12 @@ const IDE: React.FC = () => {
 
     return (
         <div>
-            <h1>IDE</h1>
             <div className="row mb-4">
                 <TextEditor
                     toolbar={[
                         (loading ? (
                             <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Processando...</button>
-                        ) : (
+                        ) : (    
                             <button onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Executar</button>
                         ))
                     ]}
@@ -92,6 +91,5 @@ const IDE: React.FC = () => {
         </div>
     )
 }
-
 
 export default IDE
