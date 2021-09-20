@@ -2,15 +2,26 @@ import React from 'react'
 import TextArea from '../../../components/Form/TextArea'
 
 
+interface TestCase {
+    stdin: string,
+    visible: boolean
+}
+
+
 const TestCases: React.FC = () => {
     const [testCase, setTestCase] = React.useState<string>('')
-    const [testCases, setTestCases] = React.useState<string[]>([])
+    const [testCases, setTestCases] = React.useState<TestCase[]>([])
 
     const handleAddTestCase = () => {
-        if(testCase.length > 0){
-            setTestCases([...testCases, testCase])
+        if (testCase.length > 0) {
+            setTestCases([...testCases, { stdin: testCase, visible: false}])
             setTestCase('')
         }
+    }
+
+    const handleChangeVisibilityTestCase = (testCase: TestCase, visible: any) => {
+        testCase.visible = visible
+        setTestCases([...testCases])
     }
 
     const handleRemoveTestCase = (index: number) => {
@@ -39,17 +50,30 @@ const TestCases: React.FC = () => {
                 <table className="table table-hover">
                     <thead>
                         <tr>
-                            <th scope="col">#</th>
+                            <th className="text-center" scope="col">#</th>
                             <th scope="col">Stdin</th>
+                            <th scope="col">Tipo</th>
                             <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        { testCases.map((test, index) => (
+                        {testCases.map((testCase, index) => (
                             <tr key={index}>
-                                <th className="align-middle text-center" scope="row">{index+1}</th>
+                                <th className="align-middle text-center" scope="row">{index + 1}</th>
                                 <td className="align-middle">
-                                    <TextArea rows={4} value={test} disabled={true}/>
+                                    <TextArea rows={4} value={testCase.stdin} disabled={true} />
+                                </td>
+                                <td className="align-middle">
+                                    <div className="form-check">
+                                        <input 
+                                            onChange={({ target }) => handleChangeVisibilityTestCase(testCase, target.checked)} 
+                                            className="form-check-input" 
+                                            type="checkbox"
+                                            checked={testCase.visible}
+                                            id={`test-${index}`} 
+                                        />
+                                        <label className ="form-check-label" htmlFor={`test-${index}`}>exemplo</label>
+                                    </div>
                                 </td>
                                 <td className="align-middle text-center">
                                     <button

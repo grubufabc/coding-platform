@@ -1,6 +1,7 @@
 import React from 'react'
 import IDE from '../../components/IDE'
 import MarkdownEditor from '../../components/MarkdownEditor'
+import MarkdownRender from '../../components/MarkdownRender'
 import ProgressSteps, { ProgressStep, ProgressStepsHandles } from '../../components/ProgressSteps'
 import TestCases from './TestCases'
 
@@ -21,6 +22,11 @@ const CreateProblem: React.FC = () => {
                 </ProgressStep>
                 <ProgressStep>
                     <TestCases />
+                </ProgressStep>
+                <ProgressStep>
+                    <h1>Review</h1>
+                    <MarkdownRender text={'teasdakdaksdkandknadnkandkanskn'}/>
+                    <button className="btn btn-primary">Criar problema</button>
                 </ProgressStep>
             </ProgressSteps>
         </div>
