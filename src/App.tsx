@@ -3,6 +3,7 @@ import './App.css'
 import IDE from './components/IDE'
 import { Routes, Route, BrowserRouter as Router, Link } from 'react-router-dom'
 import MarkdownEditor from './components/MarkdownEditor'
+import CreateProblem from './pages/CreateProblem'
 
 
 const App: React.FC = () => {
@@ -18,6 +19,7 @@ const App: React.FC = () => {
                     </li>
                 </nav>
                 <Routes>
+                    <Route path="/" element={<CreateProblem/>}/>
                     <Route path="code-editor" element={(
                         <div className="col-6">
                             <IDE />
