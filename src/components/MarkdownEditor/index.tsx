@@ -1,7 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react'
 import TextArea from '../Form/TextArea'
 import MarkdownRender from '../MarkdownRender'
-import { TextEditorHandles } from '../TextEditor'
 
 
 interface MarkdownEditorProps {
@@ -14,12 +13,16 @@ export interface MarkdownEditorHandles {
 }
 
 
-const MarkdownEditor: React.ForwardRefRenderFunction<TextEditorHandles, MarkdownEditorProps> = ({ value }) => {
+const MarkdownEditor: React.ForwardRefRenderFunction<MarkdownEditorHandles, MarkdownEditorProps> = ({ value }, ref) => {
     const [text, setText] = React.useState<string>(value || '')
 
-    const getText = (): string => {
-        return text
-    }
+    const getText = () => text
+
+    useImperativeHandle(ref, () => {
+        return {
+            getText
+        }
+    })
 
     return (
         <div>
