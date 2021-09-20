@@ -3,12 +3,24 @@ import IDE from '../../components/IDE'
 import MarkdownEditor from '../../components/MarkdownEditor'
 import MarkdownRender from '../../components/MarkdownRender'
 import ProgressSteps, { ProgressStep, ProgressStepsHandles } from '../../components/ProgressSteps'
+import { Language } from '../../models/language'
 import TestCases from './TestCases'
+
+interface Solution {
+    code: string,
+    language: Language
+}
 
 
 const CreateProblem: React.FC = () => {
     const progressStepsRef = React.useRef<ProgressStepsHandles>(null)
+    const [description, setDescription] = React.useState<string>('')
+    const [solution, setSolution] = React.useState<Solution>()
 
+
+    const handleCreateProblem = () => {
+        console.log('clicked')
+    }
 
     return (
         <div className="col-8">
@@ -26,7 +38,7 @@ const CreateProblem: React.FC = () => {
                 <ProgressStep>
                     <h1>Review</h1>
                     <MarkdownRender text={'teasdakdaksdkandknadnkandkanskn'}/>
-                    <button className="btn btn-primary">Criar problema</button>
+                    <button onClick={handleCreateProblem} className="btn btn-primary">Criar problema</button>
                 </ProgressStep>
             </ProgressSteps>
         </div>
