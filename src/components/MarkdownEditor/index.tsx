@@ -3,6 +3,7 @@ import TextArea from '../Form/TextArea'
 import MarkdownRender from '../MarkdownRender'
 import { TextEditorHandles } from '../TextEditor'
 
+
 interface MarkdownEditorProps {
     value?: string
 }
@@ -11,6 +12,7 @@ interface MarkdownEditorProps {
 export interface MarkdownEditorHandles {
     getText: () => string
 }
+
 
 const MarkdownEditor: React.ForwardRefRenderFunction<TextEditorHandles, MarkdownEditorProps> = ({ value }) => {
     const [text, setText] = React.useState<string>(value || '')
