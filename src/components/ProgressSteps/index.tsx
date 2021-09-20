@@ -55,7 +55,7 @@ const ProgressSteps: React.ForwardRefRenderFunction<ProgressStepsHandles, Progre
                     <div className="progress-bar" role="progressbar" style={{ width: `${getPositionRelative(currentStep)}%` }}></div>
                 </div>
                 {children.map((_, index) => (
-                    <div className="position-absolute top-0 translate-middle bg-white " style={{ left: `${getPositionRelative(index)}%` }}>
+                    <div key={index} className="position-absolute top-0 translate-middle bg-white " style={{ left: `${getPositionRelative(index)}%` }}>
                         <button
                             style={{ width: '3rem', height: '3rem'}}
                             onClick={() => goToStep(index)}
