@@ -8,7 +8,8 @@ interface MarkdownEditorProps {
 const MarkdownEditor: React.FC<MarkdownEditorProps> = () => {
     return (
         <div>
-            <h1>Markdown</h1>                    
+            <h1>Markdown</h1>
+            <textarea></textarea>
         </div>
     )    
 }
