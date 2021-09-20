@@ -3,15 +3,12 @@ import TextArea from '../Form/TextArea'
 import MarkdownRender from '../MarkdownRender'
 import { TextEditorHandles } from '../TextEditor'
 
-
-
-
 interface MarkdownEditorProps {
     value?: string
 }
 
 
-interface MarkdownEditorHandles {
+export interface MarkdownEditorHandles {
     getText: () => string
 }
 
