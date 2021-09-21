@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useImperativeHandle, forwardRef} from 'react'
 import TextArea from '../Form/TextArea'
 import TextEditor, { TextEditorHandles } from '../TextEditor'
 import { languages } from './config'
@@ -8,14 +8,35 @@ import { Submission } from '../../models/submission'
 import { POST_SUBMISSION as API_POST_SUBMISSION } from '../../api'
 import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handle'
 import { StdoutState } from './submission-handle/stdout-state'
+import { Language } from '../../models/language'
 
 
-const IDE: React.FC = () => {
+export interface IDEHandles {
+    getCode: () => string
+    getLanguage: () => Language | undefined
+    getStdin: () => string
+    getStdout: () => string
+    cleanStdin: () => void
+    cleanStdout: () => void
+}
+
+const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
     const { request, loading } = useFetch()
 
     const [stdin, setStdin] = React.useState<string>('')
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
     const textEditorRef = React.useRef<TextEditorHandles>(null)
+
+    useImperativeHandle(ref, () => {
+        return {
+            getCode: () => textEditorRef.current?.getText() || '',
+            getLanguage: () => textEditorRef.current?.getLanguage(),
+            getStdin: () => stdin,
+            getStdout: () => stdout.message,
+            cleanStdin: () => { setStdin('') },
+            cleanStdout: () => { setStdout({ message: '', error: false }) }
+        }
+    })
 
     const handleRunCode = async () => {
         if (!textEditorRef.current) return
@@ -56,9 +77,9 @@ const IDE: React.FC = () => {
                 <TextEditor
                     toolbar={[
                         (loading ? (
-                            <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Processando...</button>
+                            <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-primary btn-lg w-25">Processando...</button>
                         ) : (    
-                            <button onClick={handleRunCode} type="button" className="btn btn-secondary btn-lg w-25">Executar</button>
+                            <button onClick={handleRunCode} type="button" className="btn btn-primary btn-lg w-25">Executar</button>
                         ))
                     ]}
                     languages={languages}
@@ -85,11 +106,8 @@ const IDE: React.FC = () => {
                     />
                 </div>
             </div>
-            <div className="row mb-3">
-                
-            </div>
         </div>
     )
 }
 
-export default IDE
+export default forwardRef(IDE)

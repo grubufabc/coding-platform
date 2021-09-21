@@ -1,8 +1,10 @@
 import React from 'react'
 import './App.css'
 import IDE from './components/IDE'
-import { Routes, Route, BrowserRouter as Router, Link } from 'react-router-dom'
+import { Routes, Route, BrowserRouter as Router, Link, Outlet } from 'react-router-dom'
 import MarkdownEditor from './components/MarkdownEditor'
+import Problems from './pages/Problems'
+import ProblemDetail from './pages/Problems/ProblemDetail'
 import CreateProblem from './pages/CreateProblem'
 
 
@@ -10,16 +12,11 @@ const App: React.FC = () => {
     return (
         <div className="row d-flex justify-content-center my-5 pb-5">
             <Router>
-                <nav className="mb-4">
-                    <li className="nav-item">
-                        <Link to="code-editor">code-editor</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link to="markdown-editor">markdown-editor</Link>
-                    </li>
-                </nav>
                 <Routes>
-                    <Route path="/" element={<CreateProblem/>}/>
+                    <Route path="problems" element={<Outlet/>}>
+                        <Route path="" element={<Problems/>}/>
+                        <Route path=":id" element={<ProblemDetail/>}/>
+                    </Route>
                     <Route path="code-editor" element={(
                         <div className="col-6">
                             <IDE />
@@ -30,6 +27,7 @@ const App: React.FC = () => {
                             <MarkdownEditor />
                         </div>
                     )} />
+                    <Route path="create-problem" element={<CreateProblem />} />
                 </Routes>
             </Router>
         </div>

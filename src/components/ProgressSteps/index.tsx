@@ -70,7 +70,7 @@ const ProgressSteps: React.ForwardRefRenderFunction<ProgressStepsHandles, Progre
             </div>
             <div className="pt-4">
                 { children.map((child, index) => (
-                    <div key={index} className={`${index === currentStep ? 'd-block' : 'd-none'}`}>
+                    <div key={index} className={`${index === currentStep ? '' : 'visually-hidden'}`}>
                         { child }
                     </div>
                 ))}

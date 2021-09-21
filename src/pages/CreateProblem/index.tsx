@@ -1,99 +1,76 @@
 import React from 'react'
-import TextArea from '../../components/Form/TextArea'
-import IDE from '../../components/IDE'
-import MarkdownEditor, { MarkdownEditorHandles } from '../../components/MarkdownEditor'
-import MarkdownRender from '../../components/MarkdownRender'
+import { POST_PROBLEM as API_POST_PROBLEM} from '../../api'
 import ProgressSteps, { ProgressStep } from '../../components/ProgressSteps'
+import Toast, { ToastHandles } from '../../components/Toast'
+import useFetch from '../../hooks/useFetch'
 import { Language } from '../../models/language'
-import TestCases from './TestCases'
+import DescriptionForm from './DescriptionForm'
+import Review from './Review'
+import TestCasesForm from './TestCasesForm'
 
-interface Solution {
+
+export interface Solution {
     code: string,
     language: Language
 }
 
 export interface TestCase {
-    stdin: string,
-    expectedStdout: string
+    input: string,
+    expectedOutput: string
     visible: boolean
 }
 
 
 const CreateProblem: React.FC = () => {
-    const markdownEditorRef = React.useRef<MarkdownEditorHandles>(null)
-
+    const { request } = useFetch()
+    const toastRef = React.useRef<ToastHandles>(null)
+    const [title, setTitle] = React.useState<string>('')
     const [description, setDescription] = React.useState<string>('')
-    const [solution, setSolution] = React.useState<Solution>()
     const [testCases, setTestCases] = React.useState<TestCase[]>([])
 
 
-    const handleCreateProblem = () => {
-
-        console.log(markdownEditorRef.current?.getText())
+    const handleCreateProblem = async () => {
+        const { url, options } = API_POST_PROBLEM({
+            description,
+            testCases,
+            title
+        })
+        toastRef.current?.setMessage({
+            message: 'Salvando informações',
+            title: 'Processando...'
+        })
+        const { json } = await request(url, options)
+        toastRef.current?.setMessage({ 
+            message: 'Problema salvo com sucesso', 
+            title: 'Tudo certo!'
+        })
+        console.log(json)
     }
 
     return (
         <div className="col-8">
+            <Toast ref={toastRef}/>
             <ProgressSteps>
                 <ProgressStep>
-                    <h1 className="mb-5">Descrição do problema</h1>
-                    <MarkdownEditor onChange={setDescription} ref={markdownEditorRef} />
+                    <DescriptionForm
+                        title={title}
+                        setTitle={setTitle}
+                        setDescription={setDescription}
+                    />
                 </ProgressStep>
                 <ProgressStep>
-                    <h1 className="mb-5">Solução</h1>
-                    <IDE />
+                    <TestCasesForm
+                        testCases={testCases}
+                        setTestCases={setTestCases}
+                    />
                 </ProgressStep>
                 <ProgressStep>
-                    <TestCases testCases={testCases} setTestCases={setTestCases} />
-                </ProgressStep>
-                <ProgressStep>
-                    <div className="d-grid d-flex justify-content-between mb-5" role="group">
-                        <h1>Review</h1>
-                        <button onClick={handleCreateProblem} className="btn btn-lg px-5 btn-primary">Finalizar</button>
-                    </div>
-
-                    <div className="row mb-5">
-                        <MarkdownRender text={description} />
-                    </div>
-                    <div className="row">
-                        <h5 className="mb-3">Exemplos</h5>
-                        {testCases.filter((testCase) => testCase.visible).map((testCase, index) => (
-                            <div className="mb-3" key={index}>
-                                <div className="card mb-3">
-                                    <div>
-                                        <div className="card-header">
-                                            Entrada
-                                        </div>
-                                        <ul className="list-group list-group-flush">
-                                            <li className="list-group-item">
-                                                <pre>
-                                                    <code>
-                                                        {testCase.stdin}
-                                                    </code>
-                                                </pre>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div>
-                                        <div className="card-header">
-                                            Saída experada
-                                        </div>
-                                        <ul className="list-group list-group-flush">
-                                            <li className="list-group-item">
-                                                <pre>
-                                                    <code>
-                                                        {testCase.expectedStdout}
-                                                    </code>
-                                                </pre>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-
+                    <Review 
+                        title={title}
+                        testCases={testCases}
+                        handleCreateProblem={handleCreateProblem}
+                        description={description}
+                    />
                 </ProgressStep>
             </ProgressSteps>
         </div>

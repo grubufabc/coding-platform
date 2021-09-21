@@ -1,17 +1,50 @@
+import { Problem } from './models/problem'
 import { Submission } from './models/submission'
 // const API_URL = 'https://ce.judge0.com'
-const API_URL = 'http://34.133.58.104'
+// const API_URL = 'http://34.133.58.104'
+const API_URL = 'http://localhost:3000'
 
 
 export function POST_SUBMISSION(submission: Submission){
     return {
-        url: `${API_URL}/submissions/?base64_encoded=true&wait=true`,
+        url: `${API_URL}/codes`,
         options: {
             method: 'POST',
             headers: {
 				'Content-type': 'application/json'
 			},
 			body: JSON.stringify(submission)
+        }
+    }
+}
+
+export function POST_PROBLEM(problem: Problem) {
+    return {
+        url: `${API_URL}/problems`,
+        options: {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(problem)
+        }
+    }
+}
+
+export function GET_PROBLEMS() {
+    return {
+        url: `${API_URL}/problems`,
+        options: {
+            method: 'GET',
+        }
+    }
+}
+
+export function GET_PROBLEM(id: string) {
+    return {
+        url: `${API_URL}/problems/${id}`,
+        options: {
+            method: 'GET',
         }
     }
 }
