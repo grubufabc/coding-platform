@@ -7,8 +7,9 @@ declare var window: any
 class GoogleSignIn extends React.Component {
     componentDidMount() {
         window.gapi.signin2.render(GOOGLE_BUTTON_ID, {
-            width: 200,
+            width: 240,
             height: 50,
+            longtitle: true,
             onsuccess: this.onSuccess
         })
     }
@@ -20,15 +21,20 @@ class GoogleSignIn extends React.Component {
     }
 
     render() {
-        return (<div id={GOOGLE_BUTTON_ID} />)
+        return (<div style={{ display: 'inline-block' }} id={GOOGLE_BUTTON_ID} />)
     }
 }
 
 
 const Login: React.FC = () => {
     return (
-        <div>
-            <GoogleSignIn/>
+        <div className="m-5">
+            <div className="row d-flex justify-content-center">
+                <div className="col-4 p-5 border border-dark border-2 rounded-3 text-center">
+                    <h1 className="mb-5">Bem vindo de volta</h1>
+                    <GoogleSignIn />
+                </div>
+            </div>
         </div>
     )
 }

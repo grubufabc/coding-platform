@@ -16,7 +16,7 @@ const Review: React.FC<ReviewProps> = ({ handleCreateProblem, description, testC
     return (
         <React.Fragment>
             <div className="d-grid d-flex justify-content-between mb-5" role="group">
-                <h1>Review</h1>
+                <h2>Review</h2>
                 <button onClick={handleCreateProblem} className="btn btn-lg px-5 btn-primary">Finalizar</button>
             </div>
 

@@ -48,7 +48,7 @@ const CreateProblem: React.FC = () => {
     }
 
     return (
-        <div className="col-8">
+        <div className="min-vh-100 pb-5">
             <Toast ref={toastRef}/>
             <ProgressSteps>
                 <ProgressStep>

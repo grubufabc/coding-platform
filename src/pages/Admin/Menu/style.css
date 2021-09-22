@@ -1,0 +1,15 @@
+.list-group-item{
+    color: black;
+    background-color: white;
+}
+
+.list-group-item:hover {
+    color: white;
+    background-color: black;
+}
+
+.list-group-item.active {
+    color: white;
+    background-color: black;
+    border: none;
+}

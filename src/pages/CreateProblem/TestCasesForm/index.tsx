@@ -38,12 +38,12 @@ const TestCasesForm: React.FC<TestCasesFormProps> = ({ testCases, setTestCases }
 
     return (
         <div>
-            <h1 className="mb-5">Test cases</h1>
+            <h2 className="mb-5">Test cases</h2>
                 <IDE  ref={IDERef}/>
             <div className="d-grid d-flex justify-content-end mb-5" role="group">
                 <button onClick={handleAddTestCase} className="btn btn-lg btn-primary">Adicionar caso teste</button>
             </div>
-            <div>
+            <div className="py-5">
                 <table className="table table-hover">
                     <thead>
                         <tr>
