@@ -5,6 +5,7 @@ import { Problem } from '../../../models/problem'
 import { GET_PROBLEM as API_GET_PROBLEM } from '../../../api'
 import MarkdownRender from '../../../components/MarkdownRender'
 import TestCaseItem from '../../../components/TestCaseItem'
+import IDE from '../../../components/IDE'
 
 
 const ProblemDetail: React.FC = () => {
@@ -25,18 +26,20 @@ const ProblemDetail: React.FC = () => {
     if(problem === undefined) return null
 
     return (
-        <div className="">
-            <h1 className="mb-5">{ problem.title }</h1>
-            <MarkdownRender text={problem?.description ||''} />
-            <div className="mt-5">
-            { problem.testCases.filter(({visible}) => visible).map(({ input, expectedOutput }) => (
-                <div className="mb-3">
-                    <TestCaseItem input={input} expectedOutput={expectedOutput}/>
+        <div className="m-5">
+            <div className="w-75 mx-auto">
+                <h1 className="mb-5">{ problem.title }</h1>
+                <MarkdownRender text={problem?.description ||''} />
+                <div className="my-5">
+                    { problem.testCases.filter(({visible}) => visible).map(({ input, expectedOutput }) => (
+                        <div className="mb-3">
+                            <TestCaseItem input={input} expectedOutput={expectedOutput}/>
+                        </div>
+                        
+                    ))}
                 </div>
-                
-            ))}
+                <IDE/>
             </div>
-            
         </div>
     )
 }

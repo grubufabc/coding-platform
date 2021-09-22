@@ -15,20 +15,20 @@ const Problems: React.FC = () => {
             const { json } = await request(url, options)
             setProblems(json as Problem[])
         }
-        if(problems === undefined) listProblems()
+        if (problems === undefined) listProblems()
     }, [problems, request])
 
     return (
-        <div>
-            <h1>Problems</h1>
-            { problems && problems.map((problem, index) => (
-                <div className="card">
-                <div className="card-body">
-                  <Link to={`${problem._id}`}>
-                    { problem.title }
-                  </Link>
+        <div className="m-5">
+            <h1 className="mb-5">Problems</h1>
+            {problems && problems.map((problem, index) => (
+                <div key={index} className="card">
+                    <div className="card-body">
+                        <Link to={`${problem._id}`}>
+                            {problem.title}
+                        </Link>
+                    </div>
                 </div>
-              </div>
             ))}
         </div>
     )

@@ -77,9 +77,9 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
                 <TextEditor
                     toolbar={[
                         (loading ? (
-                            <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-primary btn-lg w-25">Processando...</button>
+                            <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-dark btn-lg w-25">Processando...</button>
                         ) : (    
-                            <button onClick={handleRunCode} type="button" className="btn btn-primary btn-lg w-25">Executar</button>
+                            <button onClick={handleRunCode} type="button" className="btn btn-outline-dark btn-lg w-25">Executar</button>
                         ))
                     ]}
                     languages={languages}
