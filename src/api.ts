@@ -2,7 +2,8 @@ import { Problem } from './models/problem'
 import { Submission } from './models/submission'
 // const API_URL = 'https://ce.judge0.com'
 // const API_URL = 'http://34.133.58.104'
-const API_URL = 'http://localhost:3000'
+// const API_URL = 'http://localhost:3000'
+const API_URL = 'https://backend-coding-platform.herokuapp.com'
 
 
 export function POST_SUBMISSION(submission: Submission){
