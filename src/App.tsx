@@ -9,7 +9,7 @@ import LandingPage from './pages/LandingPage'
 import Footer from './components/Footer'
 import Playground from './pages/Playground'
 import Admin from './pages/Admin'
-import CreateProblem from './pages/CreateProblem'
+import CreateProblem from './pages/Admin/CreateProblem'
 
 
 const App: React.FC = () => {
