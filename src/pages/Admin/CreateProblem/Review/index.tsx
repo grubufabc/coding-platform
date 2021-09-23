@@ -1,7 +1,7 @@
 import React from 'react'
-import MarkdownRender from '../../../components/MarkdownRender'
-import TestCaseItem from '../../../components/TestCaseItem'
-import { TestCase } from '../../CreateProblem'
+import MarkdownRender from '../../../../components/MarkdownRender'
+import TestCaseItem from '../../../../components/TestCaseItem'
+import { TestCase } from '..'
 
 
 interface ReviewProps {

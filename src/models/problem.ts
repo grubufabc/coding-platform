@@ -1,4 +1,4 @@
-import { TestCase } from './../pages/CreateProblem/index'
+import { TestCase } from '../pages/Admin/CreateProblem/index'
 
 export interface Problem {
     description: string

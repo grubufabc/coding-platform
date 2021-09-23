@@ -1,7 +1,7 @@
 import React from 'react'
 import { TestCase } from '..'
-import TextArea from '../../../components/Form/TextArea'
-import IDE, { IDEHandles } from '../../../components/IDE'
+import TextArea from '../../../../components/Form/TextArea'
+import IDE, { IDEHandles } from '../../../../components/IDE'
 
 
 interface TestCasesFormProps {
