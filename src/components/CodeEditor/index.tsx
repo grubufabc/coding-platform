@@ -10,21 +10,23 @@ import Select from '../Form/Select'
 import { Language } from '../../models/language'
 
 
-interface TextEditorProps {
+interface CodeEditorProps {
     languages: Language[]
     toolbar: any[]
 }
 
-export interface TextEditorHandles {
-    getText: () => string
+export interface CodeEditorHandles {
+    getCode: () => string
     getLanguage: () => Language | undefined
+    setCode: React.Dispatch<React.SetStateAction<string>>
+    setLanguage: React.Dispatch<React.SetStateAction<string>>
 }
 
-const TextEditor: React.ForwardRefRenderFunction<TextEditorHandles, TextEditorProps> = ({ languages, toolbar }, ref) => {
-    const [text, setText] = React.useState<string>('')
+const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorProps> = ({ languages, toolbar }, ref) => {
+    const [code, setCode] = React.useState<string>('')
     const [language, setLanguage] = React.useState<string>('')
 
-    const getText = () => text
+    const getCode = () => code
     const getLanguage = () => languages.find(({ name }) => name === language)
     const getModeLanguage = () => {
         const language = getLanguage()
@@ -33,8 +35,10 @@ const TextEditor: React.ForwardRefRenderFunction<TextEditorHandles, TextEditorPr
 
     useImperativeHandle(ref, () => {
         return {
-            getText,
-            getLanguage
+            getCode,
+            getLanguage,
+            setCode,
+            setLanguage
         }
     })
 
@@ -47,12 +51,12 @@ const TextEditor: React.ForwardRefRenderFunction<TextEditorHandles, TextEditorPr
                     value={language}
                     label="Linguagem"
                 />
-                { toolbar.map((item, index) => <React.Fragment key={index}>{item}</React.Fragment>) }
+                {toolbar.map((item, index) => <React.Fragment key={index}>{item}</React.Fragment>)}
             </div>
 
             <ControlledEditor
-                onBeforeChange={(_, __, value) => setText(value)}
-                value={text}
+                onBeforeChange={(_, __, value) => setCode(value)}
+                value={code}
                 className="code-mirror-wrapper code-wrapper"
                 options={{
                     indentWithTabs: true,
@@ -68,4 +72,4 @@ const TextEditor: React.ForwardRefRenderFunction<TextEditorHandles, TextEditorPr
     )
 }
 
-export default forwardRef(TextEditor)
+export default forwardRef(CodeEditor)

@@ -1,6 +1,6 @@
 import React, {useImperativeHandle, forwardRef} from 'react'
 import TextArea from '../Form/TextArea'
-import TextEditor, { TextEditorHandles } from '../TextEditor'
+import CodeEditor, { CodeEditorHandles } from '../CodeEditor'
 import { languages } from './config'
 import useFetch from '../../hooks/useFetch'
 import { utf8_to_b64 } from '../../utils'
@@ -16,6 +16,9 @@ export interface IDEHandles {
     getLanguage: () => Language | undefined
     getStdin: () => string
     getStdout: () => string
+    setCode: (code: string) => void
+    setLanguage: (language: string) => void
+    setStdin: React.Dispatch<React.SetStateAction<string>>
     cleanStdin: () => void
     cleanStdout: () => void
 }
@@ -25,25 +28,36 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
 
     const [stdin, setStdin] = React.useState<string>('')
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
-    const textEditorRef = React.useRef<TextEditorHandles>(null)
+    const codeEditorRef = React.useRef<CodeEditorHandles>(null)
+
+    const setCode = (code: string) => {
+        codeEditorRef.current?.setCode(code)
+    }
+
+    const setLanguage = (language: string) => {
+        codeEditorRef.current?.setLanguage(language)
+    }
 
     useImperativeHandle(ref, () => {
         return {
-            getCode: () => textEditorRef.current?.getText() || '',
-            getLanguage: () => textEditorRef.current?.getLanguage(),
+            getCode: () => codeEditorRef.current?.getCode() || '',
+            getLanguage: () => codeEditorRef.current?.getLanguage(),
             getStdin: () => stdin,
             getStdout: () => stdout.message,
+            setCode,
+            setLanguage,
+            setStdin,
             cleanStdin: () => { setStdin('') },
             cleanStdout: () => { setStdout({ message: '', error: false }) }
         }
     })
 
     const handleRunCode = async () => {
-        if (!textEditorRef.current) return
+        if (!codeEditorRef.current) return
 
-        const textEditor = textEditorRef.current
+        const textEditor = codeEditorRef.current
 
-        const validateCode = () => (textEditor.getText() || '').length > 0
+        const validateCode = () => (textEditor.getCode() || '').length > 0
         const validateLanguage = () => textEditor.getLanguage() !== undefined
 
         const isValid = [
@@ -56,7 +70,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
 
         const { url, options } = API_POST_SUBMISSION({
             language_id: textEditor.getLanguage()!.id,
-            source_code: utf8_to_b64(textEditor.getText()),
+            source_code: utf8_to_b64(textEditor.getCode()),
             stdin: utf8_to_b64(stdin)
         })
         const { json } = await request(url, options)
@@ -74,7 +88,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
     return (
         <div>
             <div className="row mb-4">
-                <TextEditor
+                <CodeEditor
                     toolbar={[
                         (loading ? (
                             <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-dark btn-lg w-25">Processando...</button>
@@ -83,7 +97,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
                         ))
                     ]}
                     languages={languages}
-                    ref={textEditorRef}
+                    ref={codeEditorRef}
                 />
             </div>
             <div className="row">
