@@ -1,6 +1,6 @@
 import React from 'react'
-import Input from '../../../components/Form/Input'
-import MarkdownEditor, { MarkdownEditorHandles } from '../../../components/MarkdownEditor'
+import Input from '../../../../components/Form/Input'
+import MarkdownEditor, { MarkdownEditorHandles } from '../../../../components/MarkdownEditor'
 
 
 interface DescriptionFormProps {
