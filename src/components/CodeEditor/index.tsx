@@ -13,7 +13,7 @@ import { Language } from '../../models/language'
 interface CodeEditorProps {
     languages: Language[]
     toolbar: any[]
-    onChange?: (code: string, language: string) => void
+    onChange?: (code: string, language: string, timestamp: number) => void
 }
 
 export interface CodeEditorHandles {
@@ -50,7 +50,7 @@ const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorPr
                     options={languages.map(({ name }) => ({ label: name, value: name }))}
                     onChange={(language: string) => {
                         setLanguage(language)
-                        if(onChange) onChange(code || '', language || '')
+                        if(onChange) onChange(code || '', language || '', new Date().getTime())
                     }}
                     value={language}
                     label="Linguagem"
@@ -61,7 +61,7 @@ const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorPr
             <ControlledEditor
                 onBeforeChange={(_, __, value) => {
                     setCode(value)
-                    if(onChange) onChange(value || '', language || '')
+                    if(onChange) onChange(value || '', language || '', new Date().getTime())
                 }}
                 value={code}
                 className="code-mirror-wrapper code-wrapper"

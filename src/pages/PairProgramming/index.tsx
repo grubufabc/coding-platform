@@ -11,6 +11,7 @@ interface Environment {
     language: string
     sourceCode: string
     stdin: string
+    timestamp: number;
 }
 
 export interface Message {
@@ -45,13 +46,13 @@ const PairProgramming: React.FC = () => {
     const [socket, setSocket] = React.useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
     const [room, setRoom] = React.useState<Room>()
     const [avatar, setAvatar] = React.useState<Avatar>({ name: 'Anônimo', color: '#000000'})
-    const [environment, setEnvironment] = React.useState<Environment>({ sourceCode: '', language: '', stdin: ''})
+    const [environment, setEnvironment] = React.useState<Environment>({ sourceCode: '', language: '', stdin: '', timestamp: 0})
 
     React.useEffect(() => {
         const IDE = IDERef.current
         if(!IDE) return
         const { sourceCode, language, stdin } = environment
-        IDE.setCode(sourceCode)
+        IDE.setCode(sourceCode, environment.timestamp)
         IDE.setLanguage(language)
         IDE.setStdin(stdin)
     }, [environment])
@@ -83,13 +84,14 @@ const PairProgramming: React.FC = () => {
                 return { ...room }
             })
         },
-        'environment-updated': (data: any) => {
+        'environment-updated': (env: Environment) => {
             // console.log(`environment-updated => data:`, data)
             setRoom((room) => {
                 if(!room) return room
-                room.environment = data as Environment
-                setEnvironment(room.environment)
-                // console.log(room)
+                room.environment = env
+                if(env.timestamp >= environment.timestamp){
+                    setEnvironment(room.environment)
+                }
                 return {...room}
             })
         }
@@ -129,7 +131,7 @@ const PairProgramming: React.FC = () => {
 
     const handleChangeIDE = (code: string, language: string, stdin: string) => {
         if(!room) return
-        handleUpdateEnvironment({ sourceCode: code, language, stdin})
+        handleUpdateEnvironment({ sourceCode: code, language, stdin, timestamp: new Date().getTime()})
     }
   
 

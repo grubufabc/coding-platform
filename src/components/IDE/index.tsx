@@ -16,7 +16,7 @@ export interface IDEHandles {
     getLanguage: () => Language | undefined
     getStdin: () => string
     getStdout: () => string
-    setCode: (code: string) => void
+    setCode: (code: string, timestamp?: number) => void
     setLanguage: (language: string) => void
     setStdin: React.Dispatch<React.SetStateAction<string>>
     cleanStdin: () => void
@@ -33,12 +33,25 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
     const [stdin, setStdin] = React.useState<string>('')
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
     const codeEditorRef = React.useRef<CodeEditorHandles>(null)
+    const [currTimestamp, setCurrTimestamp] = React.useState<number>(0)
 
-    const setCode = (code: string) => {
-        codeEditorRef.current?.setCode(code)
+    const setCode = (code: string, timestamp?: number) => {
+        const codeEditor = codeEditorRef.current
+        if (!codeEditor) return
+
+        if (timestamp === undefined) {
+            codeEditor.setCode(code)
+            return
+        }
+
+        if (currTimestamp < timestamp) {
+            codeEditor.setCode(code)
+            setCurrTimestamp(timestamp)
+        }
     }
 
     const setLanguage = (language: string) => {
+
         codeEditorRef.current?.setLanguage(language)
     }
 
@@ -50,8 +63,11 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
         }
     }
 
-    const handleChangeCodeEditor = (code: string, language: string) => {
-        if(onChange) onChange(code, language, stdin)
+    const handleChangeCodeEditor = (code: string, language: string, timestamp: number) => {
+        if (onChange){
+            onChange(code, language, stdin)
+            setCurrTimestamp(timestamp)
+        }
     }
 
     useImperativeHandle(ref, () => {

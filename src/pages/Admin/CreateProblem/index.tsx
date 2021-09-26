@@ -39,7 +39,7 @@ const CreateProblem: React.FC = () => {
             message: 'Salvando informações',
             title: 'Processando...'
         })
-        const { json } = await request(url, options)
+        await request(url, options)
         toastRef.current?.setMessage({ 
             message: 'Problema salvo com sucesso', 
             title: 'Tudo certo!'
