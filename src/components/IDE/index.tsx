@@ -1,4 +1,4 @@
-import React, {useImperativeHandle, forwardRef} from 'react'
+import React, { useImperativeHandle, forwardRef } from 'react'
 import TextArea from '../Form/TextArea'
 import CodeEditor, { CodeEditorHandles } from '../CodeEditor'
 import { languages } from './config'
@@ -23,7 +23,11 @@ export interface IDEHandles {
     cleanStdout: () => void
 }
 
-const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
+interface IDEProps {
+    onChange?: (code: string, language: string, stdin: string) => void
+}
+
+const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange }, ref) => {
     const { request, loading } = useFetch()
 
     const [stdin, setStdin] = React.useState<string>('')
@@ -36,6 +40,18 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
 
     const setLanguage = (language: string) => {
         codeEditorRef.current?.setLanguage(language)
+    }
+
+    const handleChangeIDE = (stdin: string) => {
+        if (codeEditorRef.current && onChange) {
+            const code = codeEditorRef.current.getCode()
+            const language = codeEditorRef.current.getLanguage()
+            onChange(code, language?.name || '', stdin)
+        }
+    }
+
+    const handleChangeCodeEditor = (code: string, language: string) => {
+        if(onChange) onChange(code, language, stdin)
     }
 
     useImperativeHandle(ref, () => {
@@ -92,12 +108,13 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
                     toolbar={[
                         (loading ? (
                             <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-dark btn-lg w-25">Processando...</button>
-                        ) : (    
+                        ) : (
                             <button onClick={handleRunCode} type="button" className="btn btn-outline-dark btn-lg w-25">Executar</button>
                         ))
                     ]}
                     languages={languages}
                     ref={codeEditorRef}
+                    onChange={handleChangeCodeEditor}
                 />
             </div>
             <div className="row">
@@ -107,7 +124,10 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles> = (_, ref) => {
                         className="mb-3"
                         label={{ text: 'stdin', id: 'stdin' }}
                         value={stdin}
-                        onChange={setStdin}
+                        onChange={(value: string) => {
+                            setStdin(value)
+                            handleChangeIDE(value)
+                        }}
                     />
                 </div>
                 <div className="col">

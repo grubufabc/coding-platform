@@ -3,7 +3,7 @@ import React from 'react'
 
 interface TextAreaProps {
     value: string
-    onChange?: React.Dispatch<React.SetStateAction<string>>
+    onChange?: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void)
     rows?: number
     placeholder?: string
     className?: string

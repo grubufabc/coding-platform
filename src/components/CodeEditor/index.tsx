@@ -13,6 +13,7 @@ import { Language } from '../../models/language'
 interface CodeEditorProps {
     languages: Language[]
     toolbar: any[]
+    onChange?: (code: string, language: string) => void
 }
 
 export interface CodeEditorHandles {
@@ -22,7 +23,7 @@ export interface CodeEditorHandles {
     setLanguage: React.Dispatch<React.SetStateAction<string>>
 }
 
-const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorProps> = ({ languages, toolbar }, ref) => {
+const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorProps> = ({ languages, toolbar, onChange }, ref) => {
     const [code, setCode] = React.useState<string>('')
     const [language, setLanguage] = React.useState<string>('')
 
@@ -47,7 +48,10 @@ const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorPr
             <div className="d-grid d-flex justify-content-between mb-4" role="group">
                 <Select
                     options={languages.map(({ name }) => ({ label: name, value: name }))}
-                    onChange={setLanguage}
+                    onChange={(language: string) => {
+                        setLanguage(language)
+                        if(onChange) onChange(code || '', language || '')
+                    }}
                     value={language}
                     label="Linguagem"
                 />
@@ -55,7 +59,10 @@ const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorPr
             </div>
 
             <ControlledEditor
-                onBeforeChange={(_, __, value) => setCode(value)}
+                onBeforeChange={(_, __, value) => {
+                    setCode(value)
+                    if(onChange) onChange(value || '', language || '')
+                }}
                 value={code}
                 className="code-mirror-wrapper code-wrapper"
                 options={{

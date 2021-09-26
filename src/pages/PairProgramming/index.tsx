@@ -1,33 +1,142 @@
 import React from 'react'
-import Chat, { ChatHandles } from '../../components/Chat'
+import Chat from './Chat'
 import IDE, { IDEHandles } from '../../components/IDE'
+import FormUser from './FormUser'
+import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
+import io, { Socket } from 'socket.io-client'
+import { API_URL } from '../../api'
 
+
+interface Environment {
+    language: string
+    sourceCode: string
+    stdin: string
+}
+
+export interface Message {
+    content: string
+    author: string
+}
+
+export interface Avatar {
+    color: string
+    name: string
+}
+
+export interface User {
+    id: string
+    avatar: Avatar
+}
+
+export interface Room {
+    id: string
+    environment: Environment
+    messages: Message[]
+    users: User[]
+}
 
 const PairProgramming: React.FC = () => {
     const IDERef = React.useRef<IDEHandles>(null)
-    const chatRef = React.useRef<ChatHandles>(null)
-    const [username, setUsername] = React.useState<string>('Anônimo')
     const [IDRoom, setIDRoom] = React.useState<string>('')
     const [IDRoomInput, setIDRoomInput] = React.useState<string>('')
 
 
+    // Web Socket
+    const [socket, setSocket] = React.useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
+    const [room, setRoom] = React.useState<Room>()
+    const [avatar, setAvatar] = React.useState<Avatar>({ name: 'Anônimo', color: '#000000'})
+    const [environment, setEnvironment] = React.useState<Environment>({ sourceCode: '', language: '', stdin: ''})
+
+    React.useEffect(() => {
+        const IDE = IDERef.current
+        if(!IDE) return
+        const { sourceCode, language, stdin } = environment
+        IDE.setCode(sourceCode)
+        IDE.setLanguage(language)
+        IDE.setStdin(stdin)
+    }, [environment])
+
+    const handleEvents = {
+        'room-created': (data: any) => {
+            // console.log(`room-created => data:`, data)
+            setIDRoom(data.IDRoom)
+        },
+        'room-updated': (data: any) => {
+            // console.log(`room-updated => data:`, data)
+            setRoom(data as Room)
+            setEnvironment(data.environment as Environment)
+        },
+        'user-info-updated': (data: any) => {
+            if(!room) return
+            // console.log(`user-info-updated => data:`, data)
+            setRoom({...room, users: (data as User[])})
+        },
+        'room-changed': (data: any) => {
+            // console.log(`room-changed => data:`, data)
+            setRoom(data as Room)
+        },
+        'messages-updated': (data: any) => {
+            // console.log(`messages-updated => data:`, data)
+            setRoom((room) => {
+                if(room === undefined) return undefined
+                room.messages = data as Message[]
+                return { ...room }
+            })
+        },
+        'environment-updated': (data: any) => {
+            // console.log(`environment-updated => data:`, data)
+            setRoom((room) => {
+                if(!room) return room
+                room.environment = data as Environment
+                setEnvironment(room.environment)
+                // console.log(room)
+                return {...room}
+            })
+        }
+    }
+
+    const connect = (): Socket<DefaultEventsMap, DefaultEventsMap> => {
+        if (socket) return socket
+        const connection = io(`${API_URL}/`)
+        Object.entries(handleEvents).forEach(([observerName, fn]) => {
+            connection.on(observerName, fn)
+        })
+        setSocket(connection)
+        return connection
+    }
+
     const handleJoinToTheRoom = () => {
-        const chat = chatRef.current
-        if (!chat || !IDRoomInput.length) return
-        chat.joinToTheRoom(IDRoomInput)
+        if(!IDRoomInput.length) return
+        connect().emit('enter-room', IDRoomInput)
+        setIDRoom(IDRoomInput)
     }
 
     const handleCreateRoom = () => {
-        const chat = chatRef.current
-        if (!chat) return
-        chat.createRoom()
+        connect().emit('create-room')
     }
+
+    const handleNewMessage = (content: string) => {
+        connect().emit('new-message', { content })
+    }
+
+    const handleUpdateUser = (avatar: Avatar) => {
+        connect().emit('update-user-info', { avatar })
+    }
+
+    const handleUpdateEnvironment = (environment: Environment) => {
+        connect().emit('update-environment', environment)
+    }
+
+    const handleChangeIDE = (code: string, language: string, stdin: string) => {
+        if(!room) return
+        handleUpdateEnvironment({ sourceCode: code, language, stdin})
+    }
+  
 
     return (
         <div className="m-5">
             <h1 className="mb-5">Pair Programming</h1>
-
-            <div className={`w-50 ${IDRoom.length === 0 ? '' : 'd-none'}`}>
+            <div className={`w-50 ${IDRoom.length === 0 ? '' : 'visually-hidden'}`}>
                 <div className="row mb-3">
                     <div className="col-6 d-grid">
                         <button
@@ -64,26 +173,27 @@ const PairProgramming: React.FC = () => {
                 </div>
             </div>
 
-            <div className={`${IDRoom.length > 0 ? '' : 'd-none'}`}>
-                <input
-                    type="text"
-                    className="form-control w-50 mb-5"
-                    placeholder="Digite seu come"
-                    value={username}
-                    onChange={({ target }) => setUsername(target.value)}
+            <div className={`${IDRoom.length > 0 ? '' : 'visually-hidden'}`}>
+                <h5 className="mb-2">ID da Sala: <span className="text-muted">{IDRoom}</span></h5>
+                <FormUser
+                    avatar={avatar}
+                    setAvatar={(avatar: Avatar) => {
+                        setAvatar(avatar)
+                        handleUpdateUser(avatar)
+                    }}
                 />
-
-                <h5 className="mb-5">ID da Sala: <span className="text-muted">{IDRoom}</span></h5>
                 <div className="row">
                     <div className="col-7">
-                        <IDE ref={IDERef} />
+                        <IDE 
+                            ref={IDERef} 
+                            onChange={handleChangeIDE}
+                        />
                     </div>
                     <div className="col-5">
                         <Chat
-                            setIDRoom={setIDRoom}
-                            IDRoom={IDRoom}
-                            username={username}
-                            ref={chatRef}
+                            handleNewMessage={handleNewMessage}
+                            users={room?.users || []}
+                            messages={room?.messages || []}
                         />
                     </div>
                 </div>

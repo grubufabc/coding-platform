@@ -10,7 +10,7 @@ interface Options {
 interface SelectProps {
     options: Options[]
     className?: string
-    onChange: React.Dispatch<React.SetStateAction<string>>
+    onChange: React.Dispatch<React.SetStateAction<string>> | ((value: string) => void)
     value: string
     label: string
 }

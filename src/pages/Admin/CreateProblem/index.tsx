@@ -44,7 +44,6 @@ const CreateProblem: React.FC = () => {
             message: 'Problema salvo com sucesso', 
             title: 'Tudo certo!'
         })
-        console.log(json)
     }
 
     return (
