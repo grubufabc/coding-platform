@@ -56,9 +56,7 @@ const Playground: React.FC = () => {
                 </svg>
                 Compartilhar
             </button>
-            <div className="w-75">
-                <IDE ref={IDERef} />
-            </div>
+            <IDE ref={IDERef} />
         </div>
     )
 }

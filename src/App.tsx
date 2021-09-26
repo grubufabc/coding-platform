@@ -10,6 +10,7 @@ import Footer from './components/Footer'
 import Playground from './pages/Playground'
 import Admin from './pages/Admin'
 import CreateProblem from './pages/Admin/CreateProblem'
+import PairProgramming from './pages/PairProgramming'
 
 
 const App: React.FC = () => {
@@ -28,6 +29,7 @@ const App: React.FC = () => {
                             <Route path=":id" element={<ProblemDetail />} />
                         </Route>
                         <Route path="playground" element={<Playground/>} />
+                        <Route path="pair-programming" element={<PairProgramming/>} />
                         <Route path="admin" element={<Admin/>}>
                             <Route path="create-problem" element={<CreateProblem />} />
                         </Route>
