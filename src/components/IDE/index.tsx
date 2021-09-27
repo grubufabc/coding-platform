@@ -18,7 +18,7 @@ export interface IDEHandles {
     getStdout: () => string
     setCode: (code: string, timestamp?: number) => void
     setLanguage: (language: string) => void
-    setStdin: React.Dispatch<React.SetStateAction<string>>
+    setStdin: (stdin: string, timestamp?: number) => void
     cleanStdin: () => void
     cleanStdout: () => void
 }
@@ -30,7 +30,7 @@ interface IDEProps {
 const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange }, ref) => {
     const { request, loading } = useFetch()
 
-    const [stdin, setStdin] = React.useState<string>('')
+    const [stdinIDE, setStdinIDE] = React.useState<string>('')
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
     const codeEditorRef = React.useRef<CodeEditorHandles>(null)
     const [currTimestamp, setCurrTimestamp] = React.useState<number>(0)
@@ -65,7 +65,22 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
 
     const handleChangeCodeEditor = (code: string, language: string, timestamp: number) => {
         if (onChange){
-            onChange(code, language, stdin)
+            onChange(code, language, stdinIDE)
+            setCurrTimestamp(timestamp)
+        }
+    }
+
+    const setStdin = (stdin: string, timestamp?: number) => {
+        const codeEditor = codeEditorRef.current
+        if (!codeEditor) return
+
+        if (timestamp === undefined) {
+            setStdinIDE(stdin)
+            return
+        }
+
+        if (currTimestamp < timestamp) {
+            setStdinIDE(stdin)
             setCurrTimestamp(timestamp)
         }
     }
@@ -74,12 +89,12 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
         return {
             getCode: () => codeEditorRef.current?.getCode() || '',
             getLanguage: () => codeEditorRef.current?.getLanguage(),
-            getStdin: () => stdin,
+            getStdin: () => stdinIDE,
             getStdout: () => stdout.message,
             setCode,
             setLanguage,
             setStdin,
-            cleanStdin: () => { setStdin('') },
+            cleanStdin: () => { setStdinIDE('') },
             cleanStdout: () => { setStdout({ message: '', error: false }) }
         }
     })
@@ -103,7 +118,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
         const { url, options } = API_POST_SUBMISSION({
             language_id: textEditor.getLanguage()!.id,
             source_code: utf8_to_b64(textEditor.getCode()),
-            stdin: utf8_to_b64(stdin)
+            stdin: utf8_to_b64(stdinIDE)
         })
         const { json } = await request(url, options)
         const submission = json as Submission
@@ -139,10 +154,11 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
                         rows={5}
                         className="mb-3"
                         label={{ text: 'stdin', id: 'stdin' }}
-                        value={stdin}
+                        value={stdinIDE}
                         onChange={(value: string) => {
-                            setStdin(value)
+                            setStdinIDE(value)
                             handleChangeIDE(value)
+                            setCurrTimestamp(new Date().getTime())
                         }}
                     />
                 </div>
