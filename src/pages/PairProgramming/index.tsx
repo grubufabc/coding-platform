@@ -54,7 +54,7 @@ const PairProgramming: React.FC = () => {
         const { sourceCode, language, stdin } = environment
         IDE.setCode(sourceCode, environment.timestamp)
         IDE.setLanguage(language)
-        IDE.setStdin(stdin)
+        IDE.setStdin(stdin, environment.timestamp)
     }, [environment])
 
     const handleEvents = {
