@@ -13,6 +13,7 @@ interface TextAreaProps {
     }
     error?: boolean
     disabled?: boolean
+    onKeyDown?: (event: React.KeyboardEvent) => void
 }
 
 
@@ -24,7 +25,8 @@ const TextArea: React.FC<TextAreaProps> = ({
     className, 
     label, 
     error, 
-    disabled 
+    disabled,
+    onKeyDown
 }) => {
 
     function handleChange({value}: HTMLTextAreaElement) {
@@ -41,6 +43,7 @@ const TextArea: React.FC<TextAreaProps> = ({
                 placeholder={placeholder || ''} 
                 id={label?.id || ''}
                 disabled={disabled ? true : false}
+                onKeyDown={onKeyDown}
             />
             { label && (<label htmlFor={label?.id || ''}>{label.text}</label>)}
         </div>

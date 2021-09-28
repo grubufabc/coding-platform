@@ -44,6 +44,11 @@ const Chat: React.FC<ChatProps> = ({ messages, users, handleNewMessage }) => {
                     value={content}
                     onChange={setContent}
                     className="my-3"
+                    onKeyDown={(event) => {
+                        if(event.ctrlKey && event.code === "Enter"){
+                            handleSendMessage()
+                        }
+                    }}
                 />
             </div>
             <div className="d-grid gap-2">
