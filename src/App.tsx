@@ -11,6 +11,8 @@ import Playground from './pages/Playground'
 import Admin from './pages/Admin'
 import CreateProblem from './pages/Admin/CreateProblem'
 import PairProgramming from './pages/PairProgramming'
+import Blog from './pages/Blog'
+import Post from './pages/Blog/Post'
 
 
 const App: React.FC = () => {
@@ -32,6 +34,10 @@ const App: React.FC = () => {
                         <Route path="pair-programming" element={<PairProgramming/>} />
                         <Route path="admin" element={<Admin/>}>
                             <Route path="create-problem" element={<CreateProblem />} />
+                        </Route>
+                        <Route path="blog" element={<Outlet/>}>
+                            <Route path="" element={<Blog/>}/>
+                            <Route path=":id" element={<Post/>}/>
                         </Route>
                     </Routes>
                 </Router>

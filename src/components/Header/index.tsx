@@ -15,6 +15,7 @@ const Header: React.FC = () => {
                         <a href="/problems" className="text-decoration-none fw-bold text-dark me-4">Problemas</a>
                         <a href="/playground" className="text-decoration-none fw-bold text-dark mx-4">Playground</a>
                         <a href="/pair-programming" className="text-decoration-none fw-bold text-dark mx-4">Pair programming</a>
+                        <a href="/blog" className="text-decoration-none fw-bold text-dark mx-4">Blog</a>
                     </div>
                     <div className="col-2 pt-3">
                         <a href="/login" className="rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white fw-bold mx-5">Entrar</a>
