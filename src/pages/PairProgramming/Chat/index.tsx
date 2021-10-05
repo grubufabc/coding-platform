@@ -1,8 +1,7 @@
 import React from 'react'
-import { Room, Message as IMessage, User } from '..'
+import { Message as IMessage, User } from '..'
 import TextArea from '../../../components/Form/TextArea'
 import Message from './Message'
-// import Message, { MessageProps } from './Message'
 
 
 interface ChatProps {
