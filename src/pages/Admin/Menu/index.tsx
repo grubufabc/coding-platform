@@ -24,8 +24,9 @@ const Menu: React.FC<MenuProps> = ({ links }) => {
 
     return (
         <ul className="list-group">
-            { links.map(({route, label}) => (
+            { links.map(({route, label}, index) => (
                 <Link 
+                    key={index}
                     to={route} 
                     className={`list-group-item p-3 ${ route === activeRoute ? 'active' : ''}`}
                 >{label}</Link>

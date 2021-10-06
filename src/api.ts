@@ -69,3 +69,37 @@ export function POST_SOLUTION(
         }
     }
 }
+
+export function POST_BLOG_POST(
+    blogPost: { title: string, content: string, cover: string }
+){
+    return {
+        url: `${API_URL}/blog-posts`,
+        options: {
+            method: 'POST',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(blogPost)
+        }
+    }
+}
+
+export function GET_BLOG_POSTS(){
+    return {
+        url: `${API_URL}/blog-posts`,
+        options: {
+            method: 'GET',
+        }
+    }
+}
+
+
+export function GET_BLOG_POST(id: string){
+    return {
+        url: `${API_URL}/blog-posts/${id}`,
+        options: {
+            method: 'GET',
+        }
+    }
+}

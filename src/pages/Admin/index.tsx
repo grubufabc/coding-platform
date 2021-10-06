@@ -17,6 +17,10 @@ const Admin: React.FC = () => {
                         {
                             route: 'create-problem',
                             label: 'Criar problema'
+                        },
+                        {
+                            route: 'create-blog-post',
+                            label: 'Criar nova postagem'
                         }
                     ]}/>
                 </div>

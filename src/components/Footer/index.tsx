@@ -3,7 +3,7 @@ import React from 'react'
 
 const Footer: React.FC = () => {
     return (
-        <footer style={{ border: '1px solid blue'}}>
+        <footer>
             <div className="row p-5 bg-dark">
                 <div className="col-3">
                     <img style={{ height: '50px'}} src="https://grubufabc.xyz/img/logo_semSub.png" alt="img"/>

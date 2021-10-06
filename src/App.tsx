@@ -13,6 +13,7 @@ import CreateProblem from './pages/Admin/CreateProblem'
 import PairProgramming from './pages/PairProgramming'
 import Blog from './pages/Blog'
 import Post from './pages/Blog/Post'
+import CreateBlogPost from './pages/Admin/CreateBlogPost'
 
 
 const App: React.FC = () => {
@@ -34,6 +35,7 @@ const App: React.FC = () => {
                         <Route path="pair-programming" element={<PairProgramming/>} />
                         <Route path="admin" element={<Admin/>}>
                             <Route path="create-problem" element={<CreateProblem />} />
+                            <Route path="create-blog-post" element={<CreateBlogPost/>} />
                         </Route>
                         <Route path="blog" element={<Outlet/>}>
                             <Route path="" element={<Blog/>}/>
