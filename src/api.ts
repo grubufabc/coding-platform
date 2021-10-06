@@ -2,10 +2,14 @@ import { Problem } from './models/problem'
 import { Submission } from './models/submission'
 // const API_URL = 'https://ce.judge0.com'
 // const API_URL = 'http://34.133.58.104'
-// export const API_URL = 'http://localhost:5000'
+export const API_URL = 'http://localhost:5000'
 
-export const API_URL = 'https://backend-coding-platform.herokuapp.com'
+// export const API_URL = 'https://backend-coding-platform.herokuapp.com'
 
+
+function getToken() {
+    return localStorage.getItem('token') || ''
+}
 
 export function POST_SUBMISSION(submission: Submission){
     return {
@@ -78,7 +82,8 @@ export function POST_BLOG_POST(
         options: {
             method: 'POST',
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'Token': getToken()
             },
             body: JSON.stringify(blogPost)
         }

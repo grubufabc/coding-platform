@@ -30,10 +30,6 @@ const InputImage: React.ForwardRefRenderFunction<InputImageHandles, InputImagePr
         reader.readAsDataURL(target.files[0])
     }
 
-    React.useEffect(() => {
-        console.log(img)
-    }, [img])
-
     return (
         <div className={className}>
             <label htmlFor="input-image" className="form-label">{label || ''}</label>

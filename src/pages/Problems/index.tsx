@@ -38,10 +38,10 @@ const Problems: React.FC = () => {
                     </thead>
                     <tbody>
                         {problems.map((problem, index) => (
-                            <tr>
+                            <tr key={index}>
                                 <td className="border">-</td>
                                 <td className="border p-3">
-                                    <Link key={index} to={`${problem._id}`}>
+                                    <Link to={`${problem._id}`}>
                                         {problem.title}
                                     </Link>
                                 </td>

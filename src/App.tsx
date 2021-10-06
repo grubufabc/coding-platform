@@ -14,40 +14,46 @@ import PairProgramming from './pages/PairProgramming'
 import Blog from './pages/Blog'
 import Post from './pages/Blog/Post'
 import CreateBlogPost from './pages/Admin/CreateBlogPost'
+import { AuthProvider } from './providers/AuthProvider'
+import Logout from './pages/Logout'
 
 
 const App: React.FC = () => {
     return (
-        <div className="min-vh-100 d-flex" style={{ flexDirection: 'column' }}>
-            <div>
-                <Header />
-            </div>
-            <div>
-                <Router>
-                    <Routes>
-                        <Route path="" element={<LandingPage />} />
-                        <Route path="login" element={<Login />} />
-                        <Route path="problems" element={<Outlet />}>
-                            <Route path="" element={<Problems />} />
-                            <Route path=":id" element={<ProblemDetail />} />
-                        </Route>
-                        <Route path="playground" element={<Playground/>} />
-                        <Route path="pair-programming" element={<PairProgramming/>} />
-                        <Route path="admin" element={<Admin/>}>
-                            <Route path="create-problem" element={<CreateProblem />} />
-                            <Route path="create-blog-post" element={<CreateBlogPost/>} />
-                        </Route>
-                        <Route path="blog" element={<Outlet/>}>
-                            <Route path="" element={<Blog/>}/>
-                            <Route path=":id" element={<Post/>}/>
-                        </Route>
-                    </Routes>
-                </Router>
-            </div>
-            <div className="mt-auto">
-                <Footer />
-            </div>
-        </div>
+        <AuthProvider>
+            <Router>
+                <div className="min-vh-100 d-flex" style={{ flexDirection: 'column' }}>
+                    <div>
+                        <Header />
+                    </div>
+                    <div>
+                        <Routes>
+                            <Route path="" element={<LandingPage />} />
+                            <Route path="login" element={<Login />} />
+                            <Route path="logout" element={<Logout />} />
+                            <Route path="problems" element={<Outlet />}>
+                                <Route path="" element={<Problems />} />
+                                <Route path=":id" element={<ProblemDetail />} />
+                            </Route>
+                            <Route path="playground" element={<Playground />} />
+                            <Route path="pair-programming" element={<PairProgramming />} />
+                            <Route path="admin" element={<Admin />}>
+                                <Route path="create-problem" element={<CreateProblem />} />
+                                <Route path="create-blog-post" element={<CreateBlogPost />} />
+                            </Route>
+                            <Route path="blog" element={<Outlet />}>
+                                <Route path="" element={<Blog />} />
+                                <Route path=":id" element={<Post />} />
+                            </Route>
+                        </Routes>
+                    </div>
+                    <div className="mt-auto">
+                        <Footer />
+                    </div>
+                </div>
+            </Router>
+
+        </AuthProvider>
     )
 }
 
