@@ -38,8 +38,7 @@ const CreateBlogPost = () => {
             cover,
             content
         })
-        const { json } = await request(url, options)
-        console.log(json)
+        await request(url, options)
     }
 
     return (

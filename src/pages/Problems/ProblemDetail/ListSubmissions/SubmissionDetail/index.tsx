@@ -96,6 +96,7 @@ const SubmissionDetail: React.FC<SubmissionDetailProps> = ({ submission, index }
                     <GenericView label={'Código Fonte'} data={sourceCode} />
                     {testCases.map((testCase, index) => (
                         <Collapsable
+                            key={index}
                             label={(
                                 <h6 className="d-flex justify-content-between">
                                     <span>Test case #{index + 1}</span>
