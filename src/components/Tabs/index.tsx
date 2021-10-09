@@ -16,10 +16,6 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
         setActiveTab(index)
     }
 
-    React.useEffect(() => {
-        console.log('activeTab: ', activeTab)
-    }, [activeTab])
-
     return (
         <React.Fragment>
             <ul className="nav nav-tabs">
