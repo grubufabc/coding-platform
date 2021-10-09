@@ -6,7 +6,6 @@ import ProblemDetail from './pages/Problems/ProblemDetail'
 import Login from './pages/Login'
 import Header from './components/Header'
 import LandingPage from './pages/LandingPage'
-import Footer from './components/Footer'
 import Playground from './pages/Playground'
 import Admin from './pages/Admin'
 import CreateProblem from './pages/Admin/CreateProblem'
@@ -22,11 +21,10 @@ const App: React.FC = () => {
     return (
         <AuthProvider>
             <Router>
-                <div className="min-vh-100 d-flex" style={{ flexDirection: 'column' }}>
+                <div className="vh-100 d-flex flex-column p-0 m-0">
                     <div>
                         <Header />
                     </div>
-                    <div>
                         <Routes>
                             <Route path="" element={<LandingPage />} />
                             <Route path="login" element={<Login />} />
@@ -46,13 +44,8 @@ const App: React.FC = () => {
                                 <Route path=":id" element={<Post />} />
                             </Route>
                         </Routes>
-                    </div>
-                    <div className="mt-auto">
-                        <Footer />
-                    </div>
                 </div>
             </Router>
-
         </AuthProvider>
     )
 }

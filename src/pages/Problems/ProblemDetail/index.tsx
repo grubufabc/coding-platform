@@ -4,9 +4,9 @@ import useFetch from '../../../hooks/useFetch'
 import { Problem } from '../../../models/problem'
 import { GET_PROBLEM as API_GET_PROBLEM, POST_SOLUTION as API_POST_SOLUTION } from '../../../api'
 import { IDEHandles } from '../../../components/IDE'
-import Toast, { ToastHandles } from '../../../components/Toast'
 import Main from './Main'
-import ListSubmissions from './ListSubmissions'
+import IDE from './IDE'
+import Toast, { ToastHandles } from '../../../components/Toast'
 
 interface TestCase {
     input: string;
@@ -31,19 +31,19 @@ const ProblemDetail: React.FC = () => {
     const { request } = useFetch()
     const { id: idProblem } = useParams()
     const [problem, setProblem] = React.useState<Problem>()
-    const toastRef = React.useRef<ToastHandles>(null)
     const IDERef = React.useRef<IDEHandles>(null)
+    const toastRef = React.useRef<ToastHandles>(null)
 
     const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>([])
 
-        React.useEffect(() => {
-            const getProblem = async () => {
-                const { url, options } = API_GET_PROBLEM(idProblem || '')
-                const { json } = await request(url, options)
-                setProblem(json as Problem)
-            }
-            if (problem === undefined) getProblem()
-        }, [idProblem, problem, request])
+    React.useEffect(() => {
+        const getProblem = async () => {
+            const { url, options } = API_GET_PROBLEM(idProblem || '')
+            const { json } = await request(url, options)
+            setProblem(json as Problem)
+        }
+        if (problem === undefined) getProblem()
+    }, [idProblem, problem, request])
 
 
     const handleSubmit = async () => {
@@ -70,24 +70,26 @@ const ProblemDetail: React.FC = () => {
         )
 
         const { json } = await request(url, options)
-        setLastSubmissions([...lastSubmissions, json as Submission ])
+        const submission = json as Submission
+
+
+        toast.setMessage({ 
+            message: submission.judgeResult.veredict, 
+            title: 'Resultado' 
+        })
+            
+        
+
+        setLastSubmissions([...lastSubmissions, submission])
     }
 
     if (problem === undefined) return null
 
     return (
-        <div className="m-5">
+        <div id="xxx" className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
+            <Main problem={problem} lastSubmissions={lastSubmissions}/>
+            <IDE IDERef={IDERef} handleSubmit={handleSubmit}/>
             <Toast ref={toastRef} />
-            <div className="w-75 mx-auto">
-                <Main 
-                    problem={problem}
-                    IDERef={IDERef}
-                    handleSubmit={handleSubmit}
-                />
-                <ListSubmissions
-                    lastSubmissions={lastSubmissions}
-                />
-            </div>
         </div>
     )
 }

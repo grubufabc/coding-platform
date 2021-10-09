@@ -1,11 +1,12 @@
 import React from 'react'
+import Footer from '../../components/Footer'
 import IDE from '../../components/IDE'
 import CodeInspectionIcon from './icons/CodeInspectionIcon'
 
 
 const LandingPage: React.FC = () => {
     return (
-        <div className="px-3">
+        <div>
             <div className="row vh-100 vw-100 d-flex px-5">
                 <div className="col-6 h-75 px-5 d-flex">
                     <div className="align-self-center">
@@ -72,6 +73,9 @@ const LandingPage: React.FC = () => {
                 <div className="col-8 pt-3 pb-5">
                     <IDE />
                 </div>
+            </div>
+            <div className="mt-auto">
+                <Footer />
             </div>
         </div>
     )

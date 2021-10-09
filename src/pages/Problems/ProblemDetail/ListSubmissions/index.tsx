@@ -10,10 +10,11 @@ interface ListSubmissionsProps {
 
 const ListSubmissions: React.FC<ListSubmissionsProps> = ({ lastSubmissions }) => {
     return (
-        <div className="mt-5">
+        <div className="mt-3">
             <h1>Submissões</h1>
             { lastSubmissions.map((submission, index) => (
-                <SubmissionDetail 
+                <SubmissionDetail
+                    key={index}
                     submission={submission}
                     index={index}
                 />
