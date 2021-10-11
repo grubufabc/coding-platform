@@ -1,13 +1,16 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../providers/AuthProvider';
 
 declare var window: any
 
 const Logout: React.FC = () => {
     const navigate = useNavigate();
+    const { setAuthData } = React.useContext(AuthContext)
 
     const handleLogout = async () => {
         const auth2 = window.gapi.auth2.getAuthInstance();
+        setAuthData({ token: '', provider: '' })
         await auth2.signOut()
         navigate('/', { replace: true })
     }
