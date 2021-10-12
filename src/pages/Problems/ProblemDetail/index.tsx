@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useParams } from 'react-router'
 import useFetch from '../../../hooks/useFetch'
 import { Problem } from '../../../models/problem'
-import { GET_PROBLEM as API_GET_PROBLEM, POST_SOLUTION as API_POST_SOLUTION } from '../../../api'
+import { GET_PROBLEM as API_GET_PROBLEM, GET_SUBMISSIONS as API_GET_SUBMISSIONS, POST_SOLUTION as API_POST_SOLUTION } from '../../../api'
 import { IDEHandles } from '../../../components/IDE'
 import Main from './Main'
 import IDE from './IDE'
 import Toast, { ToastHandles } from '../../../components/Toast'
+import { AuthContext } from '../../../providers/AuthProvider'
 
 interface TestCase {
     input: string;
@@ -33,8 +34,14 @@ const ProblemDetail: React.FC = () => {
     const [problem, setProblem] = React.useState<Problem>()
     const IDERef = React.useRef<IDEHandles>(null)
     const toastRef = React.useRef<ToastHandles>(null)
-
     const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>([])
+    const { authData } = React.useContext(AuthContext)
+
+    const getSubmissions = useCallback(async () => {
+        const { url, options } = API_GET_SUBMISSIONS()
+        const { json } = await request(url, options)
+        setLastSubmissions(json as Submission[])
+    }, [request])
 
     React.useEffect(() => {
         const getProblem = async () => {
@@ -42,9 +49,17 @@ const ProblemDetail: React.FC = () => {
             const { json } = await request(url, options)
             setProblem(json as Problem)
         }
-        if (problem === undefined) getProblem()
-    }, [idProblem, problem, request])
+        if (problem === undefined){
+            if(authData.token){
+                getSubmissions()    
+            }
+            getProblem()
+            
+        }
+    }, [authData.token, getSubmissions, idProblem, problem, request])
 
+
+    
 
     const handleSubmit = async () => {
         const IDE = IDERef.current
@@ -77,10 +92,15 @@ const ProblemDetail: React.FC = () => {
             message: submission.judgeResult.veredict, 
             title: 'Resultado' 
         })
-            
-        
 
-        setLastSubmissions([...lastSubmissions, submission])
+        if(authData.token){
+            getSubmissions()
+        }
+        else{
+            setLastSubmissions([ ...lastSubmissions, submission ])
+        }
+
+        
     }
 
     if (problem === undefined) return null

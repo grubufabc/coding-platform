@@ -11,14 +11,20 @@ function getToken() {
     return localStorage.getItem('token') || ''
 }
 
+function getAuthProvider() {
+    return localStorage.getItem('auth_provider') || ''
+}
+
 export function POST_SUBMISSION(submission: Submission){
     return {
         url: `${API_URL}/codes`,
         options: {
             method: 'POST',
             headers: {
-				'Content-type': 'application/json'
-			},
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
 			body: JSON.stringify(submission)
         }
     }
@@ -30,7 +36,9 @@ export function POST_PROBLEM(problem: Problem) {
         options: {
             method: 'POST',
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
             },
             body: JSON.stringify(problem)
         }
@@ -42,6 +50,11 @@ export function GET_PROBLEMS() {
         url: `${API_URL}/problems`,
         options: {
             method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
         }
     }
 }
@@ -51,6 +64,11 @@ export function GET_PROBLEM(id: string) {
         url: `${API_URL}/problems/${id}`,
         options: {
             method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
         }
     }
 }
@@ -60,11 +78,13 @@ export function POST_SOLUTION(
     code: {language_id: number, source_code: string}
 ){
     return {
-        url: `${API_URL}/solutions`,
+        url: `${API_URL}/submissions`,
         options: {
             method: 'POST',
             headers: {
-                'Content-type': 'application/json'
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
             },
             body: JSON.stringify({
                 problem_id: idProblem,
@@ -83,7 +103,8 @@ export function POST_BLOG_POST(
             method: 'POST',
             headers: {
                 'Content-type': 'application/json',
-                'Token': getToken()
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
             },
             body: JSON.stringify(blogPost)
         }
@@ -95,6 +116,11 @@ export function GET_BLOG_POSTS(){
         url: `${API_URL}/blog-posts`,
         options: {
             method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
         }
     }
 }
@@ -105,6 +131,25 @@ export function GET_BLOG_POST(id: string){
         url: `${API_URL}/blog-posts/${id}`,
         options: {
             method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
+        }
+    }
+}
+
+export function GET_SUBMISSIONS(){
+    return {
+        url: `${API_URL}/submissions`,
+        options: {
+            method: 'GET',
+            headers: {
+                'Content-type': 'application/json',
+                'token': getToken(),
+                'auth_provider': getAuthProvider()
+            },
         }
     }
 }

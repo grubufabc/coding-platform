@@ -19,8 +19,10 @@ export const AuthProvider: React.FC = ({ children }) => {
     const [authData, setAuthData] = React.useState<IAuthData>({ token: '', provider: ''})
 
     React.useEffect(() => {
-        localStorage.setItem('token', authData.token)
-        localStorage.setItem('provider', authData.provider)
+        if(authData.token){
+            localStorage.setItem('token', authData.token)
+            localStorage.setItem('auth_provider', authData.provider)
+        }
     }, [authData])
     
     return (
