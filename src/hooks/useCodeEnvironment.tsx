@@ -25,12 +25,15 @@ interface CodeEnvironmentState {
     code: Code
     parent_commit: string
     id: string
+    message: string
+    username: string
 }
 
 interface CodeEnvironmentStateDto {
     code: Code
     parent_commit: string
     message: string
+    username: string    
 }
 
 

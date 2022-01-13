@@ -6,4 +6,6 @@ export interface Commit {
     }
     timestamp: number
     id: string
+    message: string
+    username: string
 }

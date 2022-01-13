@@ -1,16 +1,18 @@
-import { Commit } from "../../interfaces/commit"
+import { State } from "../../../interfaces/state"
 
-interface CommitDisplayProps {
-    commit: Commit
+
+interface BranchDisplayProps {
+    commit: State
+    selectedCommitId: string
     setSelectedCommitId: (commit_id: string) => void
-    active: boolean
 }
 
-const CommitDisplay: React.FC<CommitDisplayProps> = ({
+const BranchDisplay: React.FC<BranchDisplayProps> = ({
     commit,
+    selectedCommitId,
     setSelectedCommitId,
-    active 
 }) => {
+    const active = commit.id === selectedCommitId
     const date = new Intl.DateTimeFormat('pt-BR', {
         year: 'numeric',
         month: 'numeric',
@@ -26,7 +28,7 @@ const CommitDisplay: React.FC<CommitDisplayProps> = ({
 
     return (
         <button
-            className={`btn list-group-item list-group-item-action ${active ? 'active' : ''}`}
+            className={`list-group-item list-group-item-action ${active ? 'active' : ''}`}
             onClick={() => setSelectedCommitId(commit.id)}
         >
             <div className="d-flex w-100 justify-content-between">
@@ -35,9 +37,9 @@ const CommitDisplay: React.FC<CommitDisplayProps> = ({
             <p className="mb-1">{commit.message}</p>
             <small>Autor: { commit.username }</small> <br />
             <small>hash: {formatCommitId(commit.id)}</small>
-        </button >
-
+        </button>
     )
 }
 
-export default CommitDisplay
+
+export default BranchDisplay

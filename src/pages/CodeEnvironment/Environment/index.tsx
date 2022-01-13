@@ -101,6 +101,15 @@ const Environment: React.FC = () => {
             return
         }
 
+        if(!username){
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Digite seu nome para o commit',
+                icon: '❌'
+            })
+            return
+        }
+
         if (!commitMessage) {
             ToastSetMessage({
                 title: 'Erro durante o commit',
@@ -117,8 +126,17 @@ const Environment: React.FC = () => {
                 stdin
             },
             parent_commit: selectedCommitId,
-            message: commitMessage
+            message: commitMessage,
+            username
         })
+
+        ToastSetMessage({
+            title: 'Sucesso!',
+            body: 'Commit realizado com sucesso',
+            icon: '✅'
+        })
+
+        setCommitMessage('')
     }
 
     const handleAddComment = () => {
@@ -136,7 +154,7 @@ const Environment: React.FC = () => {
             return
         }
 
-        if(!selectedCommitId){
+        if (!selectedCommitId) {
 
         }
 
@@ -163,6 +181,10 @@ const Environment: React.FC = () => {
             <div>
                 <h1>Projeto: {codeEnvironment.name}</h1>
                 <h5>ID: {codeEnvironment._id}</h5>
+{/* 
+                <pre>
+                    { JSON.stringify(codeEnvironment, null, 2) }
+                </pre> */}
 
                 <button
                     className="btn btn-outline-dark"
@@ -179,7 +201,7 @@ const Environment: React.FC = () => {
                         setSelectedCommitId(commit_id)
                     }}
                     selectedCommitId={selectedCommitId}
-                    
+
                 />
             </div>
 
@@ -192,7 +214,10 @@ const Environment: React.FC = () => {
                         setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
                         setSelectedCommitId(commit_id)
                     }}
+                    commitMessage={commitMessage}
                     setCommitMessage={setCommitMessage}
+                    username={username}
+                    setUsername={setUsername}
                 />
                 <IDESection
                     IDERef={IDERef}
@@ -206,8 +231,6 @@ const Environment: React.FC = () => {
                 comments={codeEnvironment.comments
                     .filter(comment => selectedCommitId && comment.commit_id === selectedCommitId.toString())
                 }
-                username={username}
-                setUsername={setUsername}
                 comment={comment}
                 setComment={setComment}
                 handleAddComment={handleAddComment}

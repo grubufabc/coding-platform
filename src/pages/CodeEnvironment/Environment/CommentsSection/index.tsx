@@ -1,19 +1,16 @@
 import React from "react";
-import Input from "../../../../components/Form/Input";
 import TextArea from "../../../../components/Form/TextArea";
 import CommentDisplay from "./CommentDisplay";
 import { Comment } from "../interfaces/comment";
 
 interface CommentsSectionProps {
     comments: Comment[]
-    username: string
-    setUsername: React.Dispatch<React.SetStateAction<string>>
     comment: string
     setComment: React.Dispatch<React.SetStateAction<string>>
     handleAddComment: () => void
 }
 
-const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, username, setUsername, comment, setComment, handleAddComment }) => {
+const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, setComment, handleAddComment }) => {
     const [avatarColors, setAvatarColors] = React.useState<Map<string, string>>(new Map<string, string>())
 
     const getRandomColor = () => {
@@ -48,16 +45,6 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, username, s
 
             <h4 className="my-3">Adicionar comentário</h4>
             <div>
-                <Input
-                    value={username}
-                    setValue={setUsername}
-                    label={{
-                        id: "comment_username_input",
-                        text: "Nome"
-                    }}
-                    className="p-0"
-                />
-
                 <TextArea
                     value={comment}
                     onChange={setComment}

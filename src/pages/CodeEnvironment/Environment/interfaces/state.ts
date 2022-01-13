@@ -7,4 +7,6 @@ export interface State {
     }
     id: string
     parent_commit: string
+    message: string
+    username: string
 }
