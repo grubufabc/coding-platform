@@ -26,7 +26,7 @@ const CommitDisplay: React.FC<CommitDisplayProps> = ({
 
     return (
         <button
-            className={`btn list-group-item list-group-item-action ${active ? 'active' : ''}`}
+            className={`list-group-item list-group-item-action ${active ? 'active' : ''}`}
             onClick={() => setSelectedCommitId(commit.id)}
         >
             <div className="d-flex w-100 justify-content-between">
@@ -35,8 +35,7 @@ const CommitDisplay: React.FC<CommitDisplayProps> = ({
             <p className="mb-1">{commit.message}</p>
             <small>Autor: { commit.username }</small> <br />
             <small>hash: {formatCommitId(commit.id)}</small>
-        </button >
-
+        </button>
     )
 }
 
