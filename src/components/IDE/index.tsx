@@ -3,7 +3,6 @@ import TextArea from '../Form/TextArea'
 import CodeEditor, { CodeEditorHandles } from '../CodeEditor'
 import { languages } from './config'
 import useFetch from '../../hooks/useFetch'
-import { utf8_to_b64 } from '../../utils'
 import { Submission } from '../../models/submission'
 import { POST_SUBMISSION as API_POST_SUBMISSION } from '../../api'
 import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handle'
@@ -25,9 +24,10 @@ export interface IDEHandles {
 
 interface IDEProps {
     onChange?: (code: string, language: string, stdin: string) => void
+    classNameCodeEditor?: string
 }
 
-const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange }, ref) => {
+const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, classNameCodeEditor="" }, ref) => {
     const { request, loading } = useFetch()
 
     const [stdinIDE, setStdinIDE] = React.useState<string>('')
@@ -51,7 +51,6 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
     }
 
     const setLanguage = (language: string) => {
-
         codeEditorRef.current?.setLanguage(language)
     }
 
@@ -117,8 +116,8 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
 
         const { url, options } = API_POST_SUBMISSION({
             language_id: textEditor.getLanguage()!.id,
-            source_code: utf8_to_b64(textEditor.getCode()),
-            stdin: utf8_to_b64(stdinIDE)
+            source_code: textEditor.getCode(),
+            stdin: stdinIDE
         })
         const { json } = await request(url, options)
         const submission = json as Submission
@@ -136,6 +135,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
         <div>
             <div className="row mb-4">
                 <CodeEditor
+                    className={classNameCodeEditor}
                     toolbar={[
                         (loading ? (
                             <button disabled={true} onClick={handleRunCode} type="button" className="btn btn-dark btn-lg w-25">Processando...</button>
@@ -152,7 +152,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
                 <div className="col">
                     <TextArea
                         rows={5}
-                        className="mb-3"
+                        className="mb-3 nowrap-textarea"
                         label={{ text: 'stdin', id: 'stdin' }}
                         value={stdinIDE}
                         onChange={(value: string) => {
@@ -166,7 +166,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange },
                     <TextArea
                         disabled={true}
                         rows={5}
-                        className={`mb-3 ${stdout.error ? 'text-danger' : ''}`}
+                        className={`mb-3 nowrap-textarea ${stdout.error ? 'text-danger' : ''}`}
                         label={{ text: 'stdout', id: 'stdout' }}
                         value={loading ? '⚙️  🛠  Processando . . .' : stdout.message}
                     />

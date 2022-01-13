@@ -20,6 +20,7 @@ const Header: React.FC = () => {
                         <Link to="/playground" className="text-decoration-none fw-bold text-dark mx-4">Playground</Link>
                         <Link to="/pair-programming" className="text-decoration-none fw-bold text-dark mx-4">Pair programming</Link>
                         <Link to="/blog" className="text-decoration-none fw-bold text-dark mx-4">Blog</Link>
+                        <Link to="code-environment" className="text-decoration-none fw-bold text-dark mx-4">Ambiente de programação</Link>
                     </div>
                     <div className="col-3 pt-3">
                         {authData.token ? (

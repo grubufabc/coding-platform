@@ -67,7 +67,7 @@ const SVGArrowDown: React.FC = () => {
 const SubmissionDetail: React.FC<SubmissionDetailProps> = ({ submission, index }) => {
 
     const { judgeResult, sourceCode } = submission
-    const { veredict, testCases } = judgeResult
+    const { verdict, testCases } = judgeResult
 
     const getClassFromStatus = (status: string) => {
         if (status === 'Accepted') return 'text-success'
@@ -80,10 +80,10 @@ const SubmissionDetail: React.FC<SubmissionDetailProps> = ({ submission, index }
                 <h5>
                     <span> Submissão #{index + 1}</span>
                     <span
-                        className={getClassFromStatus(veredict)}
+                        className={getClassFromStatus(verdict)}
                     >
                         <span>
-                            {veredict}
+                            {verdict}
                         </span>
                         <span className="ms-2">
                             <SVGArrowDown />
@@ -101,10 +101,10 @@ const SubmissionDetail: React.FC<SubmissionDetailProps> = ({ submission, index }
                                 <h6 className="d-flex justify-content-between">
                                     <span>Test case #{index + 1}</span>
                                     <span
-                                        className={getClassFromStatus(testCase.veredict)}
+                                        className={getClassFromStatus(testCase.verdict)}
                                     >
                                         <span>
-                                            {testCase.veredict}
+                                            {testCase.verdict}
                                         </span>
                                         <span className="ms-2">
                                             <SVGArrowDown />

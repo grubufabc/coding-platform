@@ -14,6 +14,7 @@ interface CodeEditorProps {
     languages: Language[]
     toolbar: any[]
     onChange?: (code: string, language: string, timestamp: number) => void
+    className: string
 }
 
 export interface CodeEditorHandles {
@@ -23,7 +24,7 @@ export interface CodeEditorHandles {
     setLanguage: React.Dispatch<React.SetStateAction<string>>
 }
 
-const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorProps> = ({ languages, toolbar, onChange }, ref) => {
+const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorProps> = ({ languages, toolbar, onChange, className }, ref) => {
     const [code, setCode] = React.useState<string>('')
     const [language, setLanguage] = React.useState<string>('')
 
@@ -64,7 +65,7 @@ const CodeEditor: React.ForwardRefRenderFunction<CodeEditorHandles, CodeEditorPr
                     if(onChange) onChange(value || '', language || '', new Date().getTime())
                 }}
                 value={code}
-                className="code-mirror-wrapper code-wrapper"
+                className={`code-mirror-wrapper code-wrapper-40 ${className}`}
                 options={{
                     indentWithTabs: true,
                     tabSize: 4,

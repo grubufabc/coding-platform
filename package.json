@@ -10,6 +10,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.21",
     "@types/react-dom": "^17.0.0",
+    "axios": "^0.24.0",
     "codemirror": "^5.62.3",
     "history": "^5.0.1",
     "react": "^17.0.2",
@@ -49,6 +50,7 @@
     ]
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/codemirror": "^5.60.2"
   }
 }

@@ -15,11 +15,15 @@ import Post from './pages/Blog/Post'
 import CreateBlogPost from './pages/Admin/CreateBlogPost'
 import { AuthProvider } from './providers/AuthProvider'
 import Logout from './pages/Logout'
+import CodeEnvironment from './pages/CodeEnvironment'
+import { CodeEnvironmentProvider } from './hooks/useCodeEnvironment'
+import Environment from './pages/CodeEnvironment/Environment'
 
 
 const App: React.FC = () => {
     return (
         <AuthProvider>
+            <CodeEnvironmentProvider>
             <Router>
                 <div className="vh-100 d-flex flex-column p-0 m-0">
                     <div>
@@ -43,9 +47,14 @@ const App: React.FC = () => {
                                 <Route path="" element={<Blog />} />
                                 <Route path=":id" element={<Post />} />
                             </Route>
+                            <Route path="code-environment" element={<Outlet />}>
+                                <Route path="" element={<CodeEnvironment />} />
+                                <Route path=":id" element={<Environment />} />
+                            </Route>
                         </Routes>
                 </div>
             </Router>
+            </CodeEnvironmentProvider>
         </AuthProvider>
     )
 }

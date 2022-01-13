@@ -11,7 +11,7 @@ import { AuthContext } from '../../../providers/AuthProvider'
 
 interface TestCase {
     input: string;
-    veredict: string;
+    verdict: string;
     expectedOutput: string;
     compile_output: string | null;
     stdout: string | null;
@@ -23,7 +23,7 @@ export interface Submission {
     languageID: number
     problemID: string
     judgeResult: {
-        veredict: string;
+        verdict: string;
         testCases: TestCase[]
     }
 }
@@ -36,6 +36,7 @@ const ProblemDetail: React.FC = () => {
     const toastRef = React.useRef<ToastHandles>(null)
     const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>([])
     const { authData } = React.useContext(AuthContext)
+    const [judging, setJudging] = React.useState<boolean>(false)
 
     const getSubmissions = useCallback(async () => {
         const { url, options } = API_GET_SUBMISSIONS()
@@ -67,14 +68,22 @@ const ProblemDetail: React.FC = () => {
         if (!IDE || !toast) return
 
         if (IDE.getCode().length === 0) {
-            toast.setMessage({ message: 'Insira um código', title: 'Atenção' })
+            toast.setMessage({ 
+                message: 'Insira um código', 
+                title: 'Atenção'
+            })
             return
         }
 
         if (IDE.getLanguage() === undefined) {
-            toast.setMessage({ message: 'Selecione uma linguagem', title: 'Atenção' })
+            toast.setMessage({ 
+                message: 'Selecione uma linguagem', 
+                title: 'Atenção' 
+            })
             return
         }
+
+        toast.setMessage({ message: 'Solução submetida com sucesso', title: 'Tudo certo' })
 
         const { url, options } = API_POST_SOLUTION(
             idProblem || '',
@@ -83,13 +92,14 @@ const ProblemDetail: React.FC = () => {
                 source_code: IDE.getCode()
             }
         )
-
+        
+        setJudging(true)
         const { json } = await request(url, options)
         const submission = json as Submission
-
+        setJudging(false)
 
         toast.setMessage({ 
-            message: submission.judgeResult.veredict, 
+            message: submission.judgeResult.verdict, 
             title: 'Resultado' 
         })
 
@@ -99,8 +109,6 @@ const ProblemDetail: React.FC = () => {
         else{
             setLastSubmissions([ ...lastSubmissions, submission ])
         }
-
-        
     }
 
     if (problem === undefined) return null
@@ -108,7 +116,7 @@ const ProblemDetail: React.FC = () => {
     return (
         <div id="xxx" className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
             <Main problem={problem} lastSubmissions={lastSubmissions}/>
-            <IDE IDERef={IDERef} handleSubmit={handleSubmit}/>
+            <IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging}/>
             <Toast ref={toastRef} />
         </div>
     )

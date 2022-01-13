@@ -1,5 +1,17 @@
-.code-wrapper > :first-child {
+.code-wrapper-40 > :first-child {
     border-radius: 5px !important;
     padding-top: 10px !important;
     height: 40vh;
+}
+
+.code-wrapper-60 > :first-child {
+    border-radius: 5px !important;
+    padding-top: 10px !important;
+    height: 60vh;
+}
+
+.code-wrapper-80 > :first-child {
+    border-radius: 5px !important;
+    padding-top: 10px !important;
+    height: 80vh;
 }

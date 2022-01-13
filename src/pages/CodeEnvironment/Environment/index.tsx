@@ -1,0 +1,154 @@
+import React from 'react'
+import { useParams } from 'react-router'
+import { IDEHandles } from '../../../components/IDE'
+import { languages } from '../../../components/IDE/config'
+import { useCodeEnvironment } from '../../../hooks/useCodeEnvironment'
+import CommentsSection from './CommentsSection'
+import CommitsSection from './CommitsSection'
+import CommitTreeSection from './CommitTreeSection'
+import IDESection from './IDESection'
+import { State } from './interfaces/state'
+
+
+const Environment: React.FC = () => {
+    const { id: environment_id } = useParams()
+    const { codeEnvironment, commitCodeEnvironment, loadCodeEnvironment, addComment } = useCodeEnvironment()
+    const IDERef = React.useRef<IDEHandles>(null)
+    const [selectedCommitId, setSelectedCommitId] = React.useState<string>("")
+    const [username, setUsername] = React.useState<string>('Anônimo')
+    const [comment, setComment] = React.useState<string>('')
+
+    
+
+    React.useEffect(() => {
+        if (codeEnvironment._id !== environment_id) {
+            loadCodeEnvironment(environment_id!)
+        }
+    }, [environment_id, loadCodeEnvironment, codeEnvironment])
+
+    React.useEffect(() => {
+        if (codeEnvironment.states.length > 0) {
+            const lastCommitId = codeEnvironment.states[codeEnvironment.states.length - 1].id
+            setSelectedCommitId(lastCommitId)
+        }
+    }, [codeEnvironment])
+
+    React.useEffect(() => {
+        const IDE = IDERef.current
+        const commit = codeEnvironment.states.find(commit => commit.id === selectedCommitId)
+
+        if (!IDE || !commit) {
+            return
+        }
+
+        const language = languages.find(language => language.id === commit.code.language_id)
+
+        if (!language) {
+            return
+        }
+
+        IDE.setCode(commit.code.source_code)
+        IDE.setLanguage(language.name)
+        IDE.setStdin(commit.code.stdin)
+    }, [codeEnvironment.states, selectedCommitId])
+
+    const handleCommit = async () => {
+        const IDE = IDERef.current
+        if (!IDE) return
+
+        const code = IDE.getCode() || ''
+        const language = IDE.getLanguage()
+        const stdin = IDE.getStdin() || ''
+
+        if (!language) {
+            return
+        }
+
+        commitCodeEnvironment({
+            code: {
+                source_code: code,
+                language_id: language.id,
+                stdin
+            },
+            parent_commit: selectedCommitId,
+        })
+    }
+
+    const handleAddComment = () => {
+        if (!username) {
+            setUsername('Anônimo')
+            return
+        }
+
+        if (!comment || !selectedCommitId) {
+            return
+        }
+
+        addComment({
+            username,
+            text: comment,
+            commit_id: selectedCommitId.toString()
+        })
+
+        setUsername('Anônimo')
+        setComment('')
+    }
+
+    const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
+        const path: string[] = []
+        const parent_commit = new Map<string, string>()
+
+        for(const commit of states){
+            parent_commit.set(commit.id, commit.parent_commit)
+        }
+
+        while(commit_id !== ""){
+            path.push(commit_id)
+            commit_id = parent_commit.get(commit_id) || ""
+        }
+
+        return path.reverse()
+    }
+
+    return (
+        <div className="m-5 pb-5">
+            <div>
+                <h1>Projeto: {codeEnvironment.name}</h1>
+                <h5>ID: {codeEnvironment._id}</h5>
+
+                <CommitTreeSection
+                    states={codeEnvironment.states}
+                    setSelectedCommitId={setSelectedCommitId}
+                    selectedCommitId={selectedCommitId}
+                />
+            </div>
+
+            <div className="row mt-5">
+                <CommitsSection
+                    handleCommit={handleCommit}
+                    states={codeEnvironment.states}
+                    selectedCommitId={selectedCommitId}
+                    setSelectedCommitId={setSelectedCommitId}
+                />
+                <IDESection
+                    IDERef={IDERef}
+                    commit_path={getPathFromCurrentCommitToRoot(selectedCommitId, codeEnvironment.states)}
+                    setSelectedCommitId={setSelectedCommitId}
+                />
+            </div>
+
+            <CommentsSection
+                comments={codeEnvironment.comments
+                    .filter(comment => selectedCommitId && comment.commit_id === selectedCommitId.toString())
+                }
+                username={username}
+                setUsername={setUsername}
+                comment={comment}
+                setComment={setComment}
+                handleAddComment={handleAddComment}
+            />
+        </div>
+    )
+}
+
+export default Environment
