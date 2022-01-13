@@ -6,8 +6,10 @@ import { useCodeEnvironment } from '../../../hooks/useCodeEnvironment'
 import CommentsSection from './CommentsSection'
 import CommitsSection from './CommitsSection'
 import CommitTreeSection from './CommitTreeSection'
+import ShareIcon from './icons/ShareIcon'
 import IDESection from './IDESection'
 import { State } from './interfaces/state'
+import { useLocation } from 'react-router-dom'
 
 
 const Environment: React.FC = () => {
@@ -18,6 +20,7 @@ const Environment: React.FC = () => {
     const [username, setUsername] = React.useState<string>('Anônimo')
     const [comment, setComment] = React.useState<string>('')
     const [commitPath, setCommitPath] = React.useState<string[]>([])
+    const location = useLocation()
 
     const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
         const path: string[] = []
@@ -44,11 +47,20 @@ const Environment: React.FC = () => {
 
     React.useEffect(() => {
         if (codeEnvironment.states.length > 0) {
-            const lastCommitId = codeEnvironment.states[codeEnvironment.states.length - 1].id
-            setSelectedCommitId(lastCommitId)
-            setCommitPath(getPathFromCurrentCommitToRoot(lastCommitId, codeEnvironment.states))
+            const url = new URLSearchParams(location.search)
+            const commit_id = url.get('commit_id') || ""
+
+            if(commit_id && codeEnvironment.states.find(state => state.id === commit_id)){
+                setSelectedCommitId(commit_id)
+                setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
+            }
+            else{
+                const lastCommitId = codeEnvironment.states[codeEnvironment.states.length - 1].id
+                setSelectedCommitId(lastCommitId)
+                setCommitPath(getPathFromCurrentCommitToRoot(lastCommitId, codeEnvironment.states))
+            }
         }
-    }, [codeEnvironment])
+    }, [codeEnvironment, location.search])
 
     React.useEffect(() => {
         const IDE = IDERef.current
@@ -111,11 +123,23 @@ const Environment: React.FC = () => {
         setComment('')
     }
 
+    const handleShareEnvironment = () => {
+        navigator.clipboard.writeText(`${window.location.origin}/code-environment/${codeEnvironment._id}?commit_id=${selectedCommitId}`)
+    }
+
     return (
         <div className="m-5 pb-5">
             <div>
                 <h1>Projeto: {codeEnvironment.name}</h1>
                 <h5>ID: {codeEnvironment._id}</h5>
+
+                <button
+                    className="btn btn-outline-dark"
+                    onClick={handleShareEnvironment}
+                >
+                    <ShareIcon/> 
+                    <span className="ms-2">Compartilhar</span>
+                </button>
 
                 <CommitTreeSection
                     states={codeEnvironment.states}
