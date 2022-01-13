@@ -228,7 +228,6 @@ const Environment: React.FC = () => {
                         setSelectedCommitId(commit_id)
                     }}
                     selectedCommitId={selectedCommitId}
-
                 />
             </div>
 

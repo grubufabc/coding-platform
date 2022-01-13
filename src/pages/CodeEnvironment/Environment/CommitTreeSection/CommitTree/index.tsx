@@ -1,18 +1,59 @@
 import React from "react"
-import EyeIcon from "../../icons/EyeIcon"
+import Popover from "../../../../../components/Popover"
 import AsteriskIcon from "../../icons/AsteriskIcon"
 import ChevronDownIcon from "../../icons/ChevronDownIcon"
 import ChevronRightIcon from "../../icons/ChevronRightIcon"
 import EyeFillIcon from "../../icons/EyeFillIcon"
+import EyeIcon from "../../icons/EyeIcon"
+import { State } from "../../interfaces/state"
+import ReactDOMServer from 'react-dom/server'
 
 interface CommitTreeProps {
     graph: Map<string, string[]>
     root: string
     setSelectedCommitId: (commit_id: string) => void
     selectedCommitId: string
+    commits: State[]
 }
 
-const CommitTree: React.FC<CommitTreeProps> = ({ graph, root, setSelectedCommitId, selectedCommitId }) => {
+const CommitTreePopover = (commit?: State) => {
+    if(!commit) {
+        return <div></div>
+    }
+
+    const date = new Intl.DateTimeFormat('pt-BR', {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+    }).format(new Date(commit.timestamp))
+
+
+    return (
+        <div>
+            <small>{commit.message}</small>
+            <br/>
+            <small className="text-muted">
+                autor: 
+                <span className="ms-2">{commit.username}</span>
+            </small>
+            <br/>
+            <small className="text-muted">
+                data: 
+                <span className="ms-2">{date}</span>
+            </small>
+        </div>
+    )
+}
+
+const CommitTree: React.FC<CommitTreeProps> = ({
+    graph,
+    root,
+    setSelectedCommitId,
+    selectedCommitId,
+    commits
+}) => {
     const [expanded, setExpanded] = React.useState<boolean>(false)
 
     const handleClick = () => {
@@ -40,16 +81,26 @@ const CommitTree: React.FC<CommitTreeProps> = ({ graph, root, setSelectedCommitI
                             )}
                     </span>
                 </button>
-                
-                
 
-                <button
-                    onClick={() => setSelectedCommitId(root)}
-                    className="btn d-flex align-items-center"
+                <Popover
+                    content={
+                        ReactDOMServer.renderToString(
+                            CommitTreePopover(
+                                commits.find(c => c.id === root)
+                            )
+                        )
+                    }
+                    html={true}
                 >
-                    <span className="nav-link">{formatCommitId(root)}</span>
-                    { selectedCommitId === root ? <EyeFillIcon/> : <EyeIcon /> }
-                </button>
+                    <button
+                        onClick={() => setSelectedCommitId(root)}
+                        className="btn d-flex align-items-center"
+                    >
+                        <span className="nav-link">{formatCommitId(root)}</span>
+                        {selectedCommitId === root ? <EyeFillIcon /> : <EyeIcon />}
+                    </button>
+                </Popover>
+
             </div>
             <ul className="commit-tree-node">
                 {(graph.get(root) || []).map((children, index) => (
@@ -59,6 +110,7 @@ const CommitTree: React.FC<CommitTreeProps> = ({ graph, root, setSelectedCommitI
                         setSelectedCommitId={setSelectedCommitId}
                         graph={graph}
                         root={children}
+                        commits={commits}
                     />
                 ))}
             </ul>

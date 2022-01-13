@@ -46,6 +46,7 @@ const CommitTreeSection: React.FC<CommitTreeSectionProps> = ({ states, setSelect
                             selectedCommitId={selectedCommitId}
                             setSelectedCommitId={setSelectedCommitId}
                             {...buildGraphFromCommits(states)}
+                            commits={states}
                         />
                     </ul>
             </nav>
