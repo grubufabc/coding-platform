@@ -41,12 +41,13 @@ const CommitTree: React.FC<CommitTreeProps> = ({ graph, root, setSelectedCommitI
                     </span>
                 </button>
                 
-                <span className="nav-link">{formatCommitId(root)}</span>
+                
 
                 <button
                     onClick={() => setSelectedCommitId(root)}
-                    className="btn"
+                    className="btn d-flex align-items-center"
                 >
+                    <span className="nav-link">{formatCommitId(root)}</span>
                     { selectedCommitId === root ? <EyeFillIcon/> : <EyeIcon /> }
                 </button>
             </div>

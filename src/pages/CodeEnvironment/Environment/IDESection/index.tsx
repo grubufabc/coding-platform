@@ -4,16 +4,18 @@ import CommitPathVisualizer from "./CommitPathVisualizer"
 
 interface IDESectionProps {
     IDERef: React.RefObject<IDEHandles>
-    commit_path: string[]
+    commitPath: string[]
     setSelectedCommitId: (commit_id: string) => void
+    selectedCommitId: string
 }
 
-const IDESection: React.FC<IDESectionProps> = ({ IDERef, commit_path, setSelectedCommitId }) => {
+const IDESection: React.FC<IDESectionProps> = ({ IDERef, commitPath, setSelectedCommitId, selectedCommitId }) => {
     return (
         <div className="col-9">
             <CommitPathVisualizer 
-                commit_path={commit_path} 
+                commitPath={commitPath} 
                 setSelectedCommitId={setSelectedCommitId}
+                selectedCommitId={selectedCommitId}
             />
             <IDE
                 classNameCodeEditor='code-wrapper-80'

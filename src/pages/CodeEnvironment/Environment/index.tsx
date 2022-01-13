@@ -17,7 +17,23 @@ const Environment: React.FC = () => {
     const [selectedCommitId, setSelectedCommitId] = React.useState<string>("")
     const [username, setUsername] = React.useState<string>('Anônimo')
     const [comment, setComment] = React.useState<string>('')
+    const [commitPath, setCommitPath] = React.useState<string[]>([])
 
+    const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
+        const path: string[] = []
+        const parent_commit = new Map<string, string>()
+
+        for(const commit of states){
+            parent_commit.set(commit.id, commit.parent_commit)
+        }
+
+        while(commit_id !== ""){
+            path.push(commit_id)
+            commit_id = parent_commit.get(commit_id) || ""
+        }
+
+        return path.reverse()
+    }
     
 
     React.useEffect(() => {
@@ -30,6 +46,7 @@ const Environment: React.FC = () => {
         if (codeEnvironment.states.length > 0) {
             const lastCommitId = codeEnvironment.states[codeEnvironment.states.length - 1].id
             setSelectedCommitId(lastCommitId)
+            setCommitPath(getPathFromCurrentCommitToRoot(lastCommitId, codeEnvironment.states))
         }
     }, [codeEnvironment])
 
@@ -94,22 +111,6 @@ const Environment: React.FC = () => {
         setComment('')
     }
 
-    const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
-        const path: string[] = []
-        const parent_commit = new Map<string, string>()
-
-        for(const commit of states){
-            parent_commit.set(commit.id, commit.parent_commit)
-        }
-
-        while(commit_id !== ""){
-            path.push(commit_id)
-            commit_id = parent_commit.get(commit_id) || ""
-        }
-
-        return path.reverse()
-    }
-
     return (
         <div className="m-5 pb-5">
             <div>
@@ -118,7 +119,10 @@ const Environment: React.FC = () => {
 
                 <CommitTreeSection
                     states={codeEnvironment.states}
-                    setSelectedCommitId={setSelectedCommitId}
+                    setSelectedCommitId={(commit_id: string) => {
+                        setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
+                        setSelectedCommitId(commit_id)
+                    }}
                     selectedCommitId={selectedCommitId}
                 />
             </div>
@@ -128,12 +132,16 @@ const Environment: React.FC = () => {
                     handleCommit={handleCommit}
                     states={codeEnvironment.states}
                     selectedCommitId={selectedCommitId}
-                    setSelectedCommitId={setSelectedCommitId}
+                    setSelectedCommitId={(commit_id: string) => {
+                        setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
+                        setSelectedCommitId(commit_id)
+                    }}
                 />
                 <IDESection
                     IDERef={IDERef}
-                    commit_path={getPathFromCurrentCommitToRoot(selectedCommitId, codeEnvironment.states)}
+                    commitPath={commitPath}
                     setSelectedCommitId={setSelectedCommitId}
+                    selectedCommitId={selectedCommitId}
                 />
             </div>
 
