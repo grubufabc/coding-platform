@@ -35,8 +35,20 @@ const BranchDisplay: React.FC<BranchDisplayProps> = ({
                 <h5 className="mb-1">{date}</h5>
             </div>
             <p className="mb-1">{commit.message}</p>
-            <small>Autor: { commit.username }</small> <br />
-            <small>hash: {formatCommitId(commit.id)}</small>
+            <small className={`${!active ? 'text-muted' : ''}`}>Autor: {commit.username}</small> <br />
+            <small>
+                <span className={`${!active ? 'text-muted' : ''}`}>
+                    hash:
+                </span>
+                <span
+                    style={{
+                        backgroundColor: '#e9ecef',
+                    }}
+                    className="ms-2 py-1 px-2 rounded-2 font-monospace fw-bold text-dark"
+                >
+                    {formatCommitId(commit.id)}
+                </span>
+            </small>
         </button>
     )
 }

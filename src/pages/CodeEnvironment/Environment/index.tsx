@@ -48,7 +48,6 @@ const Environment: React.FC = () => {
         return path.reverse()
     }
 
-
     React.useEffect(() => {
         if (codeEnvironment._id !== environment_id) {
             loadCodeEnvironment(environment_id!)
@@ -149,7 +148,11 @@ const Environment: React.FC = () => {
 
     const handleAddComment = () => {
         if (!username) {
-            setUsername('Anônimo')
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Digite seu nome para comentar',
+                icon: '❌'
+            })
             return
         }
 
@@ -163,7 +166,11 @@ const Environment: React.FC = () => {
         }
 
         if (!selectedCommitId) {
-
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Selecione um commit para comentar',
+                icon: '❌'
+            })
         }
 
         addComment({

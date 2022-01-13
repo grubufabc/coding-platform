@@ -12,17 +12,24 @@ interface CommentsSectionProps {
 
 const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, setComment, handleAddComment }) => {
     const [avatarColors, setAvatarColors] = React.useState<Map<string, string>>(new Map<string, string>())
-
-    const getRandomColor = () => {
-        return '#' + (Math.random() * 0xFFFFFF << 0).toString(16).padStart(6, '0');
-    }
+    
 
     React.useEffect(() => {
         const usernames = new Set<string>(comments.map(comment => comment.username))
         const colors = new Map<string, string>()
+        const color_palette = [
+            "#fd0a54",
+            "#029b99",
+            "#23192d",
+            "#24c0eb",
+            "#df8615",
+            "#c9729f",
+            "#583b7e"
+        ]
 
+        let index = 0
         usernames.forEach(username => {
-            colors.set(username, getRandomColor())
+            colors.set(username, color_palette[(index++) % color_palette.length])
         })
 
         setAvatarColors(colors)
