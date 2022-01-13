@@ -152,7 +152,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
                 <div className="col">
                     <TextArea
                         rows={5}
-                        className="mb-3 nowrap-textarea"
+                        className="mb-3"
                         label={{ text: 'stdin', id: 'stdin' }}
                         value={stdinIDE}
                         onChange={(value: string) => {
@@ -166,7 +166,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
                     <TextArea
                         disabled={true}
                         rows={5}
-                        className={`mb-3 nowrap-textarea ${stdout.error ? 'text-danger' : ''}`}
+                        className={`mb-3 ${stdout.error ? 'text-danger' : ''}`}
                         label={{ text: 'stdout', id: 'stdout' }}
                         value={loading ? '⚙️  🛠  Processando . . .' : stdout.message}
                     />
