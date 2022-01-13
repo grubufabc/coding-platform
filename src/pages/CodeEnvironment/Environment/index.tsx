@@ -15,7 +15,13 @@ import { useToast } from '../../../hooks/useToast'
 
 const Environment: React.FC = () => {
     const { id: environment_id } = useParams()
-    const { codeEnvironment, commitCodeEnvironment, loadCodeEnvironment, addComment } = useCodeEnvironment()
+    const {
+        codeEnvironment,
+        commitCodeEnvironment,
+        loadCodeEnvironment,
+        addComment,
+        changeEnvironmentName
+    } = useCodeEnvironment()
     const IDERef = React.useRef<IDEHandles>(null)
     const [selectedCommitId, setSelectedCommitId] = React.useState<string>("")
     const [username, setUsername] = React.useState<string>('Anônimo')
@@ -24,6 +30,7 @@ const Environment: React.FC = () => {
     const location = useLocation()
     const { setMessage: ToastSetMessage } = useToast()
     const [commitMessage, setCommitMessage] = React.useState<string>('')
+    const [environmentName, setEnvironmentName] = React.useState<string>('')
 
     const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
         const path: string[] = []
@@ -45,6 +52,7 @@ const Environment: React.FC = () => {
     React.useEffect(() => {
         if (codeEnvironment._id !== environment_id) {
             loadCodeEnvironment(environment_id!)
+            setEnvironmentName(codeEnvironment.name)
         }
     }, [environment_id, loadCodeEnvironment, codeEnvironment])
 
@@ -63,6 +71,7 @@ const Environment: React.FC = () => {
                 setCommitPath(getPathFromCurrentCommitToRoot(lastCommitId, codeEnvironment.states))
             }
         }
+        setEnvironmentName(codeEnvironment.name)
     }, [codeEnvironment, location.search])
 
     React.useEffect(() => {
@@ -78,7 +87,6 @@ const Environment: React.FC = () => {
         if (!language) {
             return
         }
-
         IDE.setCode(commit.code.source_code)
         IDE.setLanguage(language.name)
         IDE.setStdin(commit.code.stdin)
@@ -176,15 +184,34 @@ const Environment: React.FC = () => {
         })
     }
 
+    const handleChangeEnvironmentName = () => {
+        if(!environmentName){
+            ToastSetMessage({
+                title: 'Erro ao alterar o nome do ambiente',
+                body: 'Digite um nome para o ambiente',
+                icon: '❌'
+            })
+            setEnvironmentName(codeEnvironment.name)
+            return
+        }
+        if(environmentName !== codeEnvironment.name){
+            changeEnvironmentName(environmentName)
+        }
+    }   
+
     return (
         <div className="m-5 pb-5">
             <div>
-                <h1>Projeto: {codeEnvironment.name}</h1>
+                
+                <h1>Projeto: 
+                <input
+                    className='border-0 ms-3'
+                    value={environmentName}
+                    onChange={(e) => setEnvironmentName(e.target.value)}
+                    onBlur={() => handleChangeEnvironmentName()}
+                />
+                </h1>
                 <h5>ID: {codeEnvironment._id}</h5>
-{/* 
-                <pre>
-                    { JSON.stringify(codeEnvironment, null, 2) }
-                </pre> */}
 
                 <button
                     className="btn btn-outline-dark"

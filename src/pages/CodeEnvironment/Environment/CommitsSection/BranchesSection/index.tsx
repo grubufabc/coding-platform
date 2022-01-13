@@ -45,8 +45,9 @@ const BranchesSection: React.FC<BranchesSectionProps> = ({
             <div className="list-group">
                 {commits
                     .filter(commit => leaves.includes(commit.id))
-                    .map(commit => (
+                    .map((commit, index) => (
                         <BranchDisplay
+                            key={index}
                             commit={commit}
                             selectedCommitId={selectedCommitId}
                             setSelectedCommitId={setSelectedCommitId}

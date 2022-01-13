@@ -50,6 +50,7 @@ interface CodeEnvironmentContextData {
     addComment: (comment: Comment) => Promise<CodeEnvironment>, 
     commitCodeEnvironment: (codeEnvironmentStateDto: CodeEnvironmentStateDto) => Promise<CodeEnvironment>
     loadCodeEnvironment: (environment_id: string) => Promise<CodeEnvironment>
+    changeEnvironmentName: (name: string) => Promise<CodeEnvironment>
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextData>(
@@ -92,6 +93,13 @@ export function CodeEnvironmentProvider({ children }: CodeEnvironmentProviderPro
         return response.data
     }
 
+    async function changeEnvironmentName(name: string){
+        const response = await axios
+            .patch(`${API_URL}/code-environments/${codeEnvironment._id}`, { name })
+        setCodeEnvironment(response.data)
+        return response.data
+    }
+
     return (
         <CodeEnvironmentContext.Provider 
             value={{
@@ -99,7 +107,8 @@ export function CodeEnvironmentProvider({ children }: CodeEnvironmentProviderPro
                 createCodeEnvironment, 
                 addComment, 
                 commitCodeEnvironment,
-                loadCodeEnvironment
+                loadCodeEnvironment,
+                changeEnvironmentName
             }}
         >
             {children}
