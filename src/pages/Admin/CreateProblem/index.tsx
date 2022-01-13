@@ -1,8 +1,8 @@
 import React from 'react'
 import { POST_PROBLEM as API_POST_PROBLEM} from '../../../api'
 import ProgressSteps, { ProgressStep } from '../../../components/ProgressSteps'
-import Toast, { ToastHandles } from '../../../components/Toast'
 import useFetch from '../../../hooks/useFetch'
+import { useToast } from '../../../hooks/useToast'
 import { Language } from '../../../models/language'
 import DescriptionForm from './DescriptionForm'
 import Review from './Review'
@@ -23,10 +23,10 @@ export interface TestCase {
 
 const CreateProblem: React.FC = () => {
     const { request } = useFetch()
-    const toastRef = React.useRef<ToastHandles>(null)
     const [title, setTitle] = React.useState<string>('')
     const [description, setDescription] = React.useState<string>('')
     const [testCases, setTestCases] = React.useState<TestCase[]>([])
+    const { setMessage: ToastSetMessage } = useToast()
 
 
     const handleCreateProblem = async () => {
@@ -35,20 +35,21 @@ const CreateProblem: React.FC = () => {
             testCases,
             title
         })
-        toastRef.current?.setMessage({
-            message: 'Salvando informações',
-            title: 'Processando...'
+
+        ToastSetMessage({
+            title: 'Processando...',
+            body: 'Salvando informações'
         })
         await request(url, options)
-        toastRef.current?.setMessage({ 
-            message: 'Problema salvo com sucesso', 
-            title: 'Tudo certo!'
+
+        ToastSetMessage({ 
+            title: 'Tudo certo!',
+            body: 'Problema salvo com sucesso'
         })
     }
 
     return (
         <div className="min-vh-100 pb-5">
-            <Toast ref={toastRef}/>
             <ProgressSteps>
                 <ProgressStep>
                     <DescriptionForm

@@ -18,42 +18,45 @@ import Logout from './pages/Logout'
 import CodeEnvironment from './pages/CodeEnvironment'
 import { CodeEnvironmentProvider } from './hooks/useCodeEnvironment'
 import Environment from './pages/CodeEnvironment/Environment'
+import { ToastProvider } from './hooks/useToast'
 
 
 const App: React.FC = () => {
     return (
         <AuthProvider>
             <CodeEnvironmentProvider>
-            <Router>
-                <div className="vh-100 d-flex flex-column p-0 m-0">
-                    <div>
-                        <Header />
-                    </div>
-                        <Routes>
-                            <Route path="" element={<LandingPage />} />
-                            <Route path="login" element={<Login />} />
-                            <Route path="logout" element={<Logout />} />
-                            <Route path="problems" element={<Outlet />}>
-                                <Route path="" element={<Problems />} />
-                                <Route path=":id" element={<ProblemDetail />} />
-                            </Route>
-                            <Route path="playground" element={<Playground />} />
-                            <Route path="pair-programming" element={<PairProgramming />} />
-                            <Route path="admin" element={<Admin />}>
-                                <Route path="create-problem" element={<CreateProblem />} />
-                                <Route path="create-blog-post" element={<CreateBlogPost />} />
-                            </Route>
-                            <Route path="blog" element={<Outlet />}>
-                                <Route path="" element={<Blog />} />
-                                <Route path=":id" element={<Post />} />
-                            </Route>
-                            <Route path="code-environment" element={<Outlet />}>
-                                <Route path="" element={<CodeEnvironment />} />
-                                <Route path=":id" element={<Environment />} />
-                            </Route>
-                        </Routes>
-                </div>
-            </Router>
+                <ToastProvider>
+                    <Router>
+                        <div className="vh-100 d-flex flex-column p-0 m-0">
+                            <div>
+                                <Header />
+                            </div>
+                            <Routes>
+                                <Route path="" element={<LandingPage />} />
+                                <Route path="login" element={<Login />} />
+                                <Route path="logout" element={<Logout />} />
+                                <Route path="problems" element={<Outlet />}>
+                                    <Route path="" element={<Problems />} />
+                                    <Route path=":id" element={<ProblemDetail />} />
+                                </Route>
+                                <Route path="playground" element={<Playground />} />
+                                <Route path="pair-programming" element={<PairProgramming />} />
+                                <Route path="admin" element={<Admin />}>
+                                    <Route path="create-problem" element={<CreateProblem />} />
+                                    <Route path="create-blog-post" element={<CreateBlogPost />} />
+                                </Route>
+                                <Route path="blog" element={<Outlet />}>
+                                    <Route path="" element={<Blog />} />
+                                    <Route path=":id" element={<Post />} />
+                                </Route>
+                                <Route path="code-environment" element={<Outlet />}>
+                                    <Route path="" element={<CodeEnvironment />} />
+                                    <Route path=":id" element={<Environment />} />
+                                </Route>
+                            </Routes>
+                        </div>
+                    </Router>
+                </ToastProvider>
             </CodeEnvironmentProvider>
         </AuthProvider>
     )

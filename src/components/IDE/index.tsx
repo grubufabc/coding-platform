@@ -8,6 +8,7 @@ import { POST_SUBMISSION as API_POST_SUBMISSION } from '../../api'
 import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHandler } from './submission-handle'
 import { StdoutState } from './submission-handle/stdout-state'
 import { Language } from '../../models/language'
+import { useToast } from '../../hooks/useToast'
 
 
 export interface IDEHandles {
@@ -34,6 +35,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
     const [stdout, setStdout] = React.useState<StdoutState>({ message: '', error: false })
     const codeEditorRef = React.useRef<CodeEditorHandles>(null)
     const [currTimestamp, setCurrTimestamp] = React.useState<number>(0)
+    const { setMessage: ToastSetMessage } = useToast()
 
     const setCode = (code: string, timestamp?: number) => {
         const codeEditor = codeEditorRef.current
@@ -105,6 +107,23 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
 
         const validateCode = () => (textEditor.getCode() || '').length > 0
         const validateLanguage = () => textEditor.getLanguage() !== undefined
+
+        if(!validateCode()){
+            ToastSetMessage({
+                title: 'Erro durante a execução',
+                body: 'O código não pode ser vazio',
+                icon: '❌'
+            })
+        }
+
+        if(!validateLanguage()){
+            ToastSetMessage({
+                title: 'Erro durante a execução',
+                body: 'Uma linguagem deve ser selecionada',
+                icon: '❌'
+            })
+        }
+
 
         const isValid = [
             validateCode,

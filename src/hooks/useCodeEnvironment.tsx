@@ -30,6 +30,7 @@ interface CodeEnvironmentState {
 interface CodeEnvironmentStateDto {
     code: Code
     parent_commit: string
+    message: string
 }
 
 

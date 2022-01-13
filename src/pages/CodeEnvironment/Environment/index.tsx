@@ -10,6 +10,7 @@ import ShareIcon from './icons/ShareIcon'
 import IDESection from './IDESection'
 import { State } from './interfaces/state'
 import { useLocation } from 'react-router-dom'
+import { useToast } from '../../../hooks/useToast'
 
 
 const Environment: React.FC = () => {
@@ -21,23 +22,25 @@ const Environment: React.FC = () => {
     const [comment, setComment] = React.useState<string>('')
     const [commitPath, setCommitPath] = React.useState<string[]>([])
     const location = useLocation()
+    const { setMessage: ToastSetMessage } = useToast()
+    const [commitMessage, setCommitMessage] = React.useState<string>('')
 
     const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
         const path: string[] = []
         const parent_commit = new Map<string, string>()
 
-        for(const commit of states){
+        for (const commit of states) {
             parent_commit.set(commit.id, commit.parent_commit)
         }
 
-        while(commit_id !== ""){
+        while (commit_id !== "") {
             path.push(commit_id)
             commit_id = parent_commit.get(commit_id) || ""
         }
 
         return path.reverse()
     }
-    
+
 
     React.useEffect(() => {
         if (codeEnvironment._id !== environment_id) {
@@ -50,11 +53,11 @@ const Environment: React.FC = () => {
             const url = new URLSearchParams(location.search)
             const commit_id = url.get('commit_id') || ""
 
-            if(commit_id && codeEnvironment.states.find(state => state.id === commit_id)){
+            if (commit_id && codeEnvironment.states.find(state => state.id === commit_id)) {
                 setSelectedCommitId(commit_id)
                 setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
             }
-            else{
+            else {
                 const lastCommitId = codeEnvironment.states[codeEnvironment.states.length - 1].id
                 setSelectedCommitId(lastCommitId)
                 setCommitPath(getPathFromCurrentCommitToRoot(lastCommitId, codeEnvironment.states))
@@ -90,6 +93,20 @@ const Environment: React.FC = () => {
         const stdin = IDE.getStdin() || ''
 
         if (!language) {
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Selecione uma linguagem de programação',
+                icon: '❌'
+            })
+            return
+        }
+
+        if (!commitMessage) {
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Digite uma mensagem para o commit',
+                icon: '❌'
+            })
             return
         }
 
@@ -100,6 +117,7 @@ const Environment: React.FC = () => {
                 stdin
             },
             parent_commit: selectedCommitId,
+            message: commitMessage
         })
     }
 
@@ -109,8 +127,17 @@ const Environment: React.FC = () => {
             return
         }
 
-        if (!comment || !selectedCommitId) {
+        if (!comment) {
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Digite um comentário',
+                icon: '❌'
+            })
             return
+        }
+
+        if(!selectedCommitId){
+
         }
 
         addComment({
@@ -125,6 +152,10 @@ const Environment: React.FC = () => {
 
     const handleShareEnvironment = () => {
         navigator.clipboard.writeText(`${window.location.origin}/code-environment/${codeEnvironment._id}?commit_id=${selectedCommitId}`)
+        ToastSetMessage({
+            title: 'Link copiado!',
+            body: 'Link copiado para a área de transferência!'
+        })
     }
 
     return (
@@ -137,7 +168,7 @@ const Environment: React.FC = () => {
                     className="btn btn-outline-dark"
                     onClick={handleShareEnvironment}
                 >
-                    <ShareIcon/> 
+                    <ShareIcon />
                     <span className="ms-2">Compartilhar</span>
                 </button>
 
@@ -148,6 +179,7 @@ const Environment: React.FC = () => {
                         setSelectedCommitId(commit_id)
                     }}
                     selectedCommitId={selectedCommitId}
+                    
                 />
             </div>
 
@@ -160,6 +192,7 @@ const Environment: React.FC = () => {
                         setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
                         setSelectedCommitId(commit_id)
                     }}
+                    setCommitMessage={setCommitMessage}
                 />
                 <IDESection
                     IDERef={IDERef}

@@ -19,7 +19,7 @@ interface BranchesSectionProps {
 
 const BranchesSection: React.FC<BranchesSectionProps> = ({ graph, selectedCommitId, setSelectedCommitId }) => {
     const [leaves, setLeaves] = React.useState<string[]>([])
-    
+
     const findLeaves = (graph: Map<string, string[]>) => {
         const leaves: string[] = []
 
@@ -44,7 +44,7 @@ const BranchesSection: React.FC<BranchesSectionProps> = ({ graph, selectedCommit
     return (
         <div>
             <h3 className="mt-4">
-                <GitIcon/>
+                <GitIcon />
                 <span className="mx-2">{leaves.length}</span>
                 {leaves.length > 1 ? "Branches" : "Branch"}
             </h3>
@@ -75,15 +75,18 @@ interface CommitsSectionProps {
     states: State[]
     selectedCommitId: string
     setSelectedCommitId: (commit_id: string) => void
+    setCommitMessage: (commitMessage: string) => void
 }
 
-const CommitsSection: React.FC<CommitsSectionProps> = ({ handleCommit, states, selectedCommitId, setSelectedCommitId }) => {
+const CommitsSection: React.FC<CommitsSectionProps> = ({ handleCommit, states, selectedCommitId, setSelectedCommitId, setCommitMessage }) => {
     return (
         <div className="col-3">
             <div className="input-group mb-3">
                 <input type="text"
                     className="form-control"
-                    placeholder="Descrição da mudança" />
+                    placeholder="Descrição da mudança" 
+                    onChange={(event) => setCommitMessage(event.target.value)}
+                />
                 <button
                     className="btn btn-success px-3"
                     onClick={handleCommit}

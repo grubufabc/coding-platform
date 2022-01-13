@@ -6,8 +6,8 @@ import { GET_PROBLEM as API_GET_PROBLEM, GET_SUBMISSIONS as API_GET_SUBMISSIONS,
 import { IDEHandles } from '../../../components/IDE'
 import Main from './Main'
 import IDE from './IDE'
-import Toast, { ToastHandles } from '../../../components/Toast'
 import { AuthContext } from '../../../providers/AuthProvider'
+import { useToast } from '../../../hooks/useToast'
 
 interface TestCase {
     input: string;
@@ -33,10 +33,11 @@ const ProblemDetail: React.FC = () => {
     const { id: idProblem } = useParams()
     const [problem, setProblem] = React.useState<Problem>()
     const IDERef = React.useRef<IDEHandles>(null)
-    const toastRef = React.useRef<ToastHandles>(null)
     const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>([])
     const { authData } = React.useContext(AuthContext)
     const [judging, setJudging] = React.useState<boolean>(false)
+    const { setMessage: ToastSetMessage } = useToast()
+
 
     const getSubmissions = useCallback(async () => {
         const { url, options } = API_GET_SUBMISSIONS()
@@ -64,26 +65,28 @@ const ProblemDetail: React.FC = () => {
 
     const handleSubmit = async () => {
         const IDE = IDERef.current
-        const toast = toastRef.current
-        if (!IDE || !toast) return
+        if (!IDE) return
 
         if (IDE.getCode().length === 0) {
-            toast.setMessage({ 
-                message: 'Insira um código', 
-                title: 'Atenção'
+            ToastSetMessage({ 
+                title: 'Atenção',
+                body: 'Insira um código'
             })
             return
         }
 
         if (IDE.getLanguage() === undefined) {
-            toast.setMessage({ 
-                message: 'Selecione uma linguagem', 
-                title: 'Atenção' 
+            ToastSetMessage({ 
+                title: 'Atenção',
+                body: 'Selecione uma linguagem'
             })
             return
         }
 
-        toast.setMessage({ message: 'Solução submetida com sucesso', title: 'Tudo certo' })
+        ToastSetMessage({ 
+            title: 'Tudo certo', 
+            body: 'Solução submetida com sucesso'
+        })
 
         const { url, options } = API_POST_SOLUTION(
             idProblem || '',
@@ -98,9 +101,9 @@ const ProblemDetail: React.FC = () => {
         const submission = json as Submission
         setJudging(false)
 
-        toast.setMessage({ 
-            message: submission.judgeResult.verdict, 
-            title: 'Resultado' 
+        ToastSetMessage({ 
+            title: 'Resultado',
+            body: submission.judgeResult.verdict
         })
 
         if(authData.token){
@@ -117,7 +120,6 @@ const ProblemDetail: React.FC = () => {
         <div id="xxx" className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
             <Main problem={problem} lastSubmissions={lastSubmissions}/>
             <IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging}/>
-            <Toast ref={toastRef} />
         </div>
     )
 }
