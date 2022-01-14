@@ -13,6 +13,7 @@
     "axios": "^0.24.0",
     "codemirror": "^5.62.3",
     "history": "^5.0.1",
+    "programming-languages-logos": "^0.0.3",
     "react": "^17.0.2",
     "react-codemirror2": "^7.2.1",
     "react-dom": "^17.0.2",
