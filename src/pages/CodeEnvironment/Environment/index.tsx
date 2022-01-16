@@ -99,7 +99,6 @@ const Environment: React.FC = () => {
         setSourceCode(commit.code.source_code)
         setLanguageId(commit.code.language_id)
         setStdin(commit.code.stdin)
-
     }, [codeEnvironment.states, selectedCommitId, setLanguageId, setSourceCode, setStdin])
 
 

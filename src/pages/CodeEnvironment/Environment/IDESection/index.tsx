@@ -8,7 +8,7 @@ interface TerminalSectionProps {
 }
 
 const TerminalSection: React.FC<TerminalSectionProps> = () => {
-    const { setStdin, stdout, errorMessage, time, memory } = useIDE()
+    const { stdin, setStdin, stdout, errorMessage, time, memory } = useIDE()
 
     return (
         <div>
@@ -20,6 +20,7 @@ const TerminalSection: React.FC<TerminalSectionProps> = () => {
                             className="form-control"
                             rows={9}
                             onChange={(e) => setStdin(e.target.value)}
+                            value={stdin}
                         />
                     </div>
                     <div className="w-50 px-3 pt-3">

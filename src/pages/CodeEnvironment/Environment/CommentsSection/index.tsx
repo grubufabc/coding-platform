@@ -74,12 +74,29 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ username, selectedCom
         setComment('')
     }
 
+    const formatCommitId = (commit_id: string) => {
+        const commit_id_parts = commit_id.split("-")
+        return commit_id_parts[4]
+    }
+
 
     return (
         <div className="d-flex flex-column h-100" >
             <div>
                 <h4 className="mb-3">Comentários ({comments.length})</h4>
                 {comments.length === 0 && <p>Nenhum comentário</p>}
+
+                <p>
+                    commit:
+                    <span
+                        style={{
+                            backgroundColor: '#e9ecef',
+                        }}
+                        className="ms-2 py-1 px-2 rounded-2 font-monospace fw-bold text-dark"
+                    >
+                        {formatCommitId(selectedCommitId)}
+                    </span>
+                </p>
             </div>
 
 
