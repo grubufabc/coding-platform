@@ -2,7 +2,6 @@ import ClockHistoryIcon from "./ClockHistoryIcon"
 import CommitDisplay from "./CommitDisplay"
 import { buildGraphFromCommits } from "../CommitTreeSection"
 import React from "react"
-import Input from "../../../../components/Form/Input"
 import BranchesSection from "./BranchesSection"
 import { useToast } from "../../../../hooks/useToast"
 import { useIDE } from "../IDESection/useIDE"
@@ -13,14 +12,12 @@ interface CommitsSectionProps {
     selectedCommitId: string
     setSelectedCommitId: (commit_id: string) => void
     username: string
-    setUsername: React.Dispatch<React.SetStateAction<string>>
 }
 
 const CommitsSection: React.FC<CommitsSectionProps> = ({
     selectedCommitId,
     setSelectedCommitId,
-    username,
-    setUsername
+    username
 }) => {
     const [commitMessage, setCommitMessage] = React.useState<string>('')
     const { setMessage: ToastSetMessage } = useToast()
@@ -79,16 +76,6 @@ const CommitsSection: React.FC<CommitsSectionProps> = ({
 
     return (
         <div>
-            <Input
-                value={username}
-                setValue={setUsername}
-                label={{
-                    id: "comment_username_input",
-                    text: "Nome"
-                }}
-                className="p-0 mb-3"
-            />
-
             <div className="input-group mb-3">
                 <input type="text"
                     className="form-control"

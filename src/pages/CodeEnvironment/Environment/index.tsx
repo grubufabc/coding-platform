@@ -243,7 +243,6 @@ const Environment: React.FC = () => {
                                         selectedCommitId={selectedCommitId}
                                         setSelectedCommitId={setSelectedCommitId}
                                         username={username}
-                                        setUsername={setUsername}
                                     />
                                 </div>
                             </Sidebar.Pane>
