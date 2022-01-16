@@ -83,8 +83,8 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ username, selectedCom
     return (
         <div className="d-flex flex-column h-100" >
             <div>
-                <h4 className="mb-3">Comentários ({comments.length})</h4>
-                {comments.length === 0 && <p>Nenhum comentário</p>}
+                <h4 className="mb-3">Comentários ({comments.filter(comment => comment.commit_id === selectedCommitId).length})</h4>
+                {comments.filter(comment => comment.commit_id === selectedCommitId).length === 0 && <p>Nenhum comentário</p>}
 
                 <p>
                     commit:
@@ -101,7 +101,7 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ username, selectedCom
 
 
             <div className="flex-grow-1">
-                {comments.map((comment, index) => (
+                {comments.filter(comment => comment.commit_id === selectedCommitId).map((comment, index) => (
                     <CommentDisplay
                         key={index}
                         color_avatar={avatarColors.get(comment.username) || '#000000'}

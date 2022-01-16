@@ -15,7 +15,7 @@ const Panes: React.FC<PanesProps> = ({ children }) => {
                 transition: 'width 0.2s',
             }}
         >
-            <div className="ps-2 pe-3 d-flex flex-column h-100">
+            <div className="ps-2 pe-5 d-flex flex-column h-100">
                 { children }
             </div>
         </div>

@@ -11,9 +11,9 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({ comment, color_avatar }
             <h5 style={{ color: color_avatar }}>
                 { comment.username }
             </h5>
-            <pre className="p-0 m-0">
+            <p className="p-0 m-0">
                 { comment.text }
-            </pre>
+            </p>
         </div>
     )
 }
