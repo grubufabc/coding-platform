@@ -58,7 +58,6 @@ const App: React.FC = () => {
                                 <Route path="" element={<Blog />} />
                                 <Route path=":id" element={<Post />} />
                             </Route>
-
                         </Routes>
                     </Router>
                 </ToastProvider>
