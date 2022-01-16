@@ -3,7 +3,6 @@ import { Routes, Route, BrowserRouter as Router, Outlet } from 'react-router-dom
 import Problems from './pages/Problems'
 import ProblemDetail from './pages/Problems/ProblemDetail'
 import Login from './pages/Login'
-import Header from './components/Header'
 import LandingPage from './pages/LandingPage'
 import Playground from './pages/Playground'
 import Admin from './pages/Admin'
@@ -18,6 +17,7 @@ import CodeEnvironment from './pages/CodeEnvironment'
 import { CodeEnvironmentProvider } from './hooks/useCodeEnvironment'
 import Environment from './pages/CodeEnvironment/Environment'
 import { ToastProvider } from './hooks/useToast'
+import { IDEProvider } from './pages/CodeEnvironment/Environment/IDESection/useIDE'
 
 
 const App: React.FC = () => {
@@ -26,7 +26,20 @@ const App: React.FC = () => {
             <CodeEnvironmentProvider>
                 <ToastProvider>
                     <Router>
-                        <Header />
+                        <Routes>
+                            <Route path="code-environment" element={<Outlet />}>
+                                <Route path="" element={<CodeEnvironment />} />
+                                <Route path=":id"
+                                    element={
+                                        <IDEProvider>
+                                            <Environment />
+                                        </IDEProvider>
+                                    } />
+                            </Route>
+                        </Routes>
+
+
+                        {/*  */}
                         <Routes>
                             <Route path="" element={<LandingPage />} />
                             <Route path="login" element={<Login />} />
@@ -45,10 +58,7 @@ const App: React.FC = () => {
                                 <Route path="" element={<Blog />} />
                                 <Route path=":id" element={<Post />} />
                             </Route>
-                            <Route path="code-environment" element={<Outlet />}>
-                                <Route path="" element={<CodeEnvironment />} />
-                                <Route path=":id" element={<Environment />} />
-                            </Route>
+
                         </Routes>
                     </Router>
                 </ToastProvider>

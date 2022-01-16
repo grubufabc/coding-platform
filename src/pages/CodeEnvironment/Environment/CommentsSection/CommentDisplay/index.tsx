@@ -8,10 +8,10 @@ interface CommentDisplayProps {
 const CommentDisplay: React.FC<CommentDisplayProps> = ({ comment, color_avatar }) => {
     return (
         <div className="card p-2 mb-3">
-            <h4 style={{ color: color_avatar }}>
+            <h5 style={{ color: color_avatar }}>
                 { comment.username }
-            </h4>
-            <pre>
+            </h5>
+            <pre className="p-0 m-0">
                 { comment.text }
             </pre>
         </div>

@@ -1,18 +1,21 @@
 import React from "react";
 import TextArea from "../../../../components/Form/TextArea";
 import CommentDisplay from "./CommentDisplay";
-import { Comment } from "../interfaces/comment";
+import { useCodeEnvironment } from "../../../../hooks/useCodeEnvironment";
+import { useToast } from "../../../../hooks/useToast";
 
 interface CommentsSectionProps {
-    comments: Comment[]
-    comment: string
-    setComment: React.Dispatch<React.SetStateAction<string>>
-    handleAddComment: () => void
+    username: string
+    selectedCommitId: string
 }
 
-const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, setComment, handleAddComment }) => {
+const CommentsSection: React.FC<CommentsSectionProps> = ({ username, selectedCommitId }) => {
     const [avatarColors, setAvatarColors] = React.useState<Map<string, string>>(new Map<string, string>())
-    
+    const [comment, setComment] = React.useState<string>('')
+
+    const { codeEnvironment, addComment } = useCodeEnvironment()
+    const { setMessage: ToastSetMessage } = useToast()
+    const { comments } = codeEnvironment
 
     React.useEffect(() => {
         const usernames = new Set<string>(comments.map(comment => comment.username))
@@ -35,12 +38,52 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, se
         setAvatarColors(colors)
     }, [comments])
 
-    return (
-        <div className="row my-5 pb-5">
-            <h3 className="mb-3">Discussão ({comments.length})</h3>
-            {comments.length === 0 && <p>Nenhum comentário</p>}
+    const handleAddComment = () => {
+        if (!username) {
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Digite seu nome para comentar',
+                icon: '❌'
+            })
+            return
+        }
 
+        if (!comment) {
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Digite um comentário',
+                icon: '❌'
+            })
+            return
+        }
+
+        if (!selectedCommitId) {
+            ToastSetMessage({
+                title: 'Erro ao comentar',
+                body: 'Selecione um commit para comentar',
+                icon: '❌'
+            })
+        }
+
+        addComment({
+            username,
+            text: comment,
+            commit_id: selectedCommitId.toString()
+        })
+
+        setComment('')
+    }
+
+
+    return (
+        <div className="d-flex flex-column h-100" >
             <div>
+                <h4 className="mb-3">Comentários ({comments.length})</h4>
+                {comments.length === 0 && <p>Nenhum comentário</p>}
+            </div>
+
+
+            <div className="flex-grow-1">
                 {comments.map((comment, index) => (
                     <CommentDisplay
                         key={index}
@@ -50,8 +93,9 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, se
                 ))}
             </div>
 
-            <h4 className="my-3">Adicionar comentário</h4>
-            <div>
+
+            <div className="py-4">
+                <h4 className="my-3">Adicionar comentário</h4>
                 <TextArea
                     value={comment}
                     onChange={setComment}
@@ -62,16 +106,16 @@ const CommentsSection: React.FC<CommentsSectionProps> = ({ comments, comment, se
                     className="mt-3"
                     rows={5}
                 />
-
-                <button
-                    className="btn btn-lg btn-primary mt-3"
-                    type="button"
-                    onClick={handleAddComment}
-                >
-                    Enviar comentário
-                </button>
+                <div className="d-grid gap-2">
+                    <button
+                        className="btn btn-lg btn-primary mt-3"
+                        type="button"
+                        onClick={handleAddComment}
+                    >
+                        Enviar comentário
+                    </button>
+                </div>
             </div>
-
         </div >
     )
 }

@@ -70,9 +70,9 @@ const CommitTree: React.FC<CommitTreeProps> = ({
             <div className="d-flex align-items-center">
                 <button
                     onClick={handleClick}
-                    className="btn"
+                    className="btn p-0"
                 >
-                    <span className="pe-2" style={{ color: 'green' }}>
+                    <span className="px-2" style={{ color: 'green' }}>
                         {(graph.get(root) || []).length > 0 ?
                             (
                                 expanded ? <ChevronDownIcon /> : <ChevronRightIcon />
@@ -94,9 +94,9 @@ const CommitTree: React.FC<CommitTreeProps> = ({
                 >
                     <button
                         onClick={() => setSelectedCommitId(root)}
-                        className="btn d-flex align-items-center"
+                        className="btn p-0 d-flex align-items-center"
                     >
-                        <span className="nav-link">{formatCommitId(root)}</span>
+                        <span className="nav-link p-0 m-0 pe-3 ps-1">{formatCommitId(root)}</span>
                         {selectedCommitId === root ? <EyeFillIcon /> : <EyeIcon />}
                     </button>
                 </Popover>

@@ -41,10 +41,9 @@ const CommitPathVisualizer: React.FC<CommitPathVisualizerProps> = ({ commitPath,
 
 
     return (
-        <div className="mb-3 d-inline-flex">
-            <div>
+        <div className="d-inline-flex border-bottom border-2">
+            <div className="ms-2 pb-2">
                 <div className="d-block">
-                    <h6>Timeline</h6>
                     <input
                         type="range"
                         className="form-range"
@@ -57,7 +56,6 @@ const CommitPathVisualizer: React.FC<CommitPathVisualizerProps> = ({ commitPath,
                 </div>
                 {commitPath.map((commit_id, index) => (
                     <React.Fragment key={index}>
-
                         <button
                             className="btn px-0"
                             type="button"

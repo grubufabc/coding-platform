@@ -38,7 +38,7 @@ const buildGraphFromCommits = (commits: State[]) => {
 
 const CommitTreeSection: React.FC<CommitTreeSectionProps> = ({ states, setSelectedCommitId, selectedCommitId }) => {
     return (
-        <div className="row d-flex justify-content-between mt-5">
+        <div className="mt-5">
             <h5>Árvore de commits</h5>
                 <nav className="commit-tree">
                     <ul>

@@ -8,6 +8,7 @@ import Main from './Main'
 import IDE from './IDE'
 import { AuthContext } from '../../../providers/AuthProvider'
 import { useToast } from '../../../hooks/useToast'
+import Header from '../../../components/Header'
 
 interface TestCase {
     input: string;
@@ -51,24 +52,24 @@ const ProblemDetail: React.FC = () => {
             const { json } = await request(url, options)
             setProblem(json as Problem)
         }
-        if (problem === undefined){
-            if(authData.token){
-                getSubmissions()    
+        if (problem === undefined) {
+            if (authData.token) {
+                getSubmissions()
             }
             getProblem()
-            
+
         }
     }, [authData.token, getSubmissions, idProblem, problem, request])
 
 
-    
+
 
     const handleSubmit = async () => {
         const IDE = IDERef.current
         if (!IDE) return
 
         if (IDE.getCode().length === 0) {
-            ToastSetMessage({ 
+            ToastSetMessage({
                 title: 'Atenção',
                 body: 'Insira um código'
             })
@@ -76,15 +77,15 @@ const ProblemDetail: React.FC = () => {
         }
 
         if (IDE.getLanguage() === undefined) {
-            ToastSetMessage({ 
+            ToastSetMessage({
                 title: 'Atenção',
                 body: 'Selecione uma linguagem'
             })
             return
         }
 
-        ToastSetMessage({ 
-            title: 'Tudo certo', 
+        ToastSetMessage({
+            title: 'Tudo certo',
             body: 'Solução submetida com sucesso'
         })
 
@@ -95,32 +96,35 @@ const ProblemDetail: React.FC = () => {
                 source_code: IDE.getCode()
             }
         )
-        
+
         setJudging(true)
         const { json } = await request(url, options)
         const submission = json as Submission
         setJudging(false)
 
-        ToastSetMessage({ 
+        ToastSetMessage({
             title: 'Resultado',
             body: submission.judgeResult.verdict
         })
 
-        if(authData.token){
+        if (authData.token) {
             getSubmissions()
         }
-        else{
-            setLastSubmissions([ ...lastSubmissions, submission ])
+        else {
+            setLastSubmissions([...lastSubmissions, submission])
         }
     }
 
     if (problem === undefined) return null
 
     return (
-        <div id="xxx" className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
-            <Main problem={problem} lastSubmissions={lastSubmissions}/>
-            <IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging}/>
-        </div>
+        <React.Fragment>
+            <Header />
+            <div id="xxx" className="d-flex flex-grow-1" style={{ overflow: 'hidden' }}>
+                <Main problem={problem} lastSubmissions={lastSubmissions} />
+                <IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging} />
+            </div>
+        </React.Fragment>
     )
 }
 

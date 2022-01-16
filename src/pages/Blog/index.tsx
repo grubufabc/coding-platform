@@ -1,5 +1,6 @@
 import React from 'react'
 import { GET_BLOG_POSTS as API_GET_BLOG_POSTS } from '../../api'
+import Header from '../../components/Header'
 import useFetch from '../../hooks/useFetch'
 import PreviewPost, { IPost } from './PreviewPost'
 
@@ -19,6 +20,8 @@ const Blog: React.FC = () => {
     }, [posts, request])
 
     return (
+        <React.Fragment>
+            <Header/>
         <div className="m-5">
             <h1 className="mb-5">Blog</h1>
             { loading && (
@@ -35,6 +38,7 @@ const Blog: React.FC = () => {
                 </div>
             </div>
         </div>
+        </React.Fragment>
     )
 }
 

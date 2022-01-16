@@ -5,7 +5,7 @@ declare var bootstrap: any
 interface Message {
     title: string
     body: string
-    icon?: string
+    icon?: string | React.ReactNode
 }
 
 interface ToastContextData {

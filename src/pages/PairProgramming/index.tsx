@@ -5,6 +5,7 @@ import FormUser from './FormUser'
 import { DefaultEventsMap } from 'socket.io-client/build/typed-events'
 import io, { Socket } from 'socket.io-client'
 import { API_URL } from '../../api'
+import Header from '../../components/Header'
 
 
 interface Environment {
@@ -45,12 +46,12 @@ const PairProgramming: React.FC = () => {
     // Web Socket
     const [socket, setSocket] = React.useState<Socket<DefaultEventsMap, DefaultEventsMap>>()
     const [room, setRoom] = React.useState<Room>()
-    const [avatar, setAvatar] = React.useState<Avatar>({ name: 'Anônimo', color: '#000000'})
-    const [environment, setEnvironment] = React.useState<Environment>({ sourceCode: '', language: '', stdin: '', timestamp: 0})
+    const [avatar, setAvatar] = React.useState<Avatar>({ name: 'Anônimo', color: '#000000' })
+    const [environment, setEnvironment] = React.useState<Environment>({ sourceCode: '', language: '', stdin: '', timestamp: 0 })
 
     React.useEffect(() => {
         const IDE = IDERef.current
-        if(!IDE) return
+        if (!IDE) return
         const { sourceCode, language, stdin } = environment
         IDE.setCode(sourceCode, environment.timestamp)
         IDE.setLanguage(language)
@@ -68,9 +69,9 @@ const PairProgramming: React.FC = () => {
             setEnvironment(data.environment as Environment)
         },
         'user-info-updated': (data: any) => {
-            if(!room) return
+            if (!room) return
             // console.log(`user-info-updated => data:`, data)
-            setRoom({...room, users: (data as User[])})
+            setRoom({ ...room, users: (data as User[]) })
         },
         'room-changed': (data: any) => {
             // console.log(`room-changed => data:`, data)
@@ -79,7 +80,7 @@ const PairProgramming: React.FC = () => {
         'messages-updated': (data: any) => {
             // console.log(`messages-updated => data:`, data)
             setRoom((room) => {
-                if(room === undefined) return undefined
+                if (room === undefined) return undefined
                 room.messages = data as Message[]
                 return { ...room }
             })
@@ -87,12 +88,12 @@ const PairProgramming: React.FC = () => {
         'environment-updated': (env: Environment) => {
             // console.log(`environment-updated => data:`, data)
             setRoom((room) => {
-                if(!room) return room
+                if (!room) return room
                 room.environment = env
-                if(env.timestamp >= environment.timestamp){
+                if (env.timestamp >= environment.timestamp) {
                     setEnvironment(room.environment)
                 }
-                return {...room}
+                return { ...room }
             })
         }
     }
@@ -108,7 +109,7 @@ const PairProgramming: React.FC = () => {
     }
 
     const handleJoinToTheRoom = () => {
-        if(!IDRoomInput.length) return
+        if (!IDRoomInput.length) return
         connect().emit('enter-room', IDRoomInput)
         setIDRoom(IDRoomInput)
     }
@@ -130,77 +131,81 @@ const PairProgramming: React.FC = () => {
     }
 
     const handleChangeIDE = (code: string, language: string, stdin: string) => {
-        if(!room) return
-        handleUpdateEnvironment({ sourceCode: code, language, stdin, timestamp: new Date().getTime()})
+        if (!room) return
+        handleUpdateEnvironment({ sourceCode: code, language, stdin, timestamp: new Date().getTime() })
     }
-  
+
 
     return (
-        <div className="m-5">
-            <h1 className="mb-5">Pair Programming</h1>
-            <div className={`w-50 ${IDRoom.length === 0 ? '' : 'visually-hidden'}`}>
-                <div className="row mb-3">
-                    <div className="col-6 d-grid">
-                        <button
-                            className="btn btn-outline-dark btn-lg"
-                            onClick={handleCreateRoom}
-                        >
-                            Criar uma sala
-                        </button>
-                    </div>
-                    <div className="col-6 d-grid">
-                        <button
-                            className="btn btn-outline-dark btn-lg"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target=".join-room"
-                            aria-expanded="false"
-                        >
-                            Entrar em uma sala
-                        </button>
-                    </div>
-                </div>
-                <div className="collapse join-room">
-                    <div className="card card-body">
-                        <h2 className="card-title mb-5">Quase lá!</h2>
-                        <input
-                            onChange={({ target }) => setIDRoomInput(target.value)}
-                            value={IDRoomInput}
-                            type="text"
-                            className="form-control mb-5 form-control-lg"
-                            placeholder="Digite o id sala"
-                        />
-                        <button onClick={handleJoinToTheRoom} className="btn btn-dark btn-lg">Entrar</button>
-                    </div>
-                </div>
-            </div>
+        <React.Fragment>
+            <Header />
 
-            <div className={`${IDRoom.length > 0 ? '' : 'visually-hidden'}`}>
-                <h5 className="mb-2">ID da Sala: <span className="text-muted">{IDRoom}</span></h5>
-                <FormUser
-                    avatar={avatar}
-                    setAvatar={(avatar: Avatar) => {
-                        setAvatar(avatar)
-                        handleUpdateUser(avatar)
-                    }}
-                />
-                <div className="row">
-                    <div className="col-7">
-                        <IDE 
-                            ref={IDERef} 
-                            onChange={handleChangeIDE}
-                        />
+            <div className="m-5">
+                <h1 className="mb-5">Pair Programming</h1>
+                <div className={`w-50 ${IDRoom.length === 0 ? '' : 'visually-hidden'}`}>
+                    <div className="row mb-3">
+                        <div className="col-6 d-grid">
+                            <button
+                                className="btn btn-outline-dark btn-lg"
+                                onClick={handleCreateRoom}
+                            >
+                                Criar uma sala
+                            </button>
+                        </div>
+                        <div className="col-6 d-grid">
+                            <button
+                                className="btn btn-outline-dark btn-lg"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target=".join-room"
+                                aria-expanded="false"
+                            >
+                                Entrar em uma sala
+                            </button>
+                        </div>
                     </div>
-                    <div className="col-5">
-                        <Chat
-                            handleNewMessage={handleNewMessage}
-                            users={room?.users || []}
-                            messages={room?.messages || []}
-                        />
+                    <div className="collapse join-room">
+                        <div className="card card-body">
+                            <h2 className="card-title mb-5">Quase lá!</h2>
+                            <input
+                                onChange={({ target }) => setIDRoomInput(target.value)}
+                                value={IDRoomInput}
+                                type="text"
+                                className="form-control mb-5 form-control-lg"
+                                placeholder="Digite o id sala"
+                            />
+                            <button onClick={handleJoinToTheRoom} className="btn btn-dark btn-lg">Entrar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={`${IDRoom.length > 0 ? '' : 'visually-hidden'}`}>
+                    <h5 className="mb-2">ID da Sala: <span className="text-muted">{IDRoom}</span></h5>
+                    <FormUser
+                        avatar={avatar}
+                        setAvatar={(avatar: Avatar) => {
+                            setAvatar(avatar)
+                            handleUpdateUser(avatar)
+                        }}
+                    />
+                    <div className="row">
+                        <div className="col-7">
+                            <IDE
+                                ref={IDERef}
+                                onChange={handleChangeIDE}
+                            />
+                        </div>
+                        <div className="col-5">
+                            <Chat
+                                handleNewMessage={handleNewMessage}
+                                users={room?.users || []}
+                                messages={room?.messages || []}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </React.Fragment>
     )
 }
 

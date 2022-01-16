@@ -36,11 +36,11 @@ const BranchesSection: React.FC<BranchesSectionProps> = ({
 
     return (
         <div>
-            <h3 className="mt-4">
+            <h4 className="mt-4">
                 <GitIcon />
                 <span className="mx-2">{leaves.length}</span>
                 {leaves.length > 1 ? "Branches" : "Branch"}
-            </h3>
+            </h4>
 
             <div className="list-group">
                 {commits

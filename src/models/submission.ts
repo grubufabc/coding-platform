@@ -8,4 +8,6 @@ export interface Submission {
     stdout?: string
     compile_output?: string
     status?: Status
+    time?: number
+    memory?: number
 }

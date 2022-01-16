@@ -1,6 +1,5 @@
 import React from 'react'
 import { useParams } from 'react-router'
-import { IDEHandles } from '../../../components/IDE'
 import { languages } from '../../../components/IDE/config'
 import { useCodeEnvironment } from '../../../hooks/useCodeEnvironment'
 import CommentsSection from './CommentsSection'
@@ -11,26 +10,39 @@ import IDESection from './IDESection'
 import { State } from './interfaces/state'
 import { useLocation } from 'react-router-dom'
 import { useToast } from '../../../hooks/useToast'
+import GitIcon from './icons/GitIcon'
+import Sidebar from './Sidebar'
+import FacebookIcon from './icons/FacebookIcon'
+import LinkIcon from './icons/LinkIcon'
+import GitHubIcon from './icons/GitHubIcon'
+import ChatLeftText from './icons/ChatLeftText'
+import Toolbar from './Toolbar'
+import { useIDE } from './IDESection/useIDE'
+import PlayIcon from './icons/PlayIcon'
+import PersonIcon from './icons/PersonIcon'
+import TerminalIcon from './icons/TerminalIcon'
 
+const shareIcons = new Map<string, React.FC>([
+    ['facebook', FacebookIcon],
+    ['url', LinkIcon]
+])
 
 const Environment: React.FC = () => {
     const { id: environment_id } = useParams()
     const {
         codeEnvironment,
-        commitCodeEnvironment,
         loadCodeEnvironment,
-        addComment,
-        changeEnvironmentName
+        changeEnvironmentName,
     } = useCodeEnvironment()
-    const IDERef = React.useRef<IDEHandles>(null)
     const [selectedCommitId, setSelectedCommitId] = React.useState<string>("")
     const [username, setUsername] = React.useState<string>('Anônimo')
-    const [comment, setComment] = React.useState<string>('')
     const [commitPath, setCommitPath] = React.useState<string[]>([])
     const location = useLocation()
     const { setMessage: ToastSetMessage } = useToast()
-    const [commitMessage, setCommitMessage] = React.useState<string>('')
+
     const [environmentName, setEnvironmentName] = React.useState<string>('')
+    const { setSourceCode, setLanguageId, setStdin, runCode, loading } = useIDE()
+
 
     const getPathFromCurrentCommitToRoot = (commit_id: string, states: State[]) => {
         const path: string[] = []
@@ -74,125 +86,25 @@ const Environment: React.FC = () => {
     }, [codeEnvironment, location.search])
 
     React.useEffect(() => {
-        const IDE = IDERef.current
         const commit = codeEnvironment.states.find(commit => commit.id === selectedCommitId)
-
-        if (!IDE || !commit) {
+        if (!commit) {
             return
         }
 
         const language = languages.find(language => language.id === commit.code.language_id)
-
         if (!language) {
             return
         }
-        IDE.setCode(commit.code.source_code)
-        IDE.setLanguage(language.name)
-        IDE.setStdin(commit.code.stdin)
-    }, [codeEnvironment.states, selectedCommitId])
 
-    const handleCommit = async () => {
-        const IDE = IDERef.current
-        if (!IDE) return
+        setSourceCode(commit.code.source_code)
+        setLanguageId(commit.code.language_id)
+        setStdin(commit.code.stdin)
 
-        const code = IDE.getCode() || ''
-        const language = IDE.getLanguage()
-        const stdin = IDE.getStdin() || ''
+    }, [codeEnvironment.states, selectedCommitId, setLanguageId, setSourceCode, setStdin])
 
-        if (!language) {
-            ToastSetMessage({
-                title: 'Erro durante o commit',
-                body: 'Selecione uma linguagem de programação',
-                icon: '❌'
-            })
-            return
-        }
-
-        if(!username){
-            ToastSetMessage({
-                title: 'Erro durante o commit',
-                body: 'Digite seu nome para o commit',
-                icon: '❌'
-            })
-            return
-        }
-
-        if (!commitMessage) {
-            ToastSetMessage({
-                title: 'Erro durante o commit',
-                body: 'Digite uma mensagem para o commit',
-                icon: '❌'
-            })
-            return
-        }
-
-        commitCodeEnvironment({
-            code: {
-                source_code: code,
-                language_id: language.id,
-                stdin
-            },
-            parent_commit: selectedCommitId,
-            message: commitMessage,
-            username
-        })
-
-        ToastSetMessage({
-            title: 'Sucesso!',
-            body: 'Commit realizado com sucesso',
-            icon: '✅'
-        })
-
-        setCommitMessage('')
-    }
-
-    const handleAddComment = () => {
-        if (!username) {
-            ToastSetMessage({
-                title: 'Erro ao comentar',
-                body: 'Digite seu nome para comentar',
-                icon: '❌'
-            })
-            return
-        }
-
-        if (!comment) {
-            ToastSetMessage({
-                title: 'Erro ao comentar',
-                body: 'Digite um comentário',
-                icon: '❌'
-            })
-            return
-        }
-
-        if (!selectedCommitId) {
-            ToastSetMessage({
-                title: 'Erro ao comentar',
-                body: 'Selecione um commit para comentar',
-                icon: '❌'
-            })
-        }
-
-        addComment({
-            username,
-            text: comment,
-            commit_id: selectedCommitId.toString()
-        })
-
-        setUsername('Anônimo')
-        setComment('')
-    }
-
-    const handleShareEnvironment = () => {
-        navigator.clipboard.writeText(`${window.location.origin}/code-environment/${codeEnvironment._id}?commit_id=${selectedCommitId}`)
-        ToastSetMessage({
-            title: 'Link copiado!',
-            body: 'Link copiado para a área de transferência!'
-        })
-    }
 
     const handleChangeEnvironmentName = () => {
-        if(!environmentName){
+        if (!environmentName) {
             ToastSetMessage({
                 title: 'Erro ao alterar o nome do ambiente',
                 body: 'Digite um nome para o ambiente',
@@ -201,74 +113,176 @@ const Environment: React.FC = () => {
             setEnvironmentName(codeEnvironment.name)
             return
         }
-        if(environmentName !== codeEnvironment.name){
+        if (environmentName !== codeEnvironment.name) {
             changeEnvironmentName(environmentName)
         }
-    }   
+    }
+
+    const handleShareEnvironment = (format: string) => {
+        const formatters = new Map<string, (url: string) => string>([
+            ['facebook', (url: string) => `https://www.facebook.com/sharer/sharer.php?u=${url}`],
+            ['url', (url: string) => url]
+        ])
+        const formatter = formatters.get(format)
+        const Icon = shareIcons.get(format)
+
+        if (!Icon || !formatter) {
+            return
+        }
+
+        const url = `${window.location.origin}/code-environment/${codeEnvironment._id}?commit_id=${selectedCommitId}`
+        navigator.clipboard.writeText(formatter(url))
+        ToastSetMessage({
+            title: 'Link copiado!',
+            body: 'Link copiado para a área de transferência!',
+            icon: <Icon />
+        })
+    }
 
     return (
-        <div className="m-5 pb-5">
-            <div>
-                
-                <h1>Projeto: 
-                <input
-                    className='border-0 ms-3'
-                    value={environmentName}
-                    onChange={(e) => setEnvironmentName(e.target.value)}
-                    onBlur={() => handleChangeEnvironmentName()}
-                />
+        <div className="d-flex flex-column vh-100">
+            <div className="d-flex px-3 justify-content-between">
+                <h1>
+                    <input
+                        className='border-0'
+                        value={environmentName}
+                        onChange={(e) => setEnvironmentName(e.target.value)}
+                        onBlur={() => handleChangeEnvironmentName()}
+                    />
                 </h1>
-                <h5>ID: {codeEnvironment._id}</h5>
-
-                <button
-                    className="btn btn-outline-dark"
-                    onClick={handleShareEnvironment}
-                >
-                    <ShareIcon />
-                    <span className="ms-2">Compartilhar</span>
-                </button>
-
-                <CommitTreeSection
-                    states={codeEnvironment.states}
-                    setSelectedCommitId={(commit_id: string) => {
-                        setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
-                        setSelectedCommitId(commit_id)
-                    }}
-                    selectedCommitId={selectedCommitId}
-                />
+                <div>
+                    <div className="dropdown">
+                        <button
+                            type="button" id="dropdownMenuButton1"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            className="btn dropdown-toggle d-flex justify-content-center my-2 align-items-center"
+                            style={{ backgroundColor: '#e9ecef', width: '15rem' }}>
+                            <span className="me-2">
+                                <PersonIcon />
+                            </span>
+                            {username}
+                        </button>
+                        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton1" style={{ width: '15rem' }}>
+                            <input
+                                className="form-control"
+                                placeholder="Digite o nome do usuário"
+                                onChange={(e) => setUsername(e.target.value)}
+                                value={username}
+                            />
+                        </div>
+                    </div>
+                </div>
+                <div className="d-flex">
+                    <button
+                        className="btn d-flex my-2 px-4 align-items-center me-2"
+                        style={{ backgroundColor: '#e9ecef' }}
+                        type="button"
+                        data-bs-toggle="collapse"
+                        data-bs-target="#terminal"
+                        aria-expanded="false"
+                        aria-controls="terminal"
+                    >
+                        <TerminalIcon />
+                    </button>
+                    <button
+                        className="btn d-flex my-2 px-4 align-items-center"
+                        style={{ backgroundColor: '#e9ecef' }}
+                        onClick={() => runCode()}
+                    >
+                        { loading ? (
+                            <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        ) : <PlayIcon /> }
+                    </button>
+                </div>
             </div>
+            <div className="flex-grow-1" style={{ overflow: 'hidden' }}>
+                <div className="d-flex h-100">
+                    <Sidebar.Container>
+                        <Sidebar.Tabs>
+                            <Sidebar.Tab id="share">
+                                <ShareIcon />
+                            </Sidebar.Tab>
+                            <Sidebar.Tab id="git">
+                                <GitHubIcon />
+                            </Sidebar.Tab>
+                            <Sidebar.Tab id="commit-tree">
+                                <GitIcon />
+                            </Sidebar.Tab>
+                            <Sidebar.Tab id="comments">
+                                <ChatLeftText />
+                            </Sidebar.Tab>
+                        </Sidebar.Tabs>
 
-            <div className="row mt-5">
-                <CommitsSection
-                    handleCommit={handleCommit}
-                    states={codeEnvironment.states}
-                    selectedCommitId={selectedCommitId}
-                    setSelectedCommitId={(commit_id: string) => {
-                        setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
-                        setSelectedCommitId(commit_id)
-                    }}
-                    commitMessage={commitMessage}
-                    setCommitMessage={setCommitMessage}
-                    username={username}
-                    setUsername={setUsername}
-                />
-                <IDESection
-                    IDERef={IDERef}
-                    commitPath={commitPath}
-                    setSelectedCommitId={setSelectedCommitId}
-                    selectedCommitId={selectedCommitId}
-                />
-            </div>
+                        <Sidebar.Panes>
+                            <Sidebar.Pane id="share">
+                                <div>
+                                    <h2 className="mb-5">Compartilhar</h2>
+                                    <div className="btn-group" role="group" >
+                                        {Array.from(shareIcons.entries()).map(([format, Icon], index) => {
+                                            return (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-dark px-3"
+                                                    key={index}
+                                                    onClick={() => handleShareEnvironment(format)}
+                                                >
+                                                    <Icon />
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+                            </Sidebar.Pane>
+                            <Sidebar.Pane id="git">
+                                <div>
+                                    <h2 className="mb-5">Git</h2>
+                                    <CommitsSection
+                                        selectedCommitId={selectedCommitId}
+                                        setSelectedCommitId={setSelectedCommitId}
+                                        username={username}
+                                        setUsername={setUsername}
+                                    />
+                                </div>
+                            </Sidebar.Pane>
+                            <Sidebar.Pane id="commit-tree">
+                                <h2 className="mb-5">Árvore de commits</h2>
+                                <CommitTreeSection
+                                    states={codeEnvironment.states}
+                                    selectedCommitId={selectedCommitId}
+                                    setSelectedCommitId={(commit_id: string) => {
+                                        setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
+                                        setSelectedCommitId(commit_id)
+                                    }}
+                                />
+                            </Sidebar.Pane>
+                            <Sidebar.Pane id="comments">
+                                <div className="d-flex flex-column h-100">
+                                    <h2 className="mb-5">Discussão</h2>
+                                    <div className="flex-grow-1">
+                                        <CommentsSection
+                                            username={username}
+                                            selectedCommitId={selectedCommitId}
+                                        />
+                                    </div>
+                                </div>
+                            </Sidebar.Pane>
+                        </Sidebar.Panes>
+                    </Sidebar.Container>
 
-            <CommentsSection
-                comments={codeEnvironment.comments
-                    .filter(comment => selectedCommitId && comment.commit_id === selectedCommitId.toString())
-                }
-                comment={comment}
-                setComment={setComment}
-                handleAddComment={handleAddComment}
-            />
-        </div>
+                    <div className="flex-grow-1 border-start border-2">
+                        <IDESection
+                            commitPath={commitPath}
+                            setSelectedCommitId={setSelectedCommitId}
+                            selectedCommitId={selectedCommitId}
+                        />
+                    </div>
+                </div>
+            </div >
+            <Toolbar />
+        </div >
     )
 }
 

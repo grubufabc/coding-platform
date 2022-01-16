@@ -1,35 +1,84 @@
 import ClockHistoryIcon from "./ClockHistoryIcon"
-import { State } from "../interfaces/state"
 import CommitDisplay from "./CommitDisplay"
 import { buildGraphFromCommits } from "../CommitTreeSection"
 import React from "react"
 import Input from "../../../../components/Form/Input"
 import BranchesSection from "./BranchesSection"
+import { useToast } from "../../../../hooks/useToast"
+import { useIDE } from "../IDESection/useIDE"
+import { useCodeEnvironment } from "../../../../hooks/useCodeEnvironment"
 
 
 interface CommitsSectionProps {
-    handleCommit: () => void
-    states: State[]
     selectedCommitId: string
     setSelectedCommitId: (commit_id: string) => void
-    commitMessage: string
-    setCommitMessage: (commitMessage: string) => void
     username: string
     setUsername: React.Dispatch<React.SetStateAction<string>>
 }
 
 const CommitsSection: React.FC<CommitsSectionProps> = ({
-    handleCommit,
-    states,
     selectedCommitId,
     setSelectedCommitId,
-    commitMessage,
-    setCommitMessage,
     username,
     setUsername
 }) => {
+    const [commitMessage, setCommitMessage] = React.useState<string>('')
+    const { setMessage: ToastSetMessage } = useToast()
+    const { sourceCode, languageId, stdin } = useIDE()
+    const { codeEnvironment, commitCodeEnvironment } = useCodeEnvironment()
+    const { states } = codeEnvironment
+
+    const handleCommit = async () => {
+        if (!languageId) {
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Selecione uma linguagem de programação',
+                icon: '❌'
+            })
+            return
+        }
+
+        if (!username) {
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Digite seu nome para o commit',
+                icon: '❌'
+            })
+            return
+        }
+
+        if (!commitMessage) {
+            ToastSetMessage({
+                title: 'Erro durante o commit',
+                body: 'Digite uma mensagem para o commit',
+                icon: '❌'
+            })
+            return
+        }
+
+        commitCodeEnvironment({
+            code: {
+                source_code: sourceCode,
+                language_id: languageId,
+                stdin
+            },
+            parent_commit: selectedCommitId,
+            message: commitMessage,
+            username
+        })
+
+        ToastSetMessage({
+            title: 'Sucesso!',
+            body: 'Commit realizado com sucesso',
+            icon: '✅'
+        })
+
+        setCommitMessage('')
+    }
+
+
     return (
-        <div className="col-3">
+        <div>
             <Input
                 value={username}
                 setValue={setUsername}
@@ -62,12 +111,12 @@ const CommitsSection: React.FC<CommitsSectionProps> = ({
                 />
             </div>
 
-            <div>
-                <h3 className="mt-4">
+            <div className="mb-5 pb-5">
+                <h4 className="mt-4">
                     <ClockHistoryIcon />
                     <span className="mx-2">{states.length}</span>
                     {states.length > 1 ? "Commits" : "Commit"}
-                </h3>
+                </h4>
 
                 <div className="list-group">
                     {[...states].reverse().map((commit, index) => (

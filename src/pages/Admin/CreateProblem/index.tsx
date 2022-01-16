@@ -1,5 +1,6 @@
 import React from 'react'
-import { POST_PROBLEM as API_POST_PROBLEM} from '../../../api'
+import { POST_PROBLEM as API_POST_PROBLEM } from '../../../api'
+import Header from '../../../components/Header'
 import ProgressSteps, { ProgressStep } from '../../../components/ProgressSteps'
 import useFetch from '../../../hooks/useFetch'
 import { useToast } from '../../../hooks/useToast'
@@ -42,38 +43,41 @@ const CreateProblem: React.FC = () => {
         })
         await request(url, options)
 
-        ToastSetMessage({ 
+        ToastSetMessage({
             title: 'Tudo certo!',
             body: 'Problema salvo com sucesso'
         })
     }
 
     return (
-        <div className="min-vh-100 pb-5">
-            <ProgressSteps>
-                <ProgressStep>
-                    <DescriptionForm
-                        title={title}
-                        setTitle={setTitle}
-                        setDescription={setDescription}
-                    />
-                </ProgressStep>
-                <ProgressStep>
-                    <TestCasesForm
-                        testCases={testCases}
-                        setTestCases={setTestCases}
-                    />
-                </ProgressStep>
-                <ProgressStep>
-                    <Review 
-                        title={title}
-                        testCases={testCases}
-                        handleCreateProblem={handleCreateProblem}
-                        description={description}
-                    />
-                </ProgressStep>
-            </ProgressSteps>
-        </div>
+        <React.Fragment>
+            <Header />
+            <div className="min-vh-100 pb-5">
+                <ProgressSteps>
+                    <ProgressStep>
+                        <DescriptionForm
+                            title={title}
+                            setTitle={setTitle}
+                            setDescription={setDescription}
+                        />
+                    </ProgressStep>
+                    <ProgressStep>
+                        <TestCasesForm
+                            testCases={testCases}
+                            setTestCases={setTestCases}
+                        />
+                    </ProgressStep>
+                    <ProgressStep>
+                        <Review
+                            title={title}
+                            testCases={testCases}
+                            handleCreateProblem={handleCreateProblem}
+                            description={description}
+                        />
+                    </ProgressStep>
+                </ProgressSteps>
+            </div>
+        </React.Fragment>
     )
 }
 
