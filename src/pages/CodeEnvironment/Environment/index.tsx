@@ -240,7 +240,10 @@ const Environment: React.FC = () => {
                                     <h2 className="mb-5">Git</h2>
                                     <CommitsSection
                                         selectedCommitId={selectedCommitId}
-                                        setSelectedCommitId={setSelectedCommitId}
+                                        setSelectedCommitId={(commit_id: string) => {
+                                            setCommitPath(getPathFromCurrentCommitToRoot(commit_id, codeEnvironment.states))
+                                            setSelectedCommitId(commit_id)
+                                        }}
                                         username={username}
                                     />
                                 </div>

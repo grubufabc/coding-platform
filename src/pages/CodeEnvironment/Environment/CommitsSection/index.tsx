@@ -17,7 +17,7 @@ interface CommitsSectionProps {
 const CommitsSection: React.FC<CommitsSectionProps> = ({
     selectedCommitId,
     setSelectedCommitId,
-    username
+    username,
 }) => {
     const [commitMessage, setCommitMessage] = React.useState<string>('')
     const { setMessage: ToastSetMessage } = useToast()
