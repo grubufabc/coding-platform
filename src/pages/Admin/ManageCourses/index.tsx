@@ -57,7 +57,10 @@ const Modal: React.FC<ModalProps> = ({ open, setOpen, title, body, actionConfirm
                         <button
                             type="button"
                             className="btn btn-outline-danger"
-                            onClick={actionConfirm}
+                            onClick={() => {
+                                actionConfirm()
+                                setOpen(false)
+                            }}
                         >
                             Excluir
                         </button>
