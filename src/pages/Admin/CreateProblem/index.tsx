@@ -1,6 +1,5 @@
 import React from 'react'
 import { POST_PROBLEM as API_POST_PROBLEM } from '../../../api'
-import Header from '../../../components/Header'
 import ProgressSteps, { ProgressStep } from '../../../components/ProgressSteps'
 import useFetch from '../../../hooks/useFetch'
 import { useToast } from '../../../hooks/useToast'
@@ -51,7 +50,6 @@ const CreateProblem: React.FC = () => {
 
     return (
         <React.Fragment>
-            <Header />
             <div className="min-vh-100 pb-5">
                 <ProgressSteps>
                     <ProgressStep>

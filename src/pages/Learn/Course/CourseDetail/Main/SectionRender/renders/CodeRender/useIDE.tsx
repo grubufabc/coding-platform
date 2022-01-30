@@ -1,8 +1,8 @@
+import axios from 'axios'
 import React from 'react'
-import { API_URL } from '../../../../api'
-import axios from "axios"
-import { Submission } from "../../../../models/submission";
-import { b64_to_utf8 } from '../../../../utils';
+import { API_URL } from '../../../../../../../../api'
+import { Submission } from '../../../../../../../../models/submission'
+import { b64_to_utf8 } from '../../../../../../../../utils'
 
 interface IDEProviderProps {
     children: React.ReactNode

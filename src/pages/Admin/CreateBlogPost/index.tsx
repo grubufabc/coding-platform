@@ -3,7 +3,6 @@ import { POST_BLOG_POST as API_POST_BLOG_POST } from '../../../api'
 import Input from '../../../components/Form/Input'
 import InputImage, { InputImageHandles } from '../../../components/Form/InputImage'
 import TextArea from '../../../components/Form/TextArea'
-import Header from '../../../components/Header'
 import MarkdownRender from '../../../components/MarkdownRender'
 import useFetch from '../../../hooks/useFetch'
 
@@ -44,10 +43,8 @@ const CreateBlogPost = () => {
 
     return (
         <React.Fragment>
-            <Header />
             <div>
                 <h1 className="mb-5">Nova Postagem</h1>
-
                 <Input
                     value={title}
                     setValue={setTitle}

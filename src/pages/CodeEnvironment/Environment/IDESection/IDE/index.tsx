@@ -4,7 +4,6 @@ import { useIDE } from '../useIDE'
 import { languages } from '../../../../../components/IDE/config'
 import './style.css'
 
-
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/neat.css'
 import 'codemirror/mode/clike/clike'
