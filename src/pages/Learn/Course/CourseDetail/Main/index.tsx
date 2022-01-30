@@ -8,7 +8,7 @@ interface MainProps {
 
 const Main: React.FC<MainProps> = ({ chapter }) => {
     return (
-        <div className="flex-grow-1 px-5">
+        <div className="flex-grow-1 px-5" style={{ maxWidth: '55rem' }}>
             { chapter.content.map((section, index) => (
                 <SectionRender key={index} section={section} />
             )) }

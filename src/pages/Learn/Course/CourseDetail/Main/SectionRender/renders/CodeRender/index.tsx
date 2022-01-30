@@ -45,8 +45,14 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({ sourceCode: sourc
         memory,
         setSourceCode,
         setStdin,
-        runCode
+        runCode,
+        setLanguageId,
+        loading
     } = useIDE()
+
+    React.useEffect(() => {
+        setLanguageId(language_id)
+    }, [language_id, setLanguageId])
 
     React.useEffect(() => {
         if (!loaded) {
@@ -81,7 +87,11 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({ sourceCode: sourc
                         className="btn btn-outline-dark p-1 px-4"
                         onClick={runCode}
                     >
-                        <PlayIcon />
+                        { loading ? (
+                            <div className="spinner-border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                          </div>
+                        ) : <PlayIcon /> }
                     </button>
                 </div>
             </div>

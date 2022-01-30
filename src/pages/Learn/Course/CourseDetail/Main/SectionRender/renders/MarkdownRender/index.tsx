@@ -11,7 +11,7 @@ interface MarkdownRenderProps {
 
 const MarkdownRender: React.FC<MarkdownRenderProps> = ({ text }) => {
     return (
-        <div className="mb-3" style={{ width: '55rem' }}>
+        <div className="mb-3">
             <article className="markdown-body">
                 <ReactMarkdown children={text} remarkPlugins={[remarkGfm]} />
             </article>
