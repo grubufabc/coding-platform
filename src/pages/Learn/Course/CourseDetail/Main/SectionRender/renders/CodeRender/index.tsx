@@ -112,7 +112,7 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({ sourceCode: sourc
                 }}
             />
             <div>
-                <div className="border-top border-5 border-dark d-flex" style={{ height: '20rem' }}>
+                <div className="border-top border-5 border-dark d-flex">
                     <div className="w-50 px-3 pt-3">
                         <h5 className="p-0 m-0 py-2">stdin</h5>
                         <textarea
