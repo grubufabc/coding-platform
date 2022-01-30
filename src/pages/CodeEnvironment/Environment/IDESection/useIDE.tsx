@@ -1,8 +1,8 @@
 import React from 'react'
-import { API_URL } from '../../../../api'
+import { JUDGE0_API_URL } from '../../../../api'
 import axios from "axios"
 import { Submission } from "../../../../models/submission";
-import { b64_to_utf8 } from '../../../../utils';
+import { b64_to_utf8, utf8_to_b64 } from '../../../../utils';
 
 interface IDEProviderProps {
     children: React.ReactNode
@@ -49,10 +49,10 @@ const IDEProvider: React.FC<IDEProviderProps> = ({ children }) => {
         setMemory(0)
 
         const response = await axios
-            .post(`${API_URL}/codes`, {
+            .post(`${JUDGE0_API_URL}/submissions/?base64_encoded=true&wait=true`, {
                 language_id: languageId,
-                source_code: sourceCode,
-                stdin
+                source_code: utf8_to_b64(sourceCode),
+                stdin: utf8_to_b64(stdin)
             })
 
         setLoading(false)

@@ -4,7 +4,6 @@ import Problems from './pages/Problems'
 import ProblemDetail from './pages/Problems/ProblemDetail'
 import Login from './pages/Login'
 import LandingPage from './pages/LandingPage'
-import Playground from './pages/Playground'
 import Admin from './pages/Admin'
 import CreateProblem from './pages/Admin/CreateProblem'
 import PairProgramming from './pages/PairProgramming'
@@ -51,7 +50,6 @@ const App: React.FC = () => {
                                 <Route path="" element={<Problems />} />
                                 <Route path=":id" element={<ProblemDetail />} />
                             </Route>
-                            <Route path="playground" element={<Playground />} />
                             <Route path="pair-programming" element={<PairProgramming />} />
                             <Route path="admin" element={<Admin />}>
                                 <Route path="create-problem" element={<CreateProblem />} />

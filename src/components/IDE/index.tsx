@@ -9,6 +9,7 @@ import { CompileOutputHandler, StderrHandler, StdoutHandler, TimeLimitExceededHa
 import { StdoutState } from './submission-handle/stdout-state'
 import { Language } from '../../models/language'
 import { useToast } from '../../hooks/useToast'
+import { utf8_to_b64 } from '../../utils'
 
 
 export interface IDEHandles {
@@ -28,7 +29,7 @@ interface IDEProps {
     classNameCodeEditor?: string
 }
 
-const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, classNameCodeEditor="" }, ref) => {
+const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, classNameCodeEditor = "" }, ref) => {
     const { request, loading } = useFetch()
 
     const [stdinIDE, setStdinIDE] = React.useState<string>('')
@@ -65,7 +66,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
     }
 
     const handleChangeCodeEditor = (code: string, language: string, timestamp: number) => {
-        if (onChange){
+        if (onChange) {
             onChange(code, language, stdinIDE)
             setCurrTimestamp(timestamp)
         }
@@ -108,7 +109,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
         const validateCode = () => (textEditor.getCode() || '').length > 0
         const validateLanguage = () => textEditor.getLanguage() !== undefined
 
-        if(!validateCode()){
+        if (!validateCode()) {
             ToastSetMessage({
                 title: 'Erro durante a execução',
                 body: 'O código não pode ser vazio',
@@ -116,7 +117,7 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
             })
         }
 
-        if(!validateLanguage()){
+        if (!validateLanguage()) {
             ToastSetMessage({
                 title: 'Erro durante a execução',
                 body: 'Uma linguagem deve ser selecionada',
@@ -135,8 +136,8 @@ const IDE: React.ForwardRefRenderFunction<IDEHandles, IDEProps> = ({ onChange, c
 
         const { url, options } = API_POST_SUBMISSION({
             language_id: textEditor.getLanguage()!.id,
-            source_code: textEditor.getCode(),
-            stdin: stdinIDE
+            source_code: utf8_to_b64(textEditor.getCode()),
+            stdin: utf8_to_b64(stdinIDE)
         })
         const { json } = await request(url, options)
         const submission = json as Submission

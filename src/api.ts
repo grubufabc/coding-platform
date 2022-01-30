@@ -5,7 +5,7 @@ import { Submission } from './models/submission'
 // export const API_URL = 'http://localhost:5000'
 
 export const API_URL = 'https://backend-coding-platform.herokuapp.com'
-
+export const JUDGE0_API_URL = 'https://ce.judge0.com'
 
 function getToken() {
     return localStorage.getItem('token') || ''
@@ -17,7 +17,7 @@ function getAuthProvider() {
 
 export function POST_SUBMISSION(submission: Submission){
     return {
-        url: `${API_URL}/codes`,
+        url: `${JUDGE0_API_URL}/submissions/?base64_encoded=true&wait=true`,
         options: {
             method: 'POST',
             headers: {

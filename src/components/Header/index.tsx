@@ -16,7 +16,6 @@ const Header: React.FC = () => {
                 <span>
                     <Link to="/learn" className="text-muted text-decoration-none fw-bold text-dark mx-4">Cursos</Link>
                     <Link to="/problems" className="text-muted text-decoration-none fw-bold text-dark me-4">Problemas</Link>
-                    <Link to="/playground" className="text-muted text-decoration-none fw-bold text-dark mx-4">Playground</Link>
                     <Link to="/pair-programming" className="text-muted text-decoration-none fw-bold text-dark mx-4">Pair programming</Link>
                     <Link to="/blog" className="text-muted text-decoration-none fw-bold text-dark mx-4">Blog</Link>
                     <Link to="/code-environment" className="text-muted text-decoration-none fw-bold text-dark mx-4">Ambiente de programação</Link>
