@@ -6,7 +6,6 @@ import Login from './pages/Login'
 import LandingPage from './pages/LandingPage'
 import Admin from './pages/Admin'
 import CreateProblem from './pages/Admin/CreateProblem'
-import PairProgramming from './pages/PairProgramming'
 import Blog from './pages/Blog'
 import Post from './pages/Blog/Post'
 import CreateBlogPost from './pages/Admin/CreateBlogPost'
@@ -22,6 +21,7 @@ import CreateCourse from './pages/Admin/CreateCourse'
 import ManageCourses from './pages/Admin/ManageCourses'
 import CourseDetail from './pages/Learn/Course/CourseDetail'
 import EditCourse from './pages/Admin/ManageCourses/EditCourse'
+import { PairProgramming, PairProgrammingMenu } from './pages/PairProgramming'
 
 
 const App: React.FC = () => {
@@ -50,7 +50,10 @@ const App: React.FC = () => {
                                 <Route path="" element={<Problems />} />
                                 <Route path=":id" element={<ProblemDetail />} />
                             </Route>
-                            <Route path="pair-programming" element={<PairProgramming />} />
+                            <Route path="pair-programming" element={<Outlet/>}>
+                                <Route path="" element={<PairProgrammingMenu />} />
+                                <Route path=":id" element={<PairProgramming/>}/>
+                            </Route>
                             <Route path="admin" element={<Admin />}>
                                 <Route path="create-problem" element={<CreateProblem />} />
                                 <Route path="create-blog-post" element={<CreateBlogPost />} />

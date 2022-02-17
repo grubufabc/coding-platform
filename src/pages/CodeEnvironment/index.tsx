@@ -1,43 +1,40 @@
 import React from 'react'
 import { useCodeEnvironment } from '../../hooks/useCodeEnvironment'
 import { useNavigate } from 'react-router-dom';
+import Header from '../../components/Header';
 
 const CodeEnvironment: React.FC = () => {
     const { createCodeEnvironment } = useCodeEnvironment()
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const [loading, setLoading] = React.useState(false)
 
     const handleCreateCodeEnvironment = async () => {
+        setLoading(true)
         const codeEnvironment = await createCodeEnvironment()
+        setLoading(false)
         navigate(`${codeEnvironment._id}`, { replace: true })
     }
 
     return (
-        <div className="m-5">
-            <h1 className="mb-5">Ambiente de Programação</h1>
-            <div className={`w-50`}>
-                <div className="row mb-3">
-                    <div className="col-6 d-grid">
-                        <button
-                            className="btn btn-outline-dark btn-lg"
-                            onClick={handleCreateCodeEnvironment}
-                        >
-                            Novo ambiente
-                        </button>
+        <React.Fragment>
+            <Header />
+            <div className="m-5">
+                <h1 className="mb-5">Ambiente de Programação</h1>
+                {loading ? (
+                    <div className="d-flex align-items-center">
+                        <strong>Carregando ambiente de programação...</strong>
+                        <div className="spinner-border ms-5" role="status" aria-hidden="true"></div>
                     </div>
-                    <div className="col-6 d-grid">
-                        <button
-                            className="btn btn-outline-dark btn-lg"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target=".join-room"
-                            aria-expanded="false"
-                        >
-                            Conectar a um ambiente
-                        </button>
-                    </div>
-                </div>
+                ) : (
+                    <button
+                        className="btn btn-outline-dark btn-lg"
+                        onClick={handleCreateCodeEnvironment}
+                    >
+                        Novo ambiente
+                    </button>
+                )}
             </div>
-        </div>
+        </React.Fragment>
     )
 }
 

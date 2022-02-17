@@ -10,7 +10,7 @@ interface FormUserProps {
 const FormUser: React.FC<FormUserProps> = ({ avatar, setAvatar }) => {
 
     return (
-        <div className="w-25 mb-5">
+        <div className="mb-3">
             <div className="input-group mb-3">
                 <input
                     style={{ color: avatar.color }}
