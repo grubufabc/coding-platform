@@ -14,7 +14,10 @@ interface MainProps {
 
 const Main: React.FC<MainProps> = ({ problem, lastSubmissions }) => {
 	return (
-		<div className="col-4 px-3" style={{ overflow: 'scroll', height: '100%' }}>
+		<div
+			className="col-4 px-3 mt-2"
+			style={{ overflow: 'scroll', height: '100%' }}
+		>
 			<Tabs
 				tabs={[
 					{

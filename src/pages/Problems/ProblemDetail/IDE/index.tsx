@@ -9,7 +9,7 @@ interface IDEProps {
 
 const IDE: React.FC<IDEProps> = ({ IDERef, handleSubmit, judging }) => {
 	return (
-		<div className="col-8 p-0 px-3">
+		<div className="col-8 p-0 px-3 mt-3">
 			<GenericIDE ref={IDERef} />
 			{judging ? (
 				<button
@@ -19,10 +19,7 @@ const IDE: React.FC<IDEProps> = ({ IDERef, handleSubmit, judging }) => {
 					Processando...
 				</button>
 			) : (
-				<button
-					onClick={handleSubmit}
-					className="btn btn-outline-dark btn-lg mt-3"
-				>
+				<button onClick={handleSubmit} className="btn btn-success btn-lg mt-3">
 					Enviar solução
 				</button>
 			)}
