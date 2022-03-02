@@ -15,33 +15,24 @@ const Header: React.FC = () => {
 				</Link>
 
 				<span>
-					<Link
-						to="/learn"
-						className="text-light text-decoration-none fw-bold mx-4"
-					>
+					<Link to="/learn" className="text-light text-decoration-none mx-4">
 						Cursos
 					</Link>
-					<Link
-						to="/problems"
-						className="text-light text-decoration-none fw-bold me-4"
-					>
+					<Link to="/problems" className="text-light text-decoration-none me-4">
 						Problemas
 					</Link>
 					<Link
 						to="/pair-programming"
-						className="text-light text-decoration-none fw-bold mx-4"
+						className="text-light text-decoration-none mx-4"
 					>
 						Pair programming
 					</Link>
-					<Link
-						to="/blog"
-						className="text-light text-decoration-none fw-bold mx-4"
-					>
+					<Link to="/blog" className="text-light text-decoration-none mx-4">
 						Blog
 					</Link>
 					<Link
 						to="/code-environment"
-						className="text-light text-decoration-none fw-bold mx-4"
+						className="text-light text-decoration-none mx-4"
 					>
 						Ambiente de programação
 					</Link>
@@ -52,13 +43,13 @@ const Header: React.FC = () => {
 						<React.Fragment>
 							<Link
 								to="/admin"
-								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white fw-bold me-3"
+								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white me-3"
 							>
 								Admin
 							</Link>
 							<Link
 								to="/logout"
-								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white fw-bold"
+								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white"
 							>
 								Sair
 							</Link>
@@ -66,7 +57,7 @@ const Header: React.FC = () => {
 					) : (
 						<Link
 							to="/login"
-							className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white fw-bold"
+							className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white"
 						>
 							Entrar
 						</Link>
