@@ -6,11 +6,11 @@ const Header: React.FC = () => {
   const { authData } = React.useContext(AuthContext);
 
   return (
-    <header className="text-light px-4 bg-dark" style={{ height: "4rem" }}>
+    <header className="text-light px-4 bg-dark" style={{ height: "4.5rem" }}>
       <div className="d-flex justify-content-between align-items-center h-100">
         <Link to="/" className="text-decoration-none">
           <span className="h1 text-light">
-            <img src="grub_logo.png" alt="GRUB" height="50rem" />
+            <img src="/grub_logo.png" alt="GRUB" height="50rem" />
           </span>
         </Link>
 
