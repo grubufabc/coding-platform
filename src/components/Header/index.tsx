@@ -43,13 +43,13 @@ const Header: React.FC = () => {
 						<React.Fragment>
 							<Link
 								to="/admin"
-								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white me-3"
+								className="text-light btn btn-outline-dark text-decoration-none border-white me-2"
 							>
 								Admin
 							</Link>
 							<Link
 								to="/logout"
-								className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white"
+								className="text-light btn btn-outline-dark text-decoration-none border-white"
 							>
 								Sair
 							</Link>
@@ -57,7 +57,7 @@ const Header: React.FC = () => {
 					) : (
 						<Link
 							to="/login"
-							className="text-light rounded-pill py-2 px-4 btn btn-outline-dark text-decoration-none border-white"
+							className="text-light btn btn-outline-dark text-decoration-none border-white"
 						>
 							Entrar
 						</Link>
