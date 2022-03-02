@@ -1,15 +1,15 @@
-.menu-admin.list-group-item{
-    color: black;
-    background-color: white;
+.menu-admin.list-group-item {
+	color: black;
+	background-color: white;
 }
 
 .menu-admin.list-group-item:hover {
-    color: white;
-    background-color: black;
+	color: white;
+	background-color: black;
 }
 
 .menu-admin.list-group-item.active {
-    color: white;
-    background-color: black;
-    border: none;
+	color: white;
+	background-color: black;
+	border: none;
 }

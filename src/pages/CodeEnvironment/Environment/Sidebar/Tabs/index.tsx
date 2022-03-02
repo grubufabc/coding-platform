@@ -1,16 +1,11 @@
-import React from 'react'
-
+import React from 'react';
 
 interface TabsProps {
-    children: React.ReactNode
+	children: React.ReactNode;
 }
 
 const Tabs: React.FC<TabsProps> = ({ children }) => {
-    return (
-        <div>
-            {children}
-        </div>
-    )
-}
+	return <div>{children}</div>;
+};
 
-export default Tabs
+export default Tabs;

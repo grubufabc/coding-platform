@@ -1,6 +1,6 @@
-import { Section } from "./Section";
+import { Section } from './Section';
 
 export interface Markdown extends Section {
-    type: 'markdown'
-    text: string
+	type: 'markdown';
+	text: string;
 }

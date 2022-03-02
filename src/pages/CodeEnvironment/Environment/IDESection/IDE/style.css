@@ -1,9 +1,9 @@
-.code-wrapper-100percent> :first-child {
-    border-radius: 5px !important;
-    height: 100% !important;
+.code-wrapper-100percent > :first-child {
+	border-radius: 5px !important;
+	height: 100% !important;
 }
 
 .code-wrapper-100percent {
-    height: 100% !important;
-    width: 100% !important;
+	height: 100% !important;
+	width: 100% !important;
 }
