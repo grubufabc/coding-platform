@@ -1,19 +1,19 @@
-import React from 'react'
-import { Chapter } from '../../interfaces/Chapter'
-import SectionRender from './SectionRender'
+import React from 'react';
+import { Chapter } from '../../interfaces/Chapter';
+import SectionRender from './SectionRender';
 
 interface MainProps {
-    chapter: Chapter
+	chapter: Chapter;
 }
 
 const Main: React.FC<MainProps> = ({ chapter }) => {
-    return (
-        <div className="flex-grow-1 px-5" style={{ maxWidth: '55rem' }}>
-            { chapter.content.map((section, index) => (
-                <SectionRender key={index} section={section} />
-            )) }
-        </div>
-    )
-}
+	return (
+		<div className="flex-grow-1 px-5" style={{ maxWidth: '55rem' }}>
+			{chapter.content.map((section, index) => (
+				<SectionRender key={index} section={section} />
+			))}
+		</div>
+	);
+};
 
-export default Main
+export default Main;

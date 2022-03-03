@@ -1,4 +1,4 @@
 export interface StdoutState {
-    message: string
-    error: boolean
+	message: string;
+	error: boolean;
 }

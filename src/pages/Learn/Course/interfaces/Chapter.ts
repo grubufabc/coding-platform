@@ -1,6 +1,6 @@
-import { Section } from "./Section";
+import { Section } from './Section';
 
 export interface Chapter {
-    title: string
-    content: Section[]
+	title: string;
+	content: Section[];
 }

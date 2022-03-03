@@ -1,36 +1,35 @@
-import React from 'react'
+import React from 'react';
 
 interface SidebarProviderProps {
-    children: React.ReactNode
+	children: React.ReactNode;
 }
 
-
 interface SidebarContextData {
-    selectedPane: string
-    selectPane: (pane: string) => void
+	selectedPane: string;
+	selectPane: (pane: string) => void;
 }
 
 const SidebarContext = React.createContext<SidebarContextData>(
-    {} as SidebarContextData
-)
+	{} as SidebarContextData
+);
 
 const SidebarProvider: React.FC<SidebarProviderProps> = ({ children }) => {
-    const [selectedPane, setSelectPane] = React.useState<string>('')
+	const [selectedPane, setSelectPane] = React.useState<string>('');
 
-    const selectPane = (pane: string) => {
-        setSelectPane(pane === selectedPane ? '' : pane)
-    }
+	const selectPane = (pane: string) => {
+		setSelectPane(pane === selectedPane ? '' : pane);
+	};
 
-    return (
-        <SidebarContext.Provider value={{ selectedPane, selectPane }}>
-            {children}
-        </SidebarContext.Provider>
-    )
-}
+	return (
+		<SidebarContext.Provider value={{ selectedPane, selectPane }}>
+			{children}
+		</SidebarContext.Provider>
+	);
+};
 
 const useSidebar = () => {
-    const context = React.useContext(SidebarContext)
-    return context
-}
+	const context = React.useContext(SidebarContext);
+	return context;
+};
 
-export { SidebarProvider, useSidebar }
+export { SidebarProvider, useSidebar };
