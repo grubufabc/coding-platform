@@ -1,0 +1,4 @@
+.nowrap-textarea {
+	white-space: nowrap;
+	overflow-x: auto;
+}

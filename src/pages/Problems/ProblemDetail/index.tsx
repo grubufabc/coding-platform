@@ -1,94 +1,132 @@
-import React from 'react'
-import { useParams } from 'react-router'
-import useFetch from '../../../hooks/useFetch'
-import { Problem } from '../../../models/problem'
-import { GET_PROBLEM as API_GET_PROBLEM, POST_SOLUTION as API_POST_SOLUTION } from '../../../api'
-import MarkdownRender from '../../../components/MarkdownRender'
-import TestCaseItem from '../../../components/TestCaseItem'
-import IDE, { IDEHandles } from '../../../components/IDE'
-import Toast, { ToastHandles } from '../../../components/Toast'
-import { utf8_to_b64 } from '../../../utils'
+import React, { useCallback } from 'react';
+import { useParams } from 'react-router';
+import useFetch from '../../../hooks/useFetch';
+import { Problem } from '../../../models/problem';
+import {
+	GET_PROBLEM as API_GET_PROBLEM,
+	GET_SUBMISSIONS as API_GET_SUBMISSIONS,
+	POST_SOLUTION as API_POST_SOLUTION,
+} from '../../../api';
+import { IDEHandles } from '../../../components/IDE';
+import Main from './Main';
+import IDE from './IDE';
+import { AuthContext } from '../../../providers/AuthProvider';
+import { useToast } from '../../../hooks/useToast';
+import Header from '../../../components/Header';
 
-
-const ProblemDetail: React.FC = () => {
-    const { request } = useFetch()
-    const { id: idProblem } = useParams()
-    const [problem, setProblem] = React.useState<Problem>()
-    const toastRef = React.useRef<ToastHandles>(null)
-    const IDERef = React.useRef<IDEHandles>(null)
-    const [stateProblem, setStateProblem] = React.useState<Boolean>()
-
-    React.useEffect(() => {
-        const getProblem = async () => {
-            const { url, options } = API_GET_PROBLEM(idProblem || '')
-            const { json } = await request(url, options)
-            setProblem(json as Problem)
-        }
-        if(problem === undefined) getProblem()
-    }, [idProblem, problem, request])
-
-
-    const handleSubmit = async () => {
-        const IDE = IDERef.current
-        const toast = toastRef.current
-        if(!IDE || !toast) return
-
-        if(IDE.getCode().length === 0){
-            toast.setMessage({ message: 'Insira um código', title: 'Atenção' })
-            return
-        }
-        
-        if(IDE.getLanguage() === undefined){
-            toast.setMessage({ message: 'Selecione uma linguagem', title: 'Atenção' })
-            return
-        }
-
-        const { url, options } = API_POST_SOLUTION(
-            idProblem || '', 
-            {
-                language_id: IDE.getLanguage()?.id || 0,
-                source_code: utf8_to_b64(IDE.getCode())
-            }
-        )
-
-        const { json } = await request(url, options)
-        setStateProblem(json as boolean)
-        if(json === true) toast.setMessage({ message: 'Solução correta', title: 'Parabéns'})
-        else toast.setMessage({ message: 'Solução incorreta', title: 'Tente outra vez'})
-    }
-
-    if(problem === undefined) return null
-
-    return (
-        <div className="m-5">
-            <Toast ref={toastRef}/>
-            <div className="w-75 mx-auto">
-                <h1 className="mb-5">{ problem.title }</h1>
-                { stateProblem === true ? (
-                    <div className="alert alert-success" role="alert">
-                    Solução aceita
-                  </div>
-                ) : (null)}
-                { stateProblem === false ? (
-                    <div className="alert alert-danger" role="alert">
-                    Solução inválida
-                  </div>
-                ) : (null)}
-
-                <MarkdownRender text={problem?.description ||''} />
-                <div className="my-5">
-                    { problem.testCases.filter(({visible}) => visible).map(({ input, expectedOutput }) => (
-                        <div className="mb-3">
-                            <TestCaseItem input={input} expectedOutput={expectedOutput}/>
-                        </div>
-                    ))}
-                </div>
-                <IDE ref={IDERef}/>
-
-                <button onClick={handleSubmit} className="btn btn-outline-dark btn-lg mt-3">Enviar solução</button>
-            </div>
-        </div>
-    )
+interface TestCase {
+	input: string;
+	verdict: string;
+	expectedOutput: string;
+	compile_output: string | null;
+	stdout: string | null;
+	stderr: string | null;
 }
 
-export default ProblemDetail
+export interface Submission {
+	sourceCode: string;
+	languageID: number;
+	problemID: string;
+	judgeResult: {
+		verdict: string;
+		testCases: TestCase[];
+	};
+}
+
+const ProblemDetail: React.FC = () => {
+	const { request } = useFetch();
+	const { id: idProblem } = useParams();
+	const [problem, setProblem] = React.useState<Problem>();
+	const IDERef = React.useRef<IDEHandles>(null);
+	const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>(
+		[]
+	);
+	const { authData } = React.useContext(AuthContext);
+	const [judging, setJudging] = React.useState<boolean>(false);
+	const { setMessage: ToastSetMessage } = useToast();
+
+	const getSubmissions = useCallback(async () => {
+		const { url, options } = API_GET_SUBMISSIONS();
+		const { json } = await request(url, options);
+		setLastSubmissions(json as Submission[]);
+	}, [request]);
+
+	React.useEffect(() => {
+		const getProblem = async () => {
+			const { url, options } = API_GET_PROBLEM(idProblem || '');
+			const { json } = await request(url, options);
+			setProblem(json as Problem);
+		};
+		if (problem === undefined) {
+			if (authData.token) {
+				getSubmissions();
+			}
+			getProblem();
+		}
+	}, [authData.token, getSubmissions, idProblem, problem, request]);
+
+	const handleSubmit = async () => {
+		const IDE = IDERef.current;
+		if (!IDE) return;
+
+		if (IDE.getCode().length === 0) {
+			ToastSetMessage({
+				title: 'Atenção',
+				body: 'Insira um código',
+			});
+			return;
+		}
+
+		if (IDE.getLanguage() === undefined) {
+			ToastSetMessage({
+				title: 'Atenção',
+				body: 'Selecione uma linguagem',
+			});
+			return;
+		}
+
+		ToastSetMessage({
+			title: 'Tudo certo',
+			body: 'Solução submetida com sucesso',
+		});
+
+		const { url, options } = API_POST_SOLUTION(idProblem || '', {
+			language_id: IDE.getLanguage()?.id || 0,
+			source_code: IDE.getCode(),
+		});
+
+		setJudging(true);
+		const { json } = await request(url, options);
+		const submission = json as Submission;
+		setJudging(false);
+
+		ToastSetMessage({
+			title: 'Resultado',
+			body: submission.judgeResult.verdict,
+		});
+
+		if (authData.token) {
+			getSubmissions();
+		} else {
+			setLastSubmissions([...lastSubmissions, submission]);
+		}
+	};
+
+	if (problem === undefined) return null;
+
+	return (
+		<React.Fragment>
+			<Header />
+			<div
+				id="xxx"
+				className="d-flex flex-grow-1"
+				style={{ overflow: 'hidden' }}
+			>
+				<Main problem={problem} lastSubmissions={lastSubmissions} />
+				<IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging} />
+			</div>
+		</React.Fragment>
+	);
+};
+
+export default ProblemDetail;
