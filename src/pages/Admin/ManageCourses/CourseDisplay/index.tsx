@@ -74,11 +74,7 @@ const CourseDisplay: React.FC<CourseDisplayProps> = ({
 							<PencilIcon />
 						</Link>
 						<div className="form-check form-switch d-flex align-items-center ms-5">
-							<input
-								className="form-check-input p-0 my-0"
-								type="checkbox"
-								id="flexSwitchCheckDefault"
-							/>
+							<input className="form-check-input p-0 my-0" type="checkbox" />
 						</div>
 					</div>
 				</div>
