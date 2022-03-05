@@ -28,7 +28,7 @@ interface CourseContextData {
 	updateSection: () => void;
 	getCourse: (id: string) => Promise<void>;
 	loading: boolean;
-	deleteCourse: () => Promise<void>;
+	deleteCourse: (id: string) => Promise<void>;
 	updateChapter: () => void;
 	loadCourse: (courseId: string) => void;
 }
@@ -44,13 +44,17 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 	const [id, setId] = useState<string>('');
 	const { setMessage: ToastSetMessage } = useToast();
 
-	const deleteCourse = async () => {
+	const deleteCourse = async (id: string) => {
 		setLoading(true);
 		ToastSetMessage({
 			title: 'Deletando curso',
 			body: 'Aguarde...',
 		});
-		await axios.delete(`${API_URL}/courses/${id}`);
+		await axios.delete(`${API_URL}/courses/${id}`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
 		ToastSetMessage({
 			title: 'Curso deletado',
 			body: 'Curso deletado com sucesso',
@@ -123,18 +127,35 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 
 		let course: Course = {} as Course;
 		if (id) {
-			const response = await axios.put(`${API_URL}/courses/${id}`, {
-				title,
-				chapters,
-			});
+			const response = await axios.put(
+				`${API_URL}/courses/${id}`,
+				{
+					title,
+					chapters,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				}
+			);
 			course = response.data as Course;
 		} else {
-			const response = await axios.post(`${API_URL}/courses`, {
-				title,
-				chapters,
-			});
+			const response = await axios.post(
+				`${API_URL}/courses`,
+				{
+					title,
+					chapters,
+				},
+				{
+					headers: {
+						Authorization: `Bearer ${localStorage.getItem('token')}`,
+					},
+				}
+			);
 			course = response.data as Course;
 		}
+
 		setTitle(course.title);
 		setId(course._id || '');
 		setChapters(course.chapters);

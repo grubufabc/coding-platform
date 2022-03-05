@@ -4,8 +4,8 @@ import { buildGraphFromCommits } from '../CommitTreeSection';
 import React from 'react';
 import BranchesSection from './BranchesSection';
 import { useToast } from '../../../../hooks/useToast';
-import { useIDE } from '../IDESection/useIDE';
 import { useCodeEnvironment } from '../../../../hooks/useCodeEnvironment';
+import { useIDE } from '../../../../hooks/useIDE';
 
 interface CommitsSectionProps {
 	selectedCommitId: string;

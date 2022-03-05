@@ -1,6 +1,6 @@
 import React from 'react';
-import { useIDE } from '../IDESection/useIDE';
 import { languages } from '../../../../components/IDE/config';
+import { useIDE } from '../../../../hooks/useIDE';
 import { Language } from '../../../../models/language';
 
 const Toolbar: React.FC = () => {

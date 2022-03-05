@@ -7,7 +7,7 @@ import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/python/python';
 import './style.css';
-import { IDEProvider, useIDE } from './useIDE';
+import { IDEProvider, useIDE } from '../../../../../../../../hooks/useIDE';
 
 const ArrowClockwiseIcon: React.FC = () => {
 	return (
