@@ -20,8 +20,11 @@ export const AuthProvider: React.FC = ({ children }) => {
 		is_admin: false,
 	});
 
+	const [init, setInit] = React.useState<boolean>(false);
+
 	React.useEffect(() => {
-		if (!authData.token) {
+		if (!authData.token && !init) {
+			setInit(true);
 			const token = localStorage.getItem('token') || '';
 			const is_admin = localStorage.getItem('is_admin') || 'false';
 			setAuthData({
@@ -29,7 +32,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 				is_admin: JSON.parse(is_admin),
 			});
 		}
-	}, [authData]);
+	}, [authData, init]);
 
 	React.useEffect(() => {
 		if (authData.token) {
