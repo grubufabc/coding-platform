@@ -2,17 +2,13 @@ import { Problem } from './models/problem';
 import { Submission } from './models/submission';
 // const API_URL = 'https://ce.judge0.com'
 // const API_URL = 'http://34.133.58.104'
-// export const API_URL = 'http://localhost:5000'
+// export const API_URL = 'http://localhost:5000';
 
 export const API_URL = 'https://backend-coding-platform.herokuapp.com';
 export const JUDGE0_API_URL = 'https://ce.judge0.com';
 
 function getToken() {
 	return localStorage.getItem('token') || '';
-}
-
-function getAuthProvider() {
-	return localStorage.getItem('auth_provider') || '';
 }
 
 export function POST_SUBMISSION(submission: Submission) {
@@ -22,8 +18,7 @@ export function POST_SUBMISSION(submission: Submission) {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
+				'Authorization': `Bearer ${getToken()}`,
 			},
 			body: JSON.stringify(submission),
 		},
@@ -37,8 +32,7 @@ export function POST_PROBLEM(problem: Problem) {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
+				'Authorization': `Bearer ${getToken()}`,
 			},
 			body: JSON.stringify(problem),
 		},
@@ -52,8 +46,6 @@ export function GET_PROBLEMS() {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
 			},
 		},
 	};
@@ -66,8 +58,6 @@ export function GET_PROBLEM(id: string) {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
 			},
 		},
 	};
@@ -83,8 +73,7 @@ export function POST_SOLUTION(
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
+				'Authorization': `Bearer ${getToken()}`,
 			},
 			body: JSON.stringify({
 				problem_id: idProblem,
@@ -105,8 +94,7 @@ export function POST_BLOG_POST(blogPost: {
 			method: 'POST',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
+				'Authorization': `Bearer ${getToken()}`,
 			},
 			body: JSON.stringify(blogPost),
 		},
@@ -120,8 +108,6 @@ export function GET_BLOG_POSTS() {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
 			},
 		},
 	};
@@ -134,8 +120,6 @@ export function GET_BLOG_POST(id: string) {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
 			},
 		},
 	};
@@ -148,8 +132,7 @@ export function GET_SUBMISSIONS() {
 			method: 'GET',
 			headers: {
 				'Content-type': 'application/json',
-				token: getToken(),
-				auth_provider: getAuthProvider(),
+				'Authorization': `Bearer ${getToken()}`,
 			},
 		},
 	};

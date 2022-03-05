@@ -41,12 +41,15 @@ const Header: React.FC = () => {
 				<span>
 					{authData.token ? (
 						<React.Fragment>
-							<Link
-								to="/admin"
-								className="text-light btn btn-outline-dark text-decoration-none border-white me-2"
-							>
-								Admin
-							</Link>
+							{authData.is_admin && (
+								<Link
+									to="/admin"
+									className="text-light btn btn-outline-dark text-decoration-none border-white me-2"
+								>
+									Admin
+								</Link>
+							)}
+
 							<Link
 								to="/logout"
 								className="text-light btn btn-outline-dark text-decoration-none border-white"

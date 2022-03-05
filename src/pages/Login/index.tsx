@@ -1,16 +1,34 @@
 import React from 'react';
 import { AuthContext } from '../../providers/AuthProvider';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { API_URL } from '../../api';
+
+function parseJwt (token: string) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
 
 const GOOGLE_BUTTON_ID = 'google-sign-in-button';
 declare var window: any;
 
+interface IAuthData {
+	token: string;
+	is_admin: boolean;
+}
+
 interface GoogleSignInProps {
-	setAuthData: any;
-	authData: {
-		token: string;
-		provider: string;
-	};
+	setAuthData: (authData: IAuthData) => void
+	authData: IAuthData
+}
+
+interface IPayload {
+	is_admin: boolean
 }
 
 const GoogleSignIn: React.FC<GoogleSignInProps> = ({
@@ -21,12 +39,20 @@ const GoogleSignIn: React.FC<GoogleSignInProps> = ({
 
 	React.useEffect(() => {
 		if (!authData.token && token) {
-			setAuthData({ token, provider: 'google' });
+			const data = parseJwt(token) as IPayload;
+			setAuthData({ token, is_admin: data.is_admin });
 		}
 	}, [setAuthData, token, authData]);
 
-	const onSuccess = (googleUser: any) => {
-		setToken(googleUser.getAuthResponse().id_token);
+	const onSuccess = async (googleUser: any) => {
+		const response = await axios.post(`${API_URL}/sessions`, {
+			token: googleUser.getAuthResponse().id_token,
+			provider: 'google',
+		});
+
+		if(response.data.status){
+			setToken(response.data.token);
+		}
 	};
 
 	React.useEffect(() => {
@@ -51,7 +77,7 @@ const Login: React.FC = () => {
 	const navigate = useNavigate();
 
 	React.useEffect(() => {
-		if (authData.token && authData.provider) {
+		if (authData.token) {
 			setRedirecting(true);
 			setTimeout(() => {
 				navigate('/', { replace: true });
