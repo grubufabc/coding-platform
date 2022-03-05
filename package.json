@@ -52,6 +52,7 @@
 	},
 	"devDependencies": {
 		"@types/axios": "^0.14.0",
-		"@types/codemirror": "^5.60.2"
+		"@types/codemirror": "^5.60.2",
+		"prettier": "^2.5.1"
 	}
 }

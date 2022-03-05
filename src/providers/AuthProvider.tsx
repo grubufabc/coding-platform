@@ -2,27 +2,39 @@ import React, { createContext } from 'react';
 
 interface IAuthData {
 	token: string;
-	provider: string;
+	is_admin: boolean;
 }
 
-export const AuthContext = createContext({
-	authData: {
-		token: '',
-		provider: '',
-	},
-	setAuthData: (authData: IAuthData) => {},
-});
+interface AuthContextProps {
+	authData: IAuthData;
+	setAuthData: (authData: IAuthData) => void;
+}
+
+export const AuthContext = createContext<AuthContextProps>(
+	{} as AuthContextProps
+);
 
 export const AuthProvider: React.FC = ({ children }) => {
 	const [authData, setAuthData] = React.useState<IAuthData>({
 		token: '',
-		provider: '',
+		is_admin: false,
 	});
+
+	React.useEffect(() => {
+		if (!authData.token) {
+			const token = localStorage.getItem('token') || '';
+			const is_admin = localStorage.getItem('is_admin') || 'false';
+			setAuthData({
+				token,
+				is_admin: JSON.parse(is_admin),
+			});
+		}
+	}, [authData]);
 
 	React.useEffect(() => {
 		if (authData.token) {
 			localStorage.setItem('token', authData.token);
-			localStorage.setItem('auth_provider', authData.provider);
+			localStorage.setItem('is_admin', JSON.stringify(authData.is_admin));
 		}
 	}, [authData]);
 

@@ -10,7 +10,7 @@ const Logout: React.FC = () => {
 
 	const handleLogout = async () => {
 		const auth2 = window.gapi.auth2.getAuthInstance();
-		setAuthData({ token: '', provider: '' });
+		setAuthData({ token: '', is_admin: false });
 		await auth2.signOut();
 		navigate('/', { replace: true });
 	};

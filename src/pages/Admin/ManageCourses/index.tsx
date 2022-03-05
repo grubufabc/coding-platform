@@ -188,7 +188,11 @@ const ManageCourses: React.FC = () => {
 
 	const handleDeleteCourse = async (course: Course) => {
 		setLoading(true);
-		await axios.delete(`${API_URL}/courses/${course._id}`);
+		await axios.delete(`${API_URL}/courses/${course._id}`, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
 		setLoading(false);
 		getCourses();
 	};
