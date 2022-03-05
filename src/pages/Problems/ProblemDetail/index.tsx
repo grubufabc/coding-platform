@@ -135,7 +135,7 @@ const ProblemDetailWrapper: React.FC = () => {
 						<div style={{ width: '35%' }}>
 							<Main problem={problem} lastSubmissions={lastSubmissions} />
 						</div>
-						<div className="flex-grow-1 pt-3">
+						<div className="flex-grow-1">
 							<div className="d-flex flex-column h-100">
 								<CodeEditor />
 								<TerminalSection />
