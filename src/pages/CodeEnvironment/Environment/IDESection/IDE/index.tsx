@@ -1,6 +1,5 @@
 import React from 'react';
 import { Controlled as ControlledEditor } from 'react-codemirror2';
-import { useIDE } from '../useIDE';
 import { languages } from '../../../../../components/IDE/config';
 import './style.css';
 
@@ -9,6 +8,7 @@ import 'codemirror/theme/neat.css';
 import 'codemirror/mode/clike/clike';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/python/python';
+import { useIDE } from '../../../../../hooks/useIDE';
 
 const IDE: React.FC = () => {
 	const { sourceCode, setSourceCode, languageId } = useIDE();

@@ -22,9 +22,10 @@ const ToastContext = createContext<ToastContextData>({} as ToastContextData);
 interface ToastProps {
 	message: Message;
 	setRef: (ref: any) => void;
+	is_visible: boolean;
 }
 
-const Toast: React.FC<ToastProps> = ({ message, setRef }) => {
+const Toast: React.FC<ToastProps> = ({ message, setRef, is_visible }) => {
 	const ref = React.useRef(null);
 
 	React.useEffect(() => {
@@ -32,17 +33,19 @@ const Toast: React.FC<ToastProps> = ({ message, setRef }) => {
 	}, [ref, setRef]);
 
 	return (
-		<div className="bg-dark position-fixed fixed-bottom">
-			<div
-				className="toast-container position-absolute p-3 bottom-0 end-0"
-				id="toastPlacement"
-			>
+		<div
+			className="bg-dark position-fixed fixed-bottom"
+			style={{
+				zIndex: is_visible ? 1000 : -1,
+			}}
+		>
+			<div className="toast-container position-absolute p-3 bottom-0 end-0">
 				<div
 					ref={ref}
 					className="toast"
 					role="alert"
 					aria-live="assertive"
-					aria-atomic="true"
+					aria-atomic="false"
 				>
 					<div className="toast-header">
 						<span className="me-2">{message.icon}</span>
@@ -67,12 +70,24 @@ export function ToastProvider({ children }: ToastProviderProps) {
 		body: '',
 	});
 	const [toastRef, setToastRef] = React.useState({ current: null });
+	const [isVisible, setIsVisible] = React.useState(false);
+	const [time, setTime] = React.useState<any>(null);
 
 	const setMessage = (message: Message) => {
 		if (!toastRef.current) return;
 		const toast = new bootstrap.Toast(toastRef.current);
 		toast.show();
 		setContent(message);
+
+		setIsVisible(true);
+
+		if (time) clearTimeout(time);
+
+		setTime(
+			setTimeout(() => {
+				setIsVisible(false);
+			}, 3000)
+		);
 	};
 
 	return (
@@ -83,7 +98,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
 			}}
 		>
 			{children}
-			<Toast message={content} setRef={setToastRef} />
+			<Toast message={content} setRef={setToastRef} is_visible={isVisible} />
 		</ToastContext.Provider>
 	);
 }

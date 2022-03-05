@@ -17,10 +17,10 @@ import LinkIcon from './icons/LinkIcon';
 import GitHubIcon from './icons/GitHubIcon';
 import ChatLeftText from './icons/ChatLeftText';
 import Toolbar from './Toolbar';
-import { useIDE } from './IDESection/useIDE';
 import PlayIcon from './icons/PlayIcon';
 import PersonIcon from './icons/PersonIcon';
 import TerminalIcon from './icons/TerminalIcon';
+import { useIDE } from '../../../hooks/useIDE';
 
 const shareIcons = new Map<string, React.FC>([
 	['facebook', FacebookIcon],

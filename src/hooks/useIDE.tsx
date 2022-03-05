@@ -1,8 +1,8 @@
-import axios from 'axios';
 import React from 'react';
-import { JUDGE0_API_URL } from '../../../../../../../../api';
-import { Submission } from '../../../../../../../../models/submission';
-import { b64_to_utf8, utf8_to_b64 } from '../../../../../../../../utils';
+import axios from 'axios';
+import { Submission } from '../models/submission';
+import { b64_to_utf8, utf8_to_b64 } from '../utils';
+import { JUDGE0_API_URL } from '../api';
 
 interface IDEProviderProps {
 	children: React.ReactNode;
