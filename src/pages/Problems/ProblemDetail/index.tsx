@@ -7,12 +7,21 @@ import {
 	GET_SUBMISSIONS as API_GET_SUBMISSIONS,
 	POST_SOLUTION as API_POST_SOLUTION,
 } from '../../../api';
-import { IDEHandles } from '../../../components/IDE';
 import Main from './Main';
-import IDE from './IDE';
 import { AuthContext } from '../../../providers/AuthProvider';
 import { useToast } from '../../../hooks/useToast';
 import Header from '../../../components/Header';
+import { IDEProvider, useIDE } from '../../../hooks/useIDE';
+
+import 'codemirror/lib/codemirror.css';
+import 'codemirror/theme/neat.css';
+import 'codemirror/mode/clike/clike';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/python/python';
+import './style.css';
+import CodeEditor from './CodeEditor';
+import TerminalSection from './TerminalSection';
+import Toolbar from './Toolbar';
 
 interface TestCase {
 	input: string;
@@ -33,17 +42,17 @@ export interface Submission {
 	};
 }
 
-const ProblemDetail: React.FC = () => {
+const ProblemDetailWrapper: React.FC = () => {
 	const { request } = useFetch();
 	const { id: idProblem } = useParams();
 	const [problem, setProblem] = React.useState<Problem>();
-	const IDERef = React.useRef<IDEHandles>(null);
 	const [lastSubmissions, setLastSubmissions] = React.useState<Submission[]>(
 		[]
 	);
 	const { authData } = React.useContext(AuthContext);
 	const [judging, setJudging] = React.useState<boolean>(false);
 	const { setMessage: ToastSetMessage } = useToast();
+	const { sourceCode, languageId } = useIDE();
 
 	const getSubmissions = useCallback(async () => {
 		const { url, options } = API_GET_SUBMISSIONS();
@@ -66,21 +75,20 @@ const ProblemDetail: React.FC = () => {
 	}, [authData.token, getSubmissions, idProblem, problem, request]);
 
 	const handleSubmit = async () => {
-		const IDE = IDERef.current;
-		if (!IDE) return;
-
-		if (IDE.getCode().length === 0) {
+		if (sourceCode.length === 0) {
 			ToastSetMessage({
 				title: 'Atenção',
 				body: 'Insira um código',
+				icon: '⚠️',
 			});
 			return;
 		}
 
-		if (IDE.getLanguage() === undefined) {
+		if (languageId === 0) {
 			ToastSetMessage({
 				title: 'Atenção',
 				body: 'Selecione uma linguagem',
+				icon: '⚠️',
 			});
 			return;
 		}
@@ -88,11 +96,12 @@ const ProblemDetail: React.FC = () => {
 		ToastSetMessage({
 			title: 'Tudo certo',
 			body: 'Solução submetida com sucesso',
+			icon: '✅',
 		});
 
 		const { url, options } = API_POST_SOLUTION(idProblem || '', {
-			language_id: IDE.getLanguage()?.id || 0,
-			source_code: IDE.getCode(),
+			language_id: languageId || 0,
+			source_code: sourceCode,
 		});
 
 		setJudging(true);
@@ -118,14 +127,33 @@ const ProblemDetail: React.FC = () => {
 		<React.Fragment>
 			<Header />
 			<div
-				id="xxx"
-				className="d-flex flex-grow-1"
-				style={{ overflow: 'hidden' }}
+				className="d-flex flex-column"
+				style={{ height: 'calc(100vh - 4.5rem)' }}
 			>
-				<Main problem={problem} lastSubmissions={lastSubmissions} />
-				<IDE IDERef={IDERef} handleSubmit={handleSubmit} judging={judging} />
+				<div className="flex-grow-1" style={{ overflow: 'hidden' }}>
+					<div className="d-flex h-100">
+						<div style={{ width: '35%' }}>
+							<Main problem={problem} lastSubmissions={lastSubmissions} />
+						</div>
+						<div className="flex-grow-1 pt-3">
+							<div className="d-flex flex-column h-100">
+								<CodeEditor />
+								<TerminalSection />
+								<Toolbar handleSubmit={handleSubmit} judging={judging} />
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</React.Fragment>
+	);
+};
+
+const ProblemDetail: React.FC = () => {
+	return (
+		<IDEProvider>
+			<ProblemDetailWrapper />
+		</IDEProvider>
 	);
 };
 

@@ -20,13 +20,13 @@ import CodeEnvironment from './pages/CodeEnvironment';
 import { CodeEnvironmentProvider } from './hooks/useCodeEnvironment';
 import Environment from './pages/CodeEnvironment/Environment';
 import { ToastProvider } from './hooks/useToast';
-import { IDEProvider } from './pages/CodeEnvironment/Environment/IDESection/useIDE';
 import Learn from './pages/Learn';
 import CreateCourse from './pages/Admin/CreateCourse';
 import ManageCourses from './pages/Admin/ManageCourses';
 import CourseDetail from './pages/Learn/Course/CourseDetail';
 import EditCourse from './pages/Admin/ManageCourses/EditCourse';
 import { PairProgramming, PairProgrammingMenu } from './pages/PairProgramming';
+import { IDEProvider } from './hooks/useIDE';
 
 const App: React.FC = () => {
 	return (
