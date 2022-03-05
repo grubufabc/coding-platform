@@ -9,12 +9,14 @@ interface CourseDisplayProps {
 	course: Course;
 	deleteCourse: (course: Course) => Promise<void>;
 	loading: boolean;
+	setVisibility: (course: Course, visible: boolean) => Promise<void>;
 }
 
 const CourseDisplay: React.FC<CourseDisplayProps> = ({
 	course,
 	deleteCourse,
 	loading,
+	setVisibility,
 }) => {
 	const [modalOpen, setModalOpen] = useState<boolean>(false);
 
@@ -74,7 +76,12 @@ const CourseDisplay: React.FC<CourseDisplayProps> = ({
 							<PencilIcon />
 						</Link>
 						<div className="form-check form-switch d-flex align-items-center ms-5">
-							<input className="form-check-input p-0 my-0" type="checkbox" />
+							<input
+								className="form-check-input p-0 my-0"
+								type="checkbox"
+								onChange={({ target }) => setVisibility(course, target.checked)}
+								checked={course.visible}
+							/>
 						</div>
 					</div>
 				</div>

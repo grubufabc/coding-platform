@@ -17,8 +17,10 @@ const ManageCourses: React.FC = () => {
 	};
 
 	React.useEffect(() => {
-		getCourses();
-	}, []);
+		if (!courses.length) {
+			getCourses();
+		}
+	}, [courses.length]);
 
 	const handleDeleteCourse = async (course: Course) => {
 		setLoading(true);
@@ -31,6 +33,16 @@ const ManageCourses: React.FC = () => {
 		getCourses();
 	};
 
+	const setVisibility = async (course: Course, visible: boolean) => {
+		course.visible = visible;
+		setCourses([...courses]);
+		await axios.put(`${API_URL}/courses/${course._id}`, course, {
+			headers: {
+				Authorization: `Bearer ${localStorage.getItem('token')}`,
+			},
+		});
+	};
+
 	return (
 		<div>
 			<h1 className="mb-5">Gerenciar Cursos</h1>
@@ -40,6 +52,7 @@ const ManageCourses: React.FC = () => {
 					course={course}
 					deleteCourse={handleDeleteCourse}
 					loading={loading}
+					setVisibility={setVisibility}
 				/>
 			))}
 		</div>
