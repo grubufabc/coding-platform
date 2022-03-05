@@ -6,11 +6,11 @@ declare var window: any;
 
 const Logout: React.FC = () => {
 	const navigate = useNavigate();
-	const { setAuthData } = React.useContext(AuthContext);
+	const { cleanAuthData } = React.useContext(AuthContext);
 
 	const handleLogout = async () => {
 		const auth2 = window.gapi.auth2.getAuthInstance();
-		setAuthData({ token: '', is_admin: false });
+		cleanAuthData();
 		await auth2.signOut();
 		navigate('/', { replace: true });
 	};
