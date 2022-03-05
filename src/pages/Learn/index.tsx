@@ -15,7 +15,7 @@ const Learn: React.FC = () => {
 			const response = await axios.get(`${API_URL}/courses`);
 			const courses = response.data as Course[];
 			setLoading(false);
-			setCourses(courses);
+			setCourses(courses.filter((course) => course.visible));
 		};
 		getCourses();
 	}, []);
