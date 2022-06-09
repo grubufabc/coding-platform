@@ -43,14 +43,11 @@ const IDEProvider: React.FC<IDEProviderProps> = ({ children }) => {
 		setTime(0);
 		setMemory(0);
 
-		const response = await axios.post(
-			`${JUDGE0_API_URL}/submissions/?base64_encoded=true&wait=true`,
-			{
-				language_id: languageId,
-				source_code: utf8_to_b64(sourceCode),
-				stdin: utf8_to_b64(stdin),
-			}
-		);
+		const response = await axios.post(`${JUDGE0_API_URL}`, {
+			language_id: languageId,
+			source_code: utf8_to_b64(sourceCode),
+			stdin: utf8_to_b64(stdin),
+		});
 
 		setLoading(false);
 		const submission = response.data as Submission;

@@ -5,7 +5,7 @@ import { Submission } from './models/submission';
 // export const API_URL = 'http://localhost:5000';
 
 export const API_URL = 'https://backend-coding-platform.herokuapp.com';
-export const JUDGE0_API_URL = 'https://ce.judge0.com';
+export const JUDGE0_API_URL = `${API_URL}/codes/ce.judge0`;
 
 function getToken() {
 	return localStorage.getItem('token') || '';
