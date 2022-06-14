@@ -24,6 +24,8 @@ interface CourseContextData {
 	addMarkdownSection: (chapter: Chapter) => void;
 	moveSectionForward: (chapter: Chapter, section: Section) => void;
 	moveSectionBackward: (chapter: Chapter, section: Section) => void;
+	moveChapterForward: (chapter: Chapter) => void;
+	moveChapterBackward: (chapter: Chapter) => void;
 	removeSection: (chapter: Chapter, section: Section) => void;
 	updateSection: () => void;
 	getCourse: (id: string) => Promise<void>;
@@ -109,6 +111,22 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 		chapter.content.splice(index - 1, 0, section);
 		setChapters([...chapters]);
 	};
+
+	const moveChapterForward = (chapter: Chapter) => {
+		const index = chapters.indexOf(chapter);
+		if (index === chapters.length - 1) return;
+		chapters.splice(index, 1);
+		chapters.splice(index + 1, 0, chapter);
+		setChapters([...chapters]);
+	}	
+
+	const moveChapterBackward = (chapter: Chapter) => {
+		const index = chapters.indexOf(chapter);
+		if (index === 0) return;
+		chapters.splice(index, 1);
+		chapters.splice(index - 1, 0, chapter);
+		setChapters([...chapters]);
+	}
 
 	const removeSection = (chapter: Chapter, section: Section) => {
 		const index = chapter.content.indexOf(section);
@@ -205,6 +223,8 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 				addMarkdownSection,
 				moveSectionForward,
 				moveSectionBackward,
+				moveChapterForward,
+				moveChapterBackward,
 				removeSection,
 				updateSection,
 				getCourse,
