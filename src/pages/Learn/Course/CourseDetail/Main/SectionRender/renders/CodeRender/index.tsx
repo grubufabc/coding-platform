@@ -52,8 +52,6 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 	sourceCode: sourceCodeFromProps,
 	language_id,
 }) => {
-	const [loaded, setLoaded] = React.useState<boolean>(false);
-
 	const {
 		sourceCode,
 		stdin,
@@ -73,11 +71,8 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 	}, [language_id, setLanguageId]);
 
 	React.useEffect(() => {
-		if (!loaded) {
-			setSourceCode(sourceCodeFromProps);
-			setLoaded(true);
-		}
-	}, [loaded, setSourceCode, sourceCodeFromProps]);
+		setSourceCode(sourceCodeFromProps);
+	}, [setSourceCode, sourceCodeFromProps]);
 
 	const handleResetIDE = () => {
 		setSourceCode(sourceCodeFromProps);
