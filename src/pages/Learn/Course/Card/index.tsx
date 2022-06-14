@@ -4,6 +4,7 @@ import { Course } from '../interfaces/Course';
 
 interface CardProps {
 	course: Course;
+	className?: string;
 }
 
 const countItems = (course: Course): number => {
@@ -28,10 +29,10 @@ const PlayCircleIcon = () => {
 	);
 };
 
-const Card: React.FC<CardProps> = ({ course }) => {
+const Card: React.FC<CardProps> = ({ course, className }) => {
 	return (
 		<div
-			className="card d-flex flex-column"
+			className={`card d-flex flex-column ${className}`}
 			style={{
 				width: '18rem',
 				height: '18rem',

@@ -35,10 +35,12 @@ const Learn: React.FC = () => {
 						></div>
 					</div>
 				)}
-
-				<div className="d-flex px-5 mt-5">
+				
+				<div className="row gy-4">
 					{courses.map((course, index) => (
-						<Card key={index} course={course} />
+						<div className="col-3">
+							<Card key={index} course={course} />
+						</div>
 					))}
 				</div>
 			</div>
