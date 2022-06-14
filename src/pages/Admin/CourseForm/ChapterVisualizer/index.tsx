@@ -60,7 +60,7 @@ const ChapterVisualizer: React.FC<ChapterVisualizerProps> = ({ chapter }) => {
 	const { addMarkdownSection, addCodeSection, updateChapter } =
 		useCourse();
 	
-	const [isOpen, setIsOpen] = React.useState(false);
+	const [isOpen, setIsOpen] = React.useState(true);
 
 	return (
 		<div className="card p-2 mb-4">
