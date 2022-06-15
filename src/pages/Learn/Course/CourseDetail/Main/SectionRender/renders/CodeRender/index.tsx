@@ -130,7 +130,7 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 					<div className="w-50 px-3 pt-3">
 						<h5 className="p-0 m-0 py-2">stdin</h5>
 						<textarea
-							className="form-control"
+							className="form-control font-monospace"
 							rows={4}
 							onChange={(e) => setStdin(e.target.value)}
 							value={stdin}
@@ -157,7 +157,7 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 							</span>
 						</div>
 						<textarea
-							className={`form-control ${
+							className={`form-control font-monospace ${
 								errorMessage ? 'bg-danger text-white' : ''
 							}`}
 							rows={4}
