@@ -47,6 +47,11 @@ const Computer: React.FC = () => {
 			});
 			return;
 		}
+		ToastSetMessage({
+			title: 'Salvando...',
+			body: 'Salvando ambiente, aguarde...',
+			icon: '⏳',
+		});
 		let id;
 		if (codeEnvironment._id === '') {
 			id = (
