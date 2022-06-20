@@ -49,7 +49,7 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 	const [computerName, setComputerName] = useState('');
 	const [computerId, setComputerId] = useState('');
 	const [classroomName, setClassroomName] = useState('');
-	const [lastUpdate, setLastUpdate] = React.useState(new Date().getTime());
+	const [lastUpdate, setLastUpdate] = React.useState(0);
 	const [environment, setEnvironment] = useState<Environment>(
 		{} as Environment
 	);
@@ -75,6 +75,16 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 		return update;
 	};
 
+	const clear = () => {
+		setComputerName('');
+		setComputerId('');
+		setClassroomName('');
+		setLastUpdate(0);
+		setEnvironment({} as Environment);
+		setComputers([]);
+		setSocket(undefined);
+	};
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleEvents = {
 		'classroom.updated': (newComputers: Computer[]) => {
@@ -86,6 +96,7 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 		},
 		'classroom.environment.updated': (newEnvironment: Environment) => {
 			const lastUpdate = getLastUpdate();
+			console.log('here');
 			if (newEnvironment.timestamp > lastUpdate) {
 				setEnvironment(newEnvironment);
 				setLastUpdate(newEnvironment.timestamp);
@@ -126,6 +137,10 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 
 	const joinRoom = (classroomName: string) => {
 		setClassroomName(classroomName);
+		if (classroomName === '') {
+			clear();
+			return;
+		}
 		connect().emit('classroom.join()', {
 			name: classroomName,
 		});
