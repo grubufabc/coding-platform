@@ -57,8 +57,11 @@ const ProblemDetailWrapper: React.FC = () => {
 	const getSubmissions = useCallback(async () => {
 		const { url, options } = API_GET_SUBMISSIONS();
 		const { json } = await request(url, options);
-		setLastSubmissions((json as Submission[]) || []);
-	}, [request]);
+		const problemSubmissions = (json as Submission[]) || [];
+		setLastSubmissions(
+			problemSubmissions.filter((s) => s.problemID === idProblem)
+		);
+	}, [idProblem, request]);
 
 	React.useEffect(() => {
 		const getProblem = async () => {
