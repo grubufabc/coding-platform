@@ -57,7 +57,7 @@ const ProblemDetailWrapper: React.FC = () => {
 	const getSubmissions = useCallback(async () => {
 		const { url, options } = API_GET_SUBMISSIONS();
 		const { json } = await request(url, options);
-		setLastSubmissions(json as Submission[]);
+		setLastSubmissions((json as Submission[]) || []);
 	}, [request]);
 
 	React.useEffect(() => {
@@ -121,30 +121,40 @@ const ProblemDetailWrapper: React.FC = () => {
 		}
 	};
 
-	if (problem === undefined) return null;
-
 	return (
 		<React.Fragment>
 			<Header />
-			<div
-				className="d-flex flex-column"
-				style={{ height: 'calc(100vh - 4.5rem)' }}
-			>
-				<div className="flex-grow-1" style={{ overflow: 'hidden' }}>
-					<div className="d-flex h-100">
-						<div style={{ width: '35%' }}>
-							<Main problem={problem} lastSubmissions={lastSubmissions} />
-						</div>
-						<div className="flex-grow-1">
-							<div className="d-flex flex-column h-100">
-								<CodeEditor />
-								<TerminalSection />
-								<Toolbar handleSubmit={handleSubmit} judging={judging} />
+			{problem?._id && (
+				<div
+					className="d-flex flex-column"
+					style={{ height: 'calc(100vh - 4.5rem)' }}
+				>
+					<div className="flex-grow-1" style={{ overflow: 'hidden' }}>
+						<div className="d-flex h-100">
+							<div style={{ width: '35%' }}>
+								<Main problem={problem} lastSubmissions={lastSubmissions} />
+							</div>
+							<div className="flex-grow-1">
+								<div className="d-flex flex-column h-100">
+									<CodeEditor />
+									<TerminalSection />
+									<Toolbar handleSubmit={handleSubmit} judging={judging} />
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			)}
+			{!problem && (
+				<div className="d-flex align-items-center">
+					<strong>Carregando problema...</strong>
+					<div
+						className="spinner-border ms-5"
+						role="status"
+						aria-hidden="true"
+					></div>
+				</div>
+			)}
 		</React.Fragment>
 	);
 };

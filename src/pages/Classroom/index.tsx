@@ -190,7 +190,7 @@ const ClassroomWrapper: React.FC = () => {
 	return (
 		<React.Fragment>
 			<Header />
-			{!classroomName && !computerId && (
+			{!classroomName && (
 				<div className="p-5">
 					<h1>Sala de aula</h1>
 					<div className="mt-5 w-25">
