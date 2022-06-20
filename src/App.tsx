@@ -27,6 +27,7 @@ import CourseDetail from './pages/Learn/Course/CourseDetail';
 import EditCourse from './pages/Admin/ManageCourses/EditCourse';
 import { PairProgramming, PairProgrammingMenu } from './pages/PairProgramming';
 import { IDEProvider } from './hooks/useIDE';
+import Classroom from 'pages/Classroom';
 
 const App: React.FC = () => {
 	return (
@@ -75,6 +76,7 @@ const App: React.FC = () => {
 								<Route path="" element={<Learn />} />
 								<Route path=":id" element={<CourseDetail />} />
 							</Route>
+							<Route path="classroom" element={<Classroom />} />
 						</Routes>
 					</Router>
 				</ToastProvider>

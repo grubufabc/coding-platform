@@ -18,6 +18,12 @@ const Header: React.FC = () => {
 					<Link to="/learn" className="text-light text-decoration-none mx-4">
 						Cursos
 					</Link>
+					<Link
+						to="/classroom"
+						className="text-light text-decoration-none mx-4"
+					>
+						Sala de Aula
+					</Link>
 					<Link to="/problems" className="text-light text-decoration-none me-4">
 						Problemas
 					</Link>
