@@ -1,7 +1,8 @@
 import Header from 'components/Header';
+import { ClassroomProvider, useClassroom } from 'hooks/useClassroom';
 import { IDEProvider } from 'hooks/useIDE';
 import React from 'react';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import Computer from './Computer';
 
 const PCIcon = () => {
@@ -30,7 +31,7 @@ const ArrowRight = () => {
 			viewBox="0 0 16 16"
 		>
 			<path
-				fill-rule="evenodd"
+				fillRule="evenodd"
 				d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"
 			/>
 		</svg>
@@ -60,13 +61,18 @@ interface ComputerInfo {
 
 interface StudentCardProps {
 	studentInfo: ComputerInfo;
-	handleAccessComputer: (id: string) => void;
 }
 
-const StudentCard: React.FC<StudentCardProps> = ({
-	studentInfo,
-	handleAccessComputer,
-}) => {
+const StudentCard: React.FC<StudentCardProps> = ({ studentInfo }) => {
+	const navigate = useNavigate();
+	const { classroomName } = useClassroom();
+
+	const handleAccessComputer = () => {
+		navigate(`/classroom?room=${classroomName}&computer=${studentInfo.id}`, {
+			replace: true,
+		});
+	};
+
 	return (
 		<div className="card ps-3" style={{ width: '20rem' }}>
 			<div className="row">
@@ -83,7 +89,7 @@ const StudentCard: React.FC<StudentCardProps> = ({
 						<div className="row justify-content-end">
 							<div className="col-auto">
 								<button
-									onClick={() => handleAccessComputer(studentInfo.id)}
+									onClick={() => handleAccessComputer()}
 									className="mt-2 btn btn-outline-dark border-0 p-1 px-3"
 								>
 									Acessar
@@ -100,35 +106,16 @@ const StudentCard: React.FC<StudentCardProps> = ({
 	);
 };
 
-interface MainProps {
-	classroomName: string;
-	setComputerId: (id: string) => void;
-}
+const Main = () => {
+	const { classroomName, createComputer, computers } = useClassroom();
+	const navigate = useNavigate();
 
-const computers: ComputerInfo[] = [
-	{
-		name: 'Computador 1',
-		id: '1',
-	},
-	{
-		name: 'Computador 2',
-		id: '2',
-	},
-	{
-		name: 'Computador 3',
-		id: '3',
-	},
-	{
-		name: 'Computador 4',
-		id: '4',
-	},
-];
-
-const Main: React.FC<MainProps> = ({ classroomName, setComputerId }) => {
-	const handleCreateComputer = () => {};
-
-	const handleAccessComputer = (id: string) => {
-		setComputerId(id);
+	const handleCreateComputer = () => {
+		const computerId = createComputer();
+		console.log(`handleCreateComputer: ${computerId}`);
+		navigate(`/classroom?room=${classroomName}&computer=${computerId}`, {
+			replace: true,
+		});
 	};
 
 	return (
@@ -137,7 +124,7 @@ const Main: React.FC<MainProps> = ({ classroomName, setComputerId }) => {
 			<div className="row justify-content-end mb-3">
 				<div className="col-auto">
 					<button
-						onClick={() => handleCreateComputer}
+						onClick={() => handleCreateComputer()}
 						className="btn btn-outline-dark border-0"
 					>
 						<PlusCircle />
@@ -145,12 +132,9 @@ const Main: React.FC<MainProps> = ({ classroomName, setComputerId }) => {
 				</div>
 			</div>
 			<div className="row g-5">
-				{computers.map((computer, index) => (
+				{computers.map((computer) => (
 					<div className="col-auto" key={computer.id}>
-						<StudentCard
-							studentInfo={computer}
-							handleAccessComputer={handleAccessComputer}
-						/>
+						<StudentCard studentInfo={computer} />
 					</div>
 				))}
 			</div>
@@ -158,27 +142,49 @@ const Main: React.FC<MainProps> = ({ classroomName, setComputerId }) => {
 	);
 };
 
-const Classroom: React.FC = () => {
-	const location = useLocation();
-	const [classroomName, setClassroomName] = React.useState('');
-	const [computerId, setComputerId] = React.useState('');
+const ClassroomWrapper: React.FC = () => {
+	const [userClassroomName, setUserClassroomName] = React.useState('');
+	const navigate = useNavigate();
 
-	const [tmpClassroomName, setTmpClassroomName] = React.useState('');
+	const location = useLocation();
+	const {
+		computerId,
+		setComputerId,
+		classroomName,
+		joinRoom,
+		joinEnvironment,
+	} = useClassroom();
 
 	React.useEffect(() => {
 		const queryParams = new URLSearchParams(location.search);
-		setClassroomName(queryParams.get('room') || '');
-		setComputerId(queryParams.get('computer') || '');
-		console.log(queryParams.get('room'));
-		console.log(queryParams.get('computer'));
-	}, [location.search]);
+		const roomParam = queryParams.get('room') || '';
+		const computerParam = queryParams.get('computer') || '';
 
-	const handleJoinToClassroom = () => {
-		setClassroomName(tmpClassroomName);
-	};
+		if (roomParam !== classroomName) {
+			setUserClassroomName(roomParam);
+			if (roomParam !== '') {
+				joinRoom(roomParam);
+			}
+		}
 
-	const handleCreateClassroom = () => {
-		setClassroomName(tmpClassroomName);
+		if (computerParam !== computerId) {
+			setComputerId(computerParam);
+			if (computerParam !== '') {
+				joinEnvironment(computerParam);
+			}
+		}
+	}, [
+		classroomName,
+		computerId,
+		joinEnvironment,
+		joinRoom,
+		location.search,
+		setComputerId,
+	]);
+
+	const handleJoinClassroom = () => {
+		joinRoom(userClassroomName);
+		navigate(`/classroom?room=${userClassroomName}`, { replace: true });
 	};
 
 	return (
@@ -189,15 +195,15 @@ const Classroom: React.FC = () => {
 					<h1>Sala de aula</h1>
 					<div className="mt-5 w-25">
 						<input
-							value={tmpClassroomName}
-							onChange={(e) => setTmpClassroomName(e.target.value)}
+							value={userClassroomName}
+							onChange={(e) => setUserClassroomName(e.target.value)}
 							className="form-control"
 							placeholder="Nome da sala"
 						/>
 						<div className="row g-3 mt-3">
 							<div className="col d-grid">
 								<button
-									onClick={() => handleCreateClassroom()}
+									onClick={() => handleJoinClassroom()}
 									className="btn btn-outline-dark mb-3"
 								>
 									Criar sala
@@ -205,7 +211,7 @@ const Classroom: React.FC = () => {
 							</div>
 							<div className="col d-grid">
 								<button
-									onClick={() => handleJoinToClassroom()}
+									onClick={() => handleJoinClassroom()}
 									className="btn btn-outline-dark mb-3"
 								>
 									Entrar em sala
@@ -220,10 +226,16 @@ const Classroom: React.FC = () => {
 					<Computer />
 				</IDEProvider>
 			)}
-			{classroomName && !computerId && (
-				<Main setComputerId={setComputerId} classroomName={classroomName} />
-			)}
+			{classroomName && !computerId && <Main />}
 		</React.Fragment>
+	);
+};
+
+const Classroom: React.FC = () => {
+	return (
+		<ClassroomProvider>
+			<ClassroomWrapper />
+		</ClassroomProvider>
 	);
 };
 

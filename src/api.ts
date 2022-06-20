@@ -13,7 +13,7 @@ function getToken() {
 
 export function POST_SUBMISSION(submission: Submission) {
 	return {
-		url: `${JUDGE0_API_URL}/submissions/?base64_encoded=true&wait=true`,
+		url: `${JUDGE0_API_URL}`,
 		options: {
 			method: 'POST',
 			headers: {

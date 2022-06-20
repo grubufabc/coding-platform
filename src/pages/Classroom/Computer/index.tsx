@@ -8,10 +8,15 @@ import Toolbar from './Toolbar';
 import TerminalSection from './TerminalSection';
 import { useIDE } from 'hooks/useIDE';
 import './style.css';
+import { useClassroom } from 'hooks/useClassroom';
 
 const Computer: React.FC = () => {
-	const [username, setUsername] = React.useState('Anônimo');
 	const { loading, runCode } = useIDE();
+	const { computerName, changeComputerName } = useClassroom();
+
+	const handleChangeComputerName = (name: string) => {
+		changeComputerName(name);
+	};
 
 	return (
 		<div className="computer-container">
@@ -30,7 +35,7 @@ const Computer: React.FC = () => {
 								<span className="me-2">
 									<PersonIcon />
 								</span>
-								{username}
+								{computerName}
 							</button>
 							<div
 								className="dropdown-menu"
@@ -40,8 +45,8 @@ const Computer: React.FC = () => {
 								<input
 									className="form-control"
 									placeholder="Digite o nome do usuário"
-									onChange={(e) => setUsername(e.target.value)}
-									value={username}
+									onChange={(e) => handleChangeComputerName(e.target.value)}
+									value={computerName}
 								/>
 							</div>
 						</div>
