@@ -28,7 +28,6 @@ const Main = () => {
 
 	const handleCreateComputer = () => {
 		const computerId = createComputer();
-		console.log(`handleCreateComputer: ${computerId}`);
 		navigate(`/classroom?room=${classroomName}&computer=${computerId}`, {
 			replace: true,
 		});

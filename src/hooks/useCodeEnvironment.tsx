@@ -51,6 +51,10 @@ interface CodeEnvironmentContextData {
 	) => Promise<CodeEnvironment>;
 	loadCodeEnvironment: (environment_id: string) => Promise<CodeEnvironment>;
 	changeEnvironmentName: (name: string) => Promise<CodeEnvironment>;
+	createCodeEnvironmentWithData: (
+		code: Code,
+		environmentName: string
+	) => Promise<CodeEnvironment>;
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextData>(
@@ -66,6 +70,31 @@ export function CodeEnvironmentProvider({
 		states: [],
 		comments: [],
 	});
+
+	async function createCodeEnvironmentWithData(
+		code: Code,
+		environmentName: string
+	) {
+		const codeEnvironment: CodeEnvironment = await (
+			await axios.post(`${API_URL}/code-environments`)
+		).data;
+		codeEnvironment.name = environmentName;
+		await axios.patch(`${API_URL}/code-environments/${codeEnvironment._id}`, {
+			name: codeEnvironment.name,
+		});
+		const codeEnvironmentStateDto: CodeEnvironmentStateDto = {
+			parent_commit: '',
+			message: 'Commit inicial',
+			username: 'Anônimo',
+			code,
+		};
+		const response = await axios.post(
+			`${API_URL}/code-environments/${codeEnvironment._id}/states`,
+			codeEnvironmentStateDto
+		);
+		setCodeEnvironment(response.data);
+		return response.data;
+	}
 
 	async function createCodeEnvironment(): Promise<CodeEnvironment> {
 		const response = await axios.post(`${API_URL}/code-environments`);
@@ -119,6 +148,7 @@ export function CodeEnvironmentProvider({
 				commitCodeEnvironment,
 				loadCodeEnvironment,
 				changeEnvironmentName,
+				createCodeEnvironmentWithData,
 			}}
 		>
 			{children}

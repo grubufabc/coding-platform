@@ -96,7 +96,6 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 		},
 		'classroom.environment.updated': (newEnvironment: Environment) => {
 			const lastUpdate = getLastUpdate();
-			console.log('here');
 			if (newEnvironment.timestamp > lastUpdate) {
 				setEnvironment(newEnvironment);
 				setLastUpdate(newEnvironment.timestamp);
