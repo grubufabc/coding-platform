@@ -26,10 +26,6 @@ const Admin: React.FC = () => {
 									label: 'Criar nova postagem',
 								},
 								{
-									route: 'create-course',
-									label: 'Criar novo curso',
-								},
-								{
 									route: 'manage-courses',
 									label: 'Gerenciar cursos',
 								},

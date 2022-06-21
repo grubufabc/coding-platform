@@ -19,7 +19,7 @@ interface CourseContextData {
 	setTitle: (title: string) => void;
 	addNewChapter: () => void;
 	removeChapter: (chapter: Chapter) => void;
-	saveCourse: () => Promise<void>;
+	saveCourse: () => Promise<Course>;
 	addCodeSection: (chapter: Chapter) => void;
 	addMarkdownSection: (chapter: Chapter) => void;
 	moveSectionForward: (chapter: Chapter, section: Section) => void;
@@ -118,7 +118,7 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 		chapters.splice(index, 1);
 		chapters.splice(index + 1, 0, chapter);
 		setChapters([...chapters]);
-	}	
+	};
 
 	const moveChapterBackward = (chapter: Chapter) => {
 		const index = chapters.indexOf(chapter);
@@ -126,7 +126,7 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 		chapters.splice(index, 1);
 		chapters.splice(index - 1, 0, chapter);
 		setChapters([...chapters]);
-	}
+	};
 
 	const removeSection = (chapter: Chapter, section: Section) => {
 		const index = chapter.content.indexOf(section);
@@ -185,6 +185,7 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 		});
 
 		setLoading(false);
+		return course;
 	};
 
 	const addMarkdownSection = (chapter: Chapter) => {

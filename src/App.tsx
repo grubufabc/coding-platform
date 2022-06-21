@@ -21,7 +21,6 @@ import { CodeEnvironmentProvider } from './hooks/useCodeEnvironment';
 import Environment from './pages/CodeEnvironment/Environment';
 import { ToastProvider } from './hooks/useToast';
 import Learn from './pages/Learn';
-import CreateCourse from './pages/Admin/CreateCourse';
 import ManageCourses from './pages/Admin/ManageCourses';
 import CourseDetail from './pages/Learn/Course/CourseDetail';
 import EditCourse from './pages/Admin/ManageCourses/EditCourse';
@@ -64,7 +63,6 @@ const App: React.FC = () => {
 							<Route path="admin" element={<Admin />}>
 								<Route path="create-problem" element={<CreateProblem />} />
 								<Route path="create-blog-post" element={<CreateBlogPost />} />
-								<Route path="create-course" element={<CreateCourse />} />
 								<Route path="manage-courses" element={<ManageCourses />} />
 								<Route path="manage-courses/:id" element={<EditCourse />} />
 							</Route>
