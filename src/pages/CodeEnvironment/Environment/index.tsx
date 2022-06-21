@@ -29,8 +29,12 @@ const shareIcons = new Map<string, React.FC>([
 
 const Environment: React.FC = () => {
 	const { id: environment_id } = useParams();
-	const { codeEnvironment, loadCodeEnvironment, changeEnvironmentName } =
-		useCodeEnvironment();
+	const {
+		codeEnvironment,
+		loadCodeEnvironment,
+		changeEnvironmentName,
+		shareSendByEmail,
+	} = useCodeEnvironment();
 	const [selectedCommitId, setSelectedCommitId] = React.useState<string>('');
 	const [username, setUsername] = React.useState<string>('Anônimo');
 	const [commitPath, setCommitPath] = React.useState<string[]>([]);
@@ -39,6 +43,7 @@ const Environment: React.FC = () => {
 
 	const [environmentName, setEnvironmentName] = React.useState<string>('');
 	const { setSourceCode, setLanguageId, setStdin, runCode, loading } = useIDE();
+	const [email, setEmail] = React.useState<string>('');
 
 	const getPathFromCurrentCommitToRoot = (
 		commit_id: string,
@@ -156,6 +161,40 @@ const Environment: React.FC = () => {
 		});
 	};
 
+	const handleShareSendByEmail = async () => {
+		if (!email) {
+			ToastSetMessage({
+				title: 'Erro ao enviar o ambiente',
+				body: 'Digite um email para enviar o ambiente',
+				icon: '❌',
+			});
+			return;
+		}
+
+		ToastSetMessage({
+			title: 'Enviando ambiente...',
+			body: 'Enviando ambiente...',
+			icon: '⌛',
+		});
+
+		const ok = await shareSendByEmail(email);
+
+		if (!ok) {
+			ToastSetMessage({
+				title: 'Erro ao enviar o ambiente',
+				body: 'Erro ao enviar o ambiente',
+				icon: '❌',
+			});
+			return;
+		}
+
+		ToastSetMessage({
+			title: 'Ambiente enviado!',
+			body: 'Ambiente enviado com sucesso!',
+			icon: '✅',
+		});
+	};
+
 	return (
 		<div className="d-flex flex-column vh-100">
 			<div className="d-flex px-3 justify-content-between">
@@ -260,6 +299,24 @@ const Environment: React.FC = () => {
 												);
 											}
 										)}
+									</div>
+									<div className="mt-5">
+										<input
+											value={email}
+											type="email"
+											onChange={(e) => setEmail(e.target.value)}
+											className="form-control"
+											placeholder="email@email.com"
+										/>
+										<div id="emailHelp" className="form-text">
+											Envie por email este ambiente de programação
+										</div>
+										<button
+											onClick={() => handleShareSendByEmail()}
+											className="btn btn-primary px-4 mt-3"
+										>
+											Enviar
+										</button>
 									</div>
 								</div>
 							</Sidebar.Pane>

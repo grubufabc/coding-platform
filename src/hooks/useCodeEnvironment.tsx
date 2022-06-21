@@ -55,6 +55,7 @@ interface CodeEnvironmentContextData {
 		code: Code,
 		environmentName: string
 	) => Promise<CodeEnvironment>;
+	shareSendByEmail: (email: string) => Promise<boolean>;
 }
 
 const CodeEnvironmentContext = createContext<CodeEnvironmentContextData>(
@@ -139,6 +140,15 @@ export function CodeEnvironmentProvider({
 		return response.data;
 	}
 
+	async function shareSendByEmail(email: string) {
+		const response = await axios.post(
+			`${API_URL}/code-environments/${codeEnvironment._id}/share/send-email`,
+			{ email }
+		);
+		const { ok } = response.data;
+		return ok as boolean;
+	}
+
 	return (
 		<CodeEnvironmentContext.Provider
 			value={{
@@ -149,6 +159,7 @@ export function CodeEnvironmentProvider({
 				loadCodeEnvironment,
 				changeEnvironmentName,
 				createCodeEnvironmentWithData,
+				shareSendByEmail,
 			}}
 		>
 			{children}
