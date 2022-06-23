@@ -29,7 +29,7 @@ const FileCheckIcon = () => {
 
 const Computer: React.FC = () => {
 	const { loading, runCode } = useIDE();
-	const { computerName, changeComputerName, classroomName } = useClassroom();
+	const { computer, changeComputer, classroomName } = useClassroom();
 	const {
 		codeEnvironment,
 		commitCodeEnvironment,
@@ -37,6 +37,8 @@ const Computer: React.FC = () => {
 	} = useCodeEnvironment();
 	const { sourceCode, languageId, stdin } = useIDE();
 	const { setMessage: ToastSetMessage } = useToast();
+	const [name, setName] = React.useState('');
+	const [nameLastUpdate, setNameLastUpdate] = React.useState(0);
 
 	const handleSaveEnvironment = async () => {
 		if (!languageId) {
@@ -61,7 +63,7 @@ const Computer: React.FC = () => {
 						language_id: languageId,
 						stdin,
 					},
-					`${classroomName} | ${computerName}`
+					`${classroomName} | ${computer.name}`
 				)
 			)._id;
 		} else {
@@ -87,8 +89,20 @@ const Computer: React.FC = () => {
 		window.open(`/code-environment/${id}`, '_blank', 'noopener,noreferrer');
 	};
 
+	React.useEffect(() => {
+		if (nameLastUpdate < computer.timestamp) {
+			setName(computer.name);
+			setNameLastUpdate(computer.timestamp);
+		}
+	}, [computer.name, computer.timestamp, nameLastUpdate]);
+
 	const handleChangeComputerName = (name: string) => {
-		changeComputerName(name);
+		setName(name);
+		setNameLastUpdate(new Date().getTime());
+		changeComputer({
+			...computer,
+			name,
+		});
 	};
 
 	return (
@@ -108,7 +122,7 @@ const Computer: React.FC = () => {
 								<span className="me-2">
 									<PersonIcon />
 								</span>
-								{computerName}
+								{computer.name}
 							</button>
 							<div
 								className="dropdown-menu"
@@ -119,7 +133,7 @@ const Computer: React.FC = () => {
 									className="form-control"
 									placeholder="Digite o nome do usuário"
 									onChange={(e) => handleChangeComputerName(e.target.value)}
-									value={computerName}
+									value={name}
 								/>
 							</div>
 						</div>

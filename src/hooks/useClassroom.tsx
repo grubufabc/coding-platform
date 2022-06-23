@@ -9,6 +9,7 @@ interface Computer {
 	id: string;
 	name: string;
 	classroomName: string;
+	timestamp: number;
 }
 
 interface Environment {
@@ -27,11 +28,8 @@ interface ClassroomContextData {
 	createComputer: () => string;
 	joinRoom: (classroomName: string) => void;
 	computers: Computer[];
-	changeComputerName: (computerName: string) => void;
 	changeEnvironment: (environment: Environment) => void;
-	computerName: string;
 	classroomName: string;
-	setComputerName: (computerName: string) => void;
 	environment: Environment;
 	computerId: string;
 	setComputerId: (computerId: string) => void;
@@ -39,6 +37,8 @@ interface ClassroomContextData {
 	setEnvironment: (environment: Environment) => void;
 	setLastUpdate: (lastUpdate: number) => void;
 	lastUpdate: number;
+	computer: Computer;
+	changeComputer: (computer: Computer) => void;
 }
 
 const ClassroomContext = createContext<ClassroomContextData>(
@@ -46,10 +46,15 @@ const ClassroomContext = createContext<ClassroomContextData>(
 );
 
 export function ClassroomProvider({ children }: ClassroomProviderProps) {
-	const [computerName, setComputerName] = useState('');
 	const [computerId, setComputerId] = useState('');
 	const [classroomName, setClassroomName] = useState('');
 	const [lastUpdate, setLastUpdate] = React.useState(0);
+	const [computer, setComputer] = React.useState<Computer>({
+		id: '',
+		name: '',
+		classroomName: '',
+		timestamp: 0,
+	});
 	const [environment, setEnvironment] = useState<Environment>(
 		{} as Environment
 	);
@@ -76,7 +81,7 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 	};
 
 	const clear = () => {
-		setComputerName('');
+		setComputer({ id: '', name: '', classroomName: '', timestamp: 0 });
 		setComputerId('');
 		setClassroomName('');
 		setLastUpdate(0);
@@ -89,10 +94,12 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 	const handleEvents = {
 		'classroom.updated': (newComputers: Computer[]) => {
 			setComputers(newComputers);
-			setComputerName(
-				newComputers.find((computer) => computer.id === getComputerId())
-					?.name || ''
+			const newComputer = newComputers.find(
+				(computer) => computer.id === getComputerId()
 			);
+			if (newComputer) {
+				setComputer(newComputer);
+			}
 		},
 		'classroom.environment.updated': (newEnvironment: Environment) => {
 			const lastUpdate = getLastUpdate();
@@ -145,15 +152,6 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 		});
 	};
 
-	const changeComputerName = (newComputerName: string) => {
-		setComputerName(newComputerName);
-		connect().emit('classroom.computer.name.change()', {
-			classroomName,
-			name: newComputerName,
-			id: computerId,
-		});
-	};
-
 	const changeEnvironment = (environment: Environment) => {
 		setEnvironment(environment);
 		connect().emit('classroom.environment.change()', {
@@ -162,17 +160,19 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 		});
 	};
 
+	const changeComputer = (computer: Computer) => {
+		setComputer(computer);
+		connect().emit('classroom.computer.change()', computer);
+	};
+
 	return (
 		<ClassroomContext.Provider
 			value={{
 				createComputer,
 				joinRoom,
-				changeComputerName,
 				changeEnvironment,
 				computers,
-				computerName,
 				classroomName,
-				setComputerName,
 				environment,
 				computerId,
 				setComputerId,
@@ -180,6 +180,8 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 				setEnvironment,
 				setLastUpdate,
 				lastUpdate,
+				computer,
+				changeComputer,
 			}}
 		>
 			{children}

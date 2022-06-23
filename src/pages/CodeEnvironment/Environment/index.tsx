@@ -8,7 +8,7 @@ import CommitTreeSection from './CommitTreeSection';
 import ShareIcon from './icons/ShareIcon';
 import IDESection from './IDESection';
 import { State } from './interfaces/state';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useToast } from '../../../hooks/useToast';
 import GitIcon from './icons/GitIcon';
 import Sidebar from './Sidebar';
@@ -21,6 +21,7 @@ import PlayIcon from './icons/PlayIcon';
 import PersonIcon from './icons/PersonIcon';
 import TerminalIcon from './icons/TerminalIcon';
 import { useIDE } from '../../../hooks/useIDE';
+import HouseIcon from './icons/HouseIcon';
 
 const shareIcons = new Map<string, React.FC>([
 	['facebook', FacebookIcon],
@@ -266,6 +267,9 @@ const Environment: React.FC = () => {
 				<div className="d-flex h-100">
 					<Sidebar.Container>
 						<Sidebar.Tabs>
+							<Sidebar.Tab id="home">
+								<HouseIcon />
+							</Sidebar.Tab>
 							<Sidebar.Tab id="share">
 								<ShareIcon />
 							</Sidebar.Tab>
@@ -281,6 +285,16 @@ const Environment: React.FC = () => {
 						</Sidebar.Tabs>
 
 						<Sidebar.Panes>
+							<Sidebar.Pane id="home">
+								<div>
+									<h2 className="mb-5">GRUB</h2>
+									<div>
+										<Link to="/" className="btn btn-outline-dark">
+											Home
+										</Link>
+									</div>
+								</div>
+							</Sidebar.Pane>
 							<Sidebar.Pane id="share">
 								<div>
 									<h2 className="mb-5">Compartilhar</h2>
