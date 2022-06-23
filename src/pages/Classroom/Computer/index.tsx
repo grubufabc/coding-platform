@@ -96,11 +96,13 @@ const Computer: React.FC = () => {
 	}, [computer.name, computer.timestamp, nameLastUpdate]);
 
 	const handleChangeComputerName = (name: string) => {
+		const timestamp = new Date().getTime();
 		setName(name);
-		setNameLastUpdate(new Date().getTime());
+		setNameLastUpdate(timestamp);
 		changeComputer({
 			...computer,
 			name,
+			timestamp,
 		});
 	};
 
