@@ -28,14 +28,13 @@ const FileCheckIcon = () => {
 };
 
 const Computer: React.FC = () => {
-	const { loading, runCode } = useIDE();
+	const { loading, runCode, sourceCode, languageId, stdin } = useIDE();
 	const { computer, changeComputer, classroomName } = useClassroom();
 	const {
 		codeEnvironment,
 		commitCodeEnvironment,
 		createCodeEnvironmentWithData,
 	} = useCodeEnvironment();
-	const { sourceCode, languageId, stdin } = useIDE();
 	const { setMessage: ToastSetMessage } = useToast();
 	const [name, setName] = React.useState('');
 	const [nameLastUpdate, setNameLastUpdate] = React.useState(0);
@@ -105,6 +104,34 @@ const Computer: React.FC = () => {
 		});
 	};
 
+	const handleRunCode = () => {
+		if (!sourceCode) {
+			ToastSetMessage({
+				title: 'Erro',
+				body: 'Digite o código fonte',
+				icon: '❌',
+			});
+			return;
+		}
+
+		if (!languageId) {
+			ToastSetMessage({
+				title: 'Erro',
+				body: 'Selecione uma linguagem',
+				icon: '❌',
+			});
+			return;
+		}
+
+		ToastSetMessage({
+			title: 'Aguarde',
+			body: 'Executando o código...',
+			icon: '⌛',
+		});
+
+		runCode();
+	};
+
 	return (
 		<div className="computer-container">
 			<div className="d-flex flex-column h-100">
@@ -160,7 +187,7 @@ const Computer: React.FC = () => {
 						<button
 							className="btn d-flex my-2 px-4 align-items-center"
 							style={{ backgroundColor: '#e9ecef' }}
-							onClick={() => runCode()}
+							onClick={() => handleRunCode()}
 						>
 							{loading ? (
 								<div className="spinner-border" role="status">

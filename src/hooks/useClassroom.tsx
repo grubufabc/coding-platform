@@ -129,6 +129,7 @@ export function ClassroomProvider({ children }: ClassroomProviderProps) {
 			id: computerId,
 			name: 'Anônimo',
 			classroomName,
+			timestamp: 1,
 		});
 		joinEnvironment(computerId);
 		return computerId;
