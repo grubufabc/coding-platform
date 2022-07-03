@@ -62,7 +62,7 @@ const CodeAssessmentEditor: React.FC<CodeAssessmentEditorProps> = ({
 		<div>
 			<textarea
 				className="form-control border-0"
-				value={(section as Markdown).text}
+				value={(section as CodeAssessment).description}
 				onChange={handleChangeDescription}
 				placeholder="Digite a descrição do problema"
 			/>
