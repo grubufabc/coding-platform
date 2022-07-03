@@ -46,11 +46,15 @@ const PlayIcon: React.FC = () => {
 interface CodeRenderWrapperProps {
 	sourceCode: string;
 	language_id: number;
+	borderTop?: boolean;
+	handleChange?: (data: { sourceCode: string; languageId: number }) => void;
 }
 
 const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 	sourceCode: sourceCodeFromProps,
 	language_id,
+	borderTop = true,
+	handleChange,
 }) => {
 	const {
 		sourceCode,
@@ -64,6 +68,7 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 		runCode,
 		setLanguageId,
 		loading,
+		languageId,
 	} = useIDE();
 
 	React.useEffect(() => {
@@ -88,9 +93,36 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 		return 'text/plain';
 	};
 
+	const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const language = languages.find(
+			(language) => language.id === parseInt(event.target.value)
+		);
+		if (handleChange) {
+			handleChange({
+				sourceCode: sourceCode,
+				languageId: language ? language.id : 0,
+			});
+		}
+		setLanguageId(language ? language.id : 0);
+	};
+
 	return (
-		<div className="mb-3 border-top border-bottom py-3">
-			<div className="d-flex flex-row-reverse">
+		<div className={`mb-3 ${borderTop ? 'border-top' : ''} border-bottom py-3`}>
+			<div className="d-flex justify-content-between">
+				<div>
+					<select
+						value={languageId}
+						className="form-select form-select-sm"
+						onChange={handleSelect}
+					>
+						<option value="0">Selecione uma linguagem</option>
+						{languages.map((language, index) => (
+							<option key={index} value={language.id}>
+								{language.name}
+							</option>
+						))}
+					</select>
+				</div>
 				<div className="btn-group mb-2" role="group">
 					<button
 						className="btn btn-outline-dark p-1 px-4"
@@ -98,7 +130,10 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 					>
 						<ArrowClockwiseIcon />
 					</button>
-					<button className="btn btn-outline-dark p-1 px-4" onClick={runCode}>
+					<button
+						className="btn btn-outline-dark p-1 px-4"
+						onClick={() => runCode()}
+					>
 						{loading ? (
 							<div className="spinner-border" role="status">
 								<span className="visually-hidden">Loading...</span>
@@ -112,6 +147,12 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 			<ControlledEditor
 				onBeforeChange={(_, __, value) => {
 					setSourceCode(value);
+					if (handleChange) {
+						handleChange({
+							sourceCode: value,
+							languageId,
+						});
+					}
 				}}
 				value={sourceCode}
 				className={`code-mirror-wrapper code-wrapper-100percent`}
@@ -119,7 +160,7 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 					indentWithTabs: true,
 					tabSize: 4,
 					lineWrapping: true,
-					mode: getModeLanguage(language_id) || '',
+					mode: getModeLanguage(languageId) || '',
 					theme: 'neat',
 					lineNumbers: true,
 					indentUnit: 4,
@@ -174,12 +215,24 @@ const CodeRenderWrapper: React.FC<CodeRenderWrapperProps> = ({
 interface CodeRenderProps {
 	sourceCode: string;
 	language_id: number;
+	borderTop?: boolean;
+	handleChange?: (data: { sourceCode: string; languageId: number }) => void;
 }
 
-const CodeRender: React.FC<CodeRenderProps> = ({ sourceCode, language_id }) => {
+const CodeRender: React.FC<CodeRenderProps> = ({
+	sourceCode,
+	language_id,
+	borderTop = true,
+	handleChange,
+}) => {
 	return (
 		<IDEProvider>
-			<CodeRenderWrapper sourceCode={sourceCode} language_id={language_id} />
+			<CodeRenderWrapper
+				handleChange={handleChange}
+				borderTop={borderTop}
+				sourceCode={sourceCode}
+				language_id={language_id}
+			/>
 		</IDEProvider>
 	);
 };

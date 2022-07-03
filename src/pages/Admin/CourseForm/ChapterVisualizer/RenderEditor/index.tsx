@@ -6,6 +6,7 @@ import ArrowDownIcon from '../../icons/ArrowDownIcon';
 import ArrowUpIcon from '../../icons/ArrowUpIcon';
 import TrashIcon from '../../icons/TrashIcon';
 import { useCourse } from '../../useCourse';
+import CodeAssessmentEditor from './CodeAssessmentEditor';
 import CodeEditor from './CodeEditor';
 import MarkdownEditor from './MarkdownEditor';
 
@@ -71,6 +72,17 @@ const RenderEditor: React.FC<RenderEditorProps> = ({ section, chapter }) => {
 					<SectionToolbar section={section} chapter={chapter} />
 				</div>
 				<MarkdownEditor section={section} />
+			</div>
+		);
+	}
+
+	if (section.type === 'code-assessment') {
+		return (
+			<div className="card p-2 mb-3">
+				<div className="d-flex flex-row-reverse mb-4">
+					<SectionToolbar section={section} chapter={chapter} />
+				</div>
+				<CodeAssessmentEditor section={section} />
 			</div>
 		);
 	}

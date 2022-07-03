@@ -1,3 +1,3 @@
 export interface Section {
-	type: 'markdown' | 'code';
+	type: 'markdown' | 'code' | 'code-assessment';
 }

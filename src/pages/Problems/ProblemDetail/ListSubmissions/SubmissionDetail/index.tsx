@@ -1,7 +1,6 @@
+import Collapsable from 'components/Collapsable';
 import React from 'react';
 import { Submission } from '../..';
-
-declare var bootstrap: any;
 
 interface SubmissionDetailProps {
 	submission: Submission;
@@ -13,11 +12,6 @@ interface GenericViewProps {
 	data: string;
 }
 
-interface CollapsableProps {
-	label: React.ReactElement;
-	content: React.ReactNode;
-}
-
 const GenericView: React.FC<GenericViewProps> = ({ label, data }) => {
 	return (
 		<div>
@@ -25,31 +19,6 @@ const GenericView: React.FC<GenericViewProps> = ({ label, data }) => {
 			<pre>
 				<code>{data}</code>
 			</pre>
-		</div>
-	);
-};
-
-const Collapsable: React.FC<CollapsableProps> = ({ label, content }) => {
-	const elementRef = React.useRef(null);
-
-	const handleOpenClose = () => {
-		const element = elementRef.current;
-		if (!element) return;
-		new bootstrap.Collapse(element);
-	};
-
-	return (
-		<div className="border border-1 p-3 rounded rounded-3 mb-4">
-			<div className="d-grid">
-				<button className="btn px-0" onClick={handleOpenClose}>
-					<h5 className="d-flex justify-content-between p-0 m-0">
-						{label.props.children}
-					</h5>
-				</button>
-			</div>
-			<div className="collapse mt-4" ref={elementRef}>
-				{content}
-			</div>
 		</div>
 	);
 };
@@ -94,50 +63,48 @@ const SubmissionDetail: React.FC<SubmissionDetailProps> = ({
 					</span>
 				</h5>
 			}
-			content={
-				<React.Fragment>
-					<GenericView label={'Código Fonte'} data={sourceCode} />
-					{testCases.map((testCase, index) => (
-						<Collapsable
-							key={index}
-							label={
-								<h6 className="d-flex justify-content-between">
-									<span>Test case #{index + 1}</span>
-									<span className={getClassFromStatus(testCase.verdict)}>
-										<span>{testCase.verdict}</span>
-										<span className="ms-2">
-											<SVGArrowDown />
-										</span>
+		>
+			<React.Fragment>
+				<GenericView label={'Código Fonte'} data={sourceCode} />
+				{testCases.map((testCase, index) => (
+					<Collapsable
+						key={index}
+						label={
+							<h6 className="d-flex justify-content-between">
+								<span>Test case #{index + 1}</span>
+								<span className={getClassFromStatus(testCase.verdict)}>
+									<span>{testCase.verdict}</span>
+									<span className="ms-2">
+										<SVGArrowDown />
 									</span>
-								</h6>
-							}
-							content={
-								<React.Fragment>
-									<GenericView label={'Input'} data={testCase.input} />
-									<GenericView
-										label={'Expected Output'}
-										data={testCase.expectedOutput}
-									/>
+								</span>
+							</h6>
+						}
+					>
+						<React.Fragment>
+							<GenericView label={'Input'} data={testCase.input} />
+							<GenericView
+								label={'Expected Output'}
+								data={testCase.expectedOutput}
+							/>
 
-									{testCase.compile_output && (
-										<GenericView
-											label={'Compile Output'}
-											data={testCase.compile_output}
-										/>
-									)}
-									{testCase.stderr && (
-										<GenericView label={'Stderr'} data={testCase.stderr} />
-									)}
-									{testCase.stdout && (
-										<GenericView label={'Stdout'} data={testCase.stdout} />
-									)}
-								</React.Fragment>
-							}
-						/>
-					))}
-				</React.Fragment>
-			}
-		/>
+							{testCase.compile_output && (
+								<GenericView
+									label={'Compile Output'}
+									data={testCase.compile_output}
+								/>
+							)}
+							{testCase.stderr && (
+								<GenericView label={'Stderr'} data={testCase.stderr} />
+							)}
+							{testCase.stdout && (
+								<GenericView label={'Stdout'} data={testCase.stdout} />
+							)}
+						</React.Fragment>
+					</Collapsable>
+				))}
+			</React.Fragment>
+		</Collapsable>
 	);
 };
 

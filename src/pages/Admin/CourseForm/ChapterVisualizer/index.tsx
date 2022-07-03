@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import { Chapter } from '../../../Learn/Course/interfaces/Chapter';
 import ArrowDownIcon from '../icons/ArrowDownIcon';
 import ArrowUpIcon from '../icons/ArrowUpIcon';
@@ -9,11 +9,12 @@ import RenderEditor from './RenderEditor';
 
 interface ChapterToolbarProps {
 	chapter: Chapter;
-	handleOpenClose: () => void
+	handleOpenClose: () => void;
 }
 
 const ChapterToolbar: React.FC<ChapterToolbarProps> = ({
-	chapter, handleOpenClose
+	chapter,
+	handleOpenClose,
 }) => {
 	const { moveChapterBackward, moveChapterForward, removeChapter } =
 		useCourse();
@@ -38,7 +39,7 @@ const ChapterToolbar: React.FC<ChapterToolbarProps> = ({
 				type="button"
 				className="btn btn-outline-dark border-0"
 			>
-				<EyeIcon/>
+				<EyeIcon />
 			</button>
 			<button
 				onClick={() => removeChapter(chapter)}
@@ -51,15 +52,18 @@ const ChapterToolbar: React.FC<ChapterToolbarProps> = ({
 	);
 };
 
-
 interface ChapterVisualizerProps {
 	chapter: Chapter;
 }
 
 const ChapterVisualizer: React.FC<ChapterVisualizerProps> = ({ chapter }) => {
-	const { addMarkdownSection, addCodeSection, updateChapter } =
-		useCourse();
-	
+	const {
+		addMarkdownSection,
+		addCodeSection,
+		addCodeAssessmentSection,
+		updateChapter,
+	} = useCourse();
+
 	const [isOpen, setIsOpen] = React.useState(true);
 
 	return (
@@ -73,7 +77,10 @@ const ChapterVisualizer: React.FC<ChapterVisualizerProps> = ({ chapter }) => {
 						updateChapter();
 					}}
 				/>
-				<ChapterToolbar chapter={chapter} handleOpenClose={() => setIsOpen(!isOpen)} />
+				<ChapterToolbar
+					chapter={chapter}
+					handleOpenClose={() => setIsOpen(!isOpen)}
+				/>
 			</h4>
 			<div className="d-flex justify-content-between mb-3">
 				<div>
@@ -91,9 +98,16 @@ const ChapterVisualizer: React.FC<ChapterVisualizerProps> = ({ chapter }) => {
 					>
 						+ Texto
 					</button>
+					<button
+						type="button"
+						className="btn btn-outline-dark border-0"
+						onClick={() => addCodeAssessmentSection(chapter)}
+					>
+						+ Tarefa
+					</button>
 				</div>
 			</div>
-			<div className={isOpen ? "d-block" : "d-none"}>
+			<div className={isOpen ? 'd-block' : 'd-none'}>
 				{chapter.content.map((section, index) => (
 					<RenderEditor key={index} section={section} chapter={chapter} />
 				))}

@@ -7,6 +7,10 @@ import { API_URL } from '../../../api';
 import { Course } from '../../Learn/Course/interfaces/Course';
 import { Markdown } from '../../Learn/Course/interfaces/Markdown';
 import { Code } from '../../Learn/Course/interfaces/Code';
+import {
+	CodeAssessment,
+	CodeAssessmentTest,
+} from 'pages/Learn/Course/interfaces/CodeAssessment';
 
 interface CourseProviderProps {
 	children: React.ReactNode;
@@ -22,6 +26,7 @@ interface CourseContextData {
 	saveCourse: () => Promise<Course>;
 	addCodeSection: (chapter: Chapter) => void;
 	addMarkdownSection: (chapter: Chapter) => void;
+	addCodeAssessmentSection: (chapter: Chapter) => void;
 	moveSectionForward: (chapter: Chapter, section: Section) => void;
 	moveSectionBackward: (chapter: Chapter, section: Section) => void;
 	moveChapterForward: (chapter: Chapter) => void;
@@ -93,6 +98,16 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 			language_id: 0,
 		};
 		chapter.content.push(newCodeSection);
+		setChapters([...chapters]);
+	};
+
+	const addCodeAssessmentSection = (chapter: Chapter) => {
+		const newCodeAssessmentSection: CodeAssessment = {
+			type: 'code-assessment',
+			tests: [] as CodeAssessmentTest[],
+			description: '',
+		};
+		chapter.content.push(newCodeAssessmentSection);
 		setChapters([...chapters]);
 	};
 
@@ -222,6 +237,7 @@ const CourseProvider: React.FC<CourseProviderProps> = ({ children }) => {
 				saveCourse,
 				addCodeSection,
 				addMarkdownSection,
+				addCodeAssessmentSection,
 				moveSectionForward,
 				moveSectionBackward,
 				moveChapterForward,
