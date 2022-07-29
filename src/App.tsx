@@ -28,6 +28,15 @@ import { PairProgramming, PairProgrammingMenu } from './pages/PairProgramming';
 import { IDEProvider } from './hooks/useIDE';
 import Classroom from 'pages/Classroom';
 
+const SSL: React.FC = () => {
+	return (
+		<div>
+			5A418B4C61FD800B763300E563CB2637E53236E66ABD2A484EED841459B923FE
+			comodoca.com e2d752675dcb07c
+		</div>
+	);
+};
+
 const App: React.FC = () => {
 	return (
 		<AuthProvider>
@@ -75,6 +84,7 @@ const App: React.FC = () => {
 								<Route path=":id" element={<CourseDetail />} />
 							</Route>
 							<Route path="classroom" element={<Classroom />} />
+							<Route path=".well-known/pki-validation/:id" element={<SSL />} />
 						</Routes>
 					</Router>
 				</ToastProvider>

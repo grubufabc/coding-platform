@@ -3,7 +3,6 @@ import {
 	CodeAssessment,
 	CodeAssessmentTest,
 } from 'pages/Learn/Course/interfaces/CodeAssessment';
-import { Markdown } from 'pages/Learn/Course/interfaces/Markdown';
 import { Section } from 'pages/Learn/Course/interfaces/Section';
 import React from 'react';
 
