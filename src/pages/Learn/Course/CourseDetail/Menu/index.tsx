@@ -20,10 +20,10 @@ const Menu: React.FC<MenuProps> = ({
 						key={index}
 						className={`${
 							index === selectedChapter ? 'bg-dark text-white' : ''
-						} list-group-item d-flex justify-content-start p-4`}
+						} list-group-item d-flex p-4`}
 						onClick={() => setSelectedChapter(index)}
 					>
-						<h4 className="p-0 m-0">{chapter.title}</h4>
+						<h4 className="p-0 m-0 w-100 text-center">{chapter.title}</h4>
 					</button>
 				))}
 			</ul>
