@@ -24,18 +24,6 @@ const Header: React.FC = () => {
 					>
 						Sala de Aula
 					</Link>
-					<Link to="/problems" className="text-light text-decoration-none me-4">
-						Problemas
-					</Link>
-					<Link
-						to="/pair-programming"
-						className="text-light text-decoration-none mx-4"
-					>
-						Pair programming
-					</Link>
-					<Link to="/blog" className="text-light text-decoration-none mx-4">
-						Blog
-					</Link>
 					<Link
 						to="/code-environment"
 						className="text-light text-decoration-none mx-4"
